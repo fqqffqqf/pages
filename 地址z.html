@@ -1,0 +1,1160 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>地址批量生成器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Microsoft YaHei, sans-serif;
+        }
+
+        body {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+            background: #f8f9fa;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: 0;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #007bff;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .config-table th,
+        .config-table td {
+            padding: 10px;
+            border: 1px solid #eee;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .config-table th {
+            background: #f8f9fa;
+        }
+
+        .address-config-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .config-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .address-list {
+            margin-top: 20px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .address-item {
+            padding: 18px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #fefefe;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .tip {
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .tip.show {
+            display: block;
+        }
+
+        .empty-tip {
+            text-align: center;
+            color: #999;
+            padding: 30px 0;
+        }
+
+        .add-config-btn {
+            margin-bottom: 20px;
+        }
+
+        .operation-btn-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .unbind-btn {
+            background: #fd7e14;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .suffix-tip {
+            color: #6610f2;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .close-config-btn {
+            margin-bottom: 20px;
+            margin-left: 10px;
+            background: #dc3545;
+            color: white;
+        }
+
+        .del-all-btn {
+            background: #dc3545;
+            color: white;
+            margin-bottom: 20px;
+            margin-left: 10px;
+        }
+
+        .bind-rule-btn {
+            background: #28a745;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .show-config-btn {
+            background: #6f42c1;
+            color: white;
+        }
+
+        /* 高亮手机号后四位样式 */
+        .highlighted-suffix {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>地址生成器</h1>
+        <h2>手机号配置</h2>
+        <div class="input-group">
+            <label>手机号标识/尾号 <span class="suffix-tip" id="suffixTip">(输入绑定标识/尾号)</span></label>
+            <input type="text" id="phoneSuffix" maxlength="6" placeholder="尾号/标识">
+        </div>
+        <div class="input-group">
+            <label>自定义手机号前3位</label>
+            <input type="text" id="phonePrefixCustom" placeholder="输入数字，如：123456789 (手机前3位随机123,456,789)">
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-success" id="exportAllConfig">导出地址配置</button>
+            <button class="btn btn-warning" id="importConfig">导入地址配置（JSON）</button>
+            <button class="btn btn-info show-config-btn" id="showConfigBtn">地址管理</button> 
+            
+            <!-- 导入文本区域 -->
+            <div id="importTextArea" style="display:none;width:100%;margin-top:10px">
+                <textarea id="configImportText" rows="10" placeholder="1.导入地址
+  请粘贴JSON格式的配置数组，示例：
+  
+[
+[&quot;1&quot;,&quot;武汉&quot;,&quot;湖北省洪山区冠山街道&quot;,&quot;return `${Math.floor(Math.random()*100)+1}单元${Math.floor(Math.random()*99)+1}号`&quot;],
+[&quot;2&quot;,&quot;上海&quot;,&quot;上海市浦东新区陆家嘴街道&quot;,&quot;return `${Math.floor(Math.random()*100)+1}单元${Math.floor(Math.random()*99)+1}号`&quot;]
+]
+
+2.绑定尾号
+识别尾号绑定格式：xx=1-1234/2-3678/3-5698(尾号输入框输入xx)
+"></textarea>
+                <div class="btn-group" style="margin-top:8px;position:relative">
+                    <button class="btn btn-primary" id="confirmImport">确认导入</button>
+                    <button class="btn bind-rule-btn" id="bindRuleBtn">绑定</button>
+                    <button class="btn btn-danger" id="cancelImport">取消</button>
+                    <button class="btn unbind-btn" id="clearAllBindRule" style="display:none">清空所有绑定规则</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 生成地址按钮区域 -->
+        <h2>生成地址</h2>
+        <div id="addressConfigBtns" class="address-config-btns"></div>
+
+        <!-- 地址管理区域 -->
+        <div class="address-config-section" id="addressConfigSection" style="display:none;">
+            <h2>地址配置管理（仅显示自定义配置）</h2>
+            <div class="btn-group">
+                <button class="btn btn-primary add-config-btn" id="addConfigBtn">新增地址</button>
+                <button class="btn btn-danger del-all-btn" id="delAllConfigBtn">删除所有地址</button>
+                <button class="btn btn-danger close-config-btn" id="closeConfigBtn">关闭地址管理</button>
+            </div>
+
+            <div class="input-group" id="configForm" style="display:none;">
+                <label>新增/编辑地址</label>
+                <div class="input-group"><label>编号</label><input type="text" id="configId" placeholder="例如：5  广东留空自动分配大于50的唯一编号"></div>
+                <div class="input-group"><label>名称</label><input type="text" id="configName" placeholder="例如：武汉 留空默认取固定街道前两个"></div>
+                <div class="input-group"><label>所在街道 <span class="required">*</span></label><input type="text" id="configStreet" placeholder="例如：广东省广州市天河区天河街道（必填）"></div>
+                <div class="input-group"><label>详细地址生成规则</label><textarea id="configRule" placeholder="留空默认1，填1=A()/2=B()/3=C()，其他值直接保存"></textarea></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="saveConfigBtn">保存</button>
+                    <button class="btn btn-danger" id="cancelConfigBtn">取消</button>
+                </div>
+            </div>
+
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>名称</th>
+                        <th>街道</th>
+                        <th>规则</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="configTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- 地址列表区域  -->
+        <div id="addressList" class="address-list">
+            <div class="empty-tip">请选择配置生成地址</div>
+        </div>
+        
+    </div>
+
+    <script>
+	
+	    let combinedLocations = [
+        "便利店门口",
+        "超市门口",
+        "水果店门口",
+        "咖啡店门口",
+        "面包店门口",
+        "书店门口",
+        "花店门口",
+        "五金店门口",
+        "药店门口",
+        "文具店门口",
+        "眼镜店门口",
+        "宠物店门口",
+        "快餐店门口",
+        "干洗店门口",
+        "母婴店门口",
+        "家电店门口",
+        "运动用品店门口",
+        "美容美发店门口",
+        "家居用品店门口",
+        "玩具店门口",
+        "服装定制店门口",
+        "鞋店门口",
+        "茶叶店门口",
+        "珠宝店门口",
+        "数码产品店门口",
+        "礼品店门口",
+        "内衣店门口",
+        "童装店门口",
+        "窗帘店门口",
+        "床上用品店门口"
+    ];
+       
+        const addressList = [
+            "广州市白云区龙归街道北太路奔力物流",
+            "广州市白云区太和镇龙归街道夏良十六队",
+            "广州市白云区龙归街道柏塘村草塘一路",
+            "广州市白云区龙归街道柏塘村草塘路",
+            "广州市白云区龙归街道柏塘村柏兴东路",
+            "广州市白云区龙归街道柏塘村绿地云央小区1栋-13栋",
+            "广州市白云区龙归街道柏塘村柏兴中路",
+            "广州市白云区龙归街道柏塘村柏新东路",
+            "广州市白云区龙归街道柏塘村柏塘一路",
+            "广州市白云区龙归街道柏塘村柏塘二路",
+            "广州市白云区龙归街道柏塘村柏新西路",
+            "广州市白云区龙归街道柏塘村龙凤花园小区",
+            "广州市白云区龙归街道柏塘村草塘街",
+            "广州市白云区龙归街道柏塘村草塘一路",
+            "广州市白云区龙归街道绿地云央小区",
+            "广州市白云区龙归街道柏塘村聚龙街",
+            "广州市白云区龙归街道长庚路",
+            "广州市白云区龙归街道科泰二路产业创新园",
+            "广州市白云区龙归街道云正大道1112号通达电气",
+            "广州市白云区龙归街道民营科技园晟启能源",
+            "广州市白云区太和镇营溪村",
+            "广州市白云区太和镇兴和市场",
+            "广州市白云区龙归镇夏良村十六队永泰庄",
+            "广州市白云区龙归街绿地柏玥晶舍",
+            "广州市白云区龙归街道柏塘村云正大道",
+            "广州市白云区龙归街道柏塘村柏圣街"
+        ];
+
+        const communityArray = [
+            "凤凰小区", "牡丹小区", "紫薇小区", "丁香小区", "瑞景小区",
+            "福满小区", "锦绣小区", "康泰小区", "和谐小区", "温馨小区"
+        ];
+
+        // ====================== 自定义生成函数 ======================
+        function A() {
+            return zm(1, 3, 2) + "区" + numb(1, 20) + "栋" + numb(1, 100) + "室";
+        }
+
+        function B() {
+            let n = numb(1, 18);
+            return numb(1, 15) + "栋" + numb(1, 6) + "单元" + n + "层" + n + "0" + numb(1, 4);
+        }
+
+        
+        function C() {
+            return gxq()+numb(1,20)+"栋"+numb(1,100)+"室";
+        }
+
+        
+        function zm(min, max, caseOption) {
+            if (min < 1 || min > 26 || max < 1 || max > 26 || min > max) {
+                throw new Error('前两个参数必须在 1 - 26 范围内，且第一个参数不能大于第二个参数');
+            }
+            if (![0, 1, 2].includes(caseOption)) {
+                throw new Error('第三个参数必须是 0、1 或 2');
+            }
+            const randomOffset = Math.floor(Math.random() * (max - min + 1)) + min - 1;
+            let baseCode;
+            if (caseOption === 1) {
+                baseCode = 97; // 小写字母
+            } else if (caseOption === 2) {
+                baseCode = 65; // 大写字母
+            } else {
+                baseCode = Math.random() < 0.5 ? 97 : 65; // 随机大小写
+            }
+            const letterCode = baseCode + randomOffset;
+            return String.fromCharCode(letterCode);
+        }
+
+        // 数字生成函数
+        function numb(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // 随机获取小区名称
+        function gxq() {
+            return communityArray[Math.floor(Math.random() * communityArray.length)] + " ";
+        }
+
+        // ====================== 姓名生成数据 ======================
+        const familyNames = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴", "徐", "孙", "胡", "朱", "高", "林", "何", "郭", "马", "罗"];
+        const givenNames = ["伟", "芳", "娜", "敏", "静", "丽", "强", "磊", "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "秀", "霞", "平", "军"];
+
+        // 生成真实姓名
+        function generateRealName() {
+            // 随机姓氏
+            const familyName = familyNames[Math.floor(Math.random() * familyNames.length)];
+            // 随机名字（单字/双字）
+            const isTwoChar = Math.random() > 0.5;
+            let givenName = givenNames[Math.floor(Math.random() * givenNames.length)];
+            if (isTwoChar) {
+                givenName += givenNames[Math.floor(Math.random() * givenNames.length)];
+            }
+            return familyName + givenName;
+        }
+
+        // ====================== 1. 本地基础数据 ======================
+        const LOCAL_FIXED_CONFIGS = [
+          
+        ];
+
+        // ====================== 全局变量 ======================
+        let userCustomConfigs = []; // 用户自定义配置
+        let allGenerateConfigs = []; // 所有可生成地址的数据
+        let suffixBindRules = {}; // 多组尾号绑定规则 {标识1: {1:'1234', 2:'3678'}, 标识2: {4:'5678',5:'8901'}}
+        let currentEditIndex = -1;
+
+        window.onload = function () {
+            // 初始化
+            loadUserCustomConfigs();
+            loadSuffixBindRules();
+            mergeAllGenerateConfigs();
+            loadPhoneHistory();
+            bindImportExportEvents();
+            bindEvents();
+            // 渲染页面
+            renderUserConfigTable();
+            renderAllGenerateButtons();
+
+            // 监听导入输入框变化
+            document.getElementById('configImportText').addEventListener('input', monitorImportText);
+            // 监听尾号输入框变化（核心：实时筛选地址）
+            document.getElementById('phoneSuffix').addEventListener('input', function () {
+                updateSuffixTip();
+                renderAllGenerateButtons(); // 输入变化立即重新渲染按钮（筛选）
+            });
+
+            
+            // 页面加载时，默认隐藏地址管理区域
+            document.getElementById('addressConfigSection').style.display = 'none';
+        };
+
+        // ====================== 存储相关 ======================
+        // 加载用户自定义配置
+        function loadUserCustomConfigs() {
+            const saved = localStorage.getItem('userAddressConfigs');
+            userCustomConfigs = saved ? JSON.parse(saved) : [];
+        }
+
+        // 保存用户自定义配置
+        function saveUserCustomConfigs() {
+            localStorage.setItem('userAddressConfigs', JSON.stringify(userCustomConfigs));
+        }
+
+        // 加载尾号绑定规则（支持多组）
+        function loadSuffixBindRules() {
+            const saved = localStorage.getItem('suffixBindRules');
+            suffixBindRules = saved ? JSON.parse(saved) : {};
+            // 显示清空按钮
+            document.getElementById('clearAllBindRule').style.display = Object.keys(suffixBindRules).length > 0 ? 'inline-block' : 'none';
+        }
+
+        // 保存尾号绑定规则（支持多组）
+        function saveSuffixBindRules() {
+            localStorage.setItem('suffixBindRules', JSON.stringify(suffixBindRules));
+            document.getElementById('clearAllBindRule').style.display = Object.keys(suffixBindRules).length > 0 ? 'inline-block' : 'none';
+        }
+
+        // 清空所有绑定规则
+        function clearAllBindRules() {
+            if (confirm('确定清空所有尾号绑定规则吗？')) {
+                suffixBindRules = {};
+                saveSuffixBindRules();
+                document.getElementById('suffixTip').textContent = '(输入绑定标识自动筛选地址并匹配尾号)';
+                renderAllGenerateButtons();
+                alert('已清空所有尾号绑定规则！');
+            }
+        }
+
+        // 新增：删除所有自定义配置
+        function deleteAllConfigs() {
+            if (userCustomConfigs.length === 0) {
+                alert('暂无自定义配置可删除！');
+                return;
+            }
+            if (confirm('确定删除所有自定义地址配置吗？此操作不可恢复！')) {
+                userCustomConfigs = [];
+                saveUserCustomConfigs();
+                mergeAllGenerateConfigs();
+                renderUserConfigTable();
+                renderAllGenerateButtons();
+                alert('已删除所有自定义配置！');
+            }
+        }
+
+        // ====================== 辅助函数：生成大于50的唯一ID ======================
+        function getAutoId() {
+            // 收集所有已存在的ID（基础数据+自定义配置）
+            const allIds = [...LOCAL_FIXED_CONFIGS.map(c => Number(c[0])), ...userCustomConfigs.map(c => Number(c[0]))];
+            let newId = 51; // 初始值大于50
+
+            // 找到第一个未被使用的大于50的ID
+            while (allIds.includes(newId)) {
+                newId++;
+            }
+            return newId.toString();
+        }
+
+        // ====================== 辅助函数：生成指定范围内的唯一ID（用于导入） ======================
+        function getUniqueId(targetId) {
+            // 收集所有已存在的ID（基础数据+自定义配置）
+            const allIds = [...LOCAL_FIXED_CONFIGS.map(c => Number(c[0])), ...userCustomConfigs.map(c => Number(c[0]))];
+            let newId = Number(targetId);
+
+            // 如果目标ID未被占用，直接返回
+            if (!allIds.includes(newId)) {
+                return newId.toString();
+            }
+
+            // 否则递增找到唯一ID
+            while (allIds.includes(newId)) {
+                newId++;
+            }
+            return newId.toString();
+        }
+
+        // ====================== 辅助函数：转换生成规则 ======================
+        function transformRule(ruleInput) {
+            const trimed = ruleInput.trim();
+            // 空值默认返回1对应的规则
+            if (!trimed) {
+                return 'return A();';
+            }
+            // 根据1/2/3转换规则
+            switch (trimed) {
+                case '1':
+                    return 'return A();';
+                case '2':
+                    return 'return B();';
+                case '3':
+                    return 'return C();';
+                default:
+                    // 其他值直接返回（保留用户自定义规则）
+                    return trimed;
+            }
+        }
+
+        // ====================== 数据合并与渲染 ======================
+        // 合并基础数据和用户配置
+        function mergeAllGenerateConfigs() {
+            allGenerateConfigs = [...LOCAL_FIXED_CONFIGS];
+            const idMap = {};
+
+            // 基础数据ID映射
+            allGenerateConfigs.forEach(config => {
+                idMap[config[0]] = config;
+            });
+
+            // 加入用户自定义数据
+            userCustomConfigs.forEach(config => {
+                idMap[config[0]] = config;
+            });
+
+            // 重新整理并排序
+            allGenerateConfigs = Object.values(idMap).sort((a, b) => Number(a[0]) - Number(b[0]));
+        }
+
+        // 仅渲染用户自定义配置表格
+        function renderUserConfigTable() {
+            const tb = document.getElementById('configTableBody');
+            tb.innerHTML = '';
+
+            if (userCustomConfigs.length === 0) {
+                tb.innerHTML = '<tr><td colspan="5" class="empty-tip">暂无自定义配置，请点击"新增地址配置"添加</td></tr>';
+                return;
+            }
+
+            userCustomConfigs.forEach((c, i) => {
+                // 优化规则显示：去掉return前缀，更直观
+                const t = c[3].replace(/^return /, '');
+                tb.innerHTML += `
+        <tr>
+            <td>${c[0]}</td>
+            <td>${c[1]}</td>
+            <td>${c[2]}</td>
+            <td>${t}</td>
+            <td class="operation-btn-group">
+                <button class="btn btn-primary edit" data-i="${i}">编辑</button>
+                <button class="btn btn-info export-item" data-i="${i}">导出本条</button>
+                <button class="btn btn-danger del" data-i="${i}">删除</button>
+            </td>
+        </tr>`;
+            });
+        }
+
+        // 渲染所有生成地址按钮（核心：根据输入的标识实时筛选）
+        function renderAllGenerateButtons() {
+            const box = document.getElementById('addressConfigBtns');
+            box.innerHTML = '';
+
+            const inputValue = document.getElementById('phoneSuffix').value.trim();
+            let showIds = [];
+            let currentBindRule = null;
+
+            // 判断输入的是绑定标识还是普通尾号
+            if (inputValue && suffixBindRules[inputValue]) {
+                // 输入的是绑定标识：只显示该标识绑定的ID
+                currentBindRule = suffixBindRules[inputValue];
+                showIds = Object.keys(currentBindRule);
+            } else {
+                // 输入的是普通尾号/空：显示所有ID
+                showIds = allGenerateConfigs.map(c => c[0]);
+            }
+
+            // 渲染按钮
+            allGenerateConfigs.forEach(c => {
+                if (showIds.includes(c[0])) {
+                    const b = document.createElement('button');
+                    b.className = 'config-btn';
+                    // 显示绑定的尾号（如果有）
+                    const bindSuffix = currentBindRule ? currentBindRule[c[0]] || '' : '';
+                    const suffixText = bindSuffix ? ` (尾号:${bindSuffix})` : '';
+                    b.textContent = `${c[0]}.${c[1]} ${suffixText}`;
+                    b.onclick = () => genAddress(c);
+                    box.appendChild(b);
+                }
+            });
+
+			
+			 const list = document.getElementById('addressList');
+            list.innerHTML = '';
+			
+            if (box.innerHTML === '') {
+                box.innerHTML = `<div class="empty-tip">未找到「${inputValue}」标识绑定的地址配置</div>`;
+            }
+        }
+
+        // ====================== 解析尾号绑定规则 ======================
+        // 解析尾号绑定规则（支持1-6位中文/字母/数字标识）
+        function parseSuffixBindRule(text) {
+            try {
+                // 格式：标识=1-1234/2-3678/3-5698（标识支持1-6位中文/字母/数字）
+                const [prefixPart, rulePart] = text.split('=');
+                const prefix = prefixPart.trim();
+
+                // 验证标识长度
+                if (prefix.length < 1 || prefix.length > 6) {
+                    throw new Error('标识长度必须为1-6位');
+                }
+
+                const ruleItems = rulePart.split('/');
+                const rule = {};
+
+                ruleItems.forEach(item => {
+                    const [id, suffix] = item.split('-');
+                    if (id && suffix && suffix.length === 4 && /^\d{4}$/.test(suffix)) {
+                        rule[id.trim()] = suffix.trim();
+                    } else {
+                        throw new Error(`格式错误：${item}（尾号必须是4位数字）`);
+                    }
+                });
+
+                if (Object.keys(rule).length === 0) {
+                    throw new Error('未解析到有效的尾号绑定规则');
+                }
+
+                return {
+                    prefix: prefix,
+                    rule: rule
+                };
+            } catch (e) {
+                alert(`尾号绑定规则解析失败：${e.message}`);
+                return null;
+            }
+        }
+
+        // 绑定尾号规则按钮功能
+        function bindSuffixRule() {
+            const text = document.getElementById('configImportText').value.trim();
+            // 先判断是否是尾号绑定格式
+            const bindPattern = /^(.{1,6})=([\d-\/]+)$/;
+            if (!bindPattern.test(text)) {
+                alert('输入内容不是有效的尾号绑定格式！\n格式示例：测试=1-1234/2-3678/3-5698（标识支持1-6位中文/字母/数字）');
+                return;
+            }
+
+            const ruleData = parseSuffixBindRule(text);
+            if (ruleData) {
+                //覆盖该标识的绑定规则
+                suffixBindRules[ruleData.prefix] = ruleData.rule;
+                saveSuffixBindRules();
+
+                alert(`成功绑定「${ruleData.prefix}」标识的尾号规则，共绑定${Object.keys(ruleData.rule).length}个地址ID`);
+                // 清空输入框
+                document.getElementById('configImportText').value = '';
+                // 更新提示和按钮
+                updateSuffixTip();
+                renderAllGenerateButtons();
+            }
+        }
+
+
+        // ====================== 导入文本监听与解析 ======================
+        // 监听导入输入框内容变化
+        function monitorImportText(e) {
+            const text = e.target.value.trim();
+            const clearBtn = document.getElementById('clearAllBindRule');
+
+            // 识别尾号绑定格式：任意标识=1-1234/2-3678/3-5698
+            const bindPattern = /^(.{1,6})=([\d-\/]+)$/;
+            clearBtn.style.display = Object.keys(suffixBindRules).length > 0 ? 'inline-block' : 'none';
+        }
+
+
+        // ====================== 地址生成逻辑 ======================
+        // 更新尾号提示
+        function updateSuffixTip() {
+            const inputValue = document.getElementById('phoneSuffix').value.trim();
+            const tip = document.getElementById('suffixTip');
+
+            if (inputValue && suffixBindRules[inputValue]) {
+                // 匹配到绑定标识，显示绑定规则
+                const currentRule = suffixBindRules[inputValue];
+                const ruleText = Object.entries(currentRule).map(([id, suffix]) => `ID${id}=${suffix}`).join('、');
+                tip.textContent = `(已匹配「${inputValue}」规则：${ruleText})`;
+                tip.style.color = '#6610f2';
+            } else if (Object.keys(suffixBindRules).length > 0) {
+                // 有绑定规则但未匹配，显示可输入的标识列表
+                const bindPrefixes = Object.keys(suffixBindRules).join('、');
+                tip.textContent = `(可输入绑定标识：${bindPrefixes}，或直接输入4位尾号)`;
+                tip.style.color = '#fd7e14';
+            } else {
+                tip.textContent = '(输入绑定标识自动筛选地址并匹配尾号)';
+                tip.style.color = '#666';
+            }
+        }
+let suffix;
+        // 生成地址列表（自动匹配尾号）
+        function genAddress(config) {
+            suffix = document.getElementById('phoneSuffix').value.trim();
+			const suffix1 = suffix;
+            const configId = config[0];
+
+            // 如果输入的是绑定标识，自动替换为对应尾号
+            if (suffix && suffixBindRules[suffix]) {
+                suffix = suffixBindRules[suffix][configId] || '';
+            }
+
+            // 验证尾号
+            if (!suffix || suffix.length !== 4 || !/^\d{4}$/.test(suffix)) {
+                alert('请输入有效的4位数字尾号，或输入绑定标识匹配尾号！');
+                return;
+            }
+        
+		    const suffix2=document.getElementById('phonePrefixCustom').value.trim();
+		     
+            localStorage.setItem('phoneSuffix', suffix1);
+			localStorage.setItem('phonePrefixCustom',suffix2);
+            
+            const list = document.getElementById('addressList');
+            list.innerHTML = '';
+
+            // 获取并处理自定义前缀
+            let prefixInput = document.getElementById('phonePrefixCustom').value.trim();
+            let prefixesForRandom = ['160', '161', '140']; // 默认前缀组
+
+            if (prefixInput && /^\d+$/.test(prefixInput)) {
+                // 将输入的数字字符串按3个分组，不足3个的丢弃
+                const groups = [];
+                for (let i = 0; i < prefixInput.length; i += 3) {
+                    const group = prefixInput.substring(i, i + 3);
+                    if (group.length === 3) { // 只有长度为3的才加入数组
+                        groups.push(group);
+                    }
+                }
+                if (groups.length > 0) {
+                    prefixesForRandom = groups; // 使用分组后的数组
+                }
+            }
+
+            for (let i = 0; i < 20; i++) {
+                // 替换：生成真实姓名
+                const name = generateRealName();
+
+                // 修复：手机号生成逻辑（从指定前缀组中随机选一个 + 4位随机 + 4位指定尾号）
+                const selectedPrefix = prefixesForRandom[Math.floor(Math.random() * prefixesForRandom.length)];
+                // 生成4位随机数（补零到4位）
+                const random4 = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+                // 11位手机号 = 3位前缀 + 4位随机 + 4位尾号
+                const phone = selectedPrefix + random4 + suffix;
+
+                // ========== 核心：new Function + return 执行规则 ==========
+                const detail = new Function(config[3])();
+
+                const item = document.createElement('div');
+                item.className = 'address-item';
+                
+                // 创建带高亮后四位的手机号HTML
+                const phoneWithoutSuffix = phone.slice(0, -4);
+                const phoneSuffixHighlight = phone.slice(-4);
+                const phoneHtml = `${phoneWithoutSuffix}<span class="highlighted-suffix">${phoneSuffixHighlight}</span>`;
+                
+                 const fullText = `收件人:${name}\n手机号:${phone}\n所在地区:${config[2]}\n详细地址:${detail}`;
+
+                item.innerHTML = `
+        <p>收件人:${name}</p>
+        <p>手机号:<span id="phoneDisplay">${phoneHtml}</span></p>
+        <p>所在地区:${config[2]}</p>
+        <p>详细地址:${detail}</p>
+        <button class="copy-btn" data-txt="${encodeURIComponent(fullText)}">复制本条地址</button>
+        <div class="tip">复制成功</div>`;
+                list.appendChild(item);
+            }
+            bindCopy();
+        }
+
+        // ====================== 导入导出功能（JSON格式+合并导入） ======================
+        // 绑定导入导出事件
+        function bindImportExportEvents() {
+            // 导出所有配置
+            document.getElementById('exportAllConfig').onclick = exportAllConfigAsJson;
+
+            // 显示导入文本框
+            document.getElementById('importConfig').onclick = () => {
+                document.getElementById('importTextArea').style.display = 'block';
+            };
+
+            // 取消导入
+            document.getElementById('cancelImport').onclick = () => {
+                document.getElementById('importTextArea').style.display = 'none';
+                document.getElementById('configImportText').value = '';
+            };
+
+            // 清空所有绑定规则
+            document.getElementById('clearAllBindRule').onclick = clearAllBindRules;
+
+            // 新增：绑定尾号规则按钮
+            document.getElementById('bindRuleBtn').onclick = bindSuffixRule;
+
+            // 修复：为“确认导入”按钮绑定函数
+            document.getElementById('confirmImport').onclick = importConfigFromJson;
+
+            // 新增：显示地址管理按钮
+            document.getElementById('showConfigBtn').onclick = () => {
+                document.getElementById('addressConfigSection').style.display = 'block';
+            };
+        }
+
+        // 导出所有用户配置为JSON格式
+        function exportAllConfigAsJson() {
+            // 格式化JSON，保持和示例一致的缩进和格式
+            const jsonStr = JSON.stringify(userCustomConfigs, null, 4);
+
+            // 优先复制到剪贴板
+            navigator.clipboard.writeText(jsonStr).then(() => {
+                alert('所有配置已复制到剪贴板（JSON格式）！');
+            }).catch(() => {
+                // 复制失败则下载文件
+                const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = '自定义地址配置.json';
+                a.click();
+            });
+        }
+
+        // 导入JSON格式配置（合并逻辑）
+        function importConfigFromJson() {
+            const text = document.getElementById('configImportText').value.trim();
+            if (!text) {
+                alert('请粘贴JSON格式的配置数组！');
+                return;
+            }
+
+            // 检查是否是尾号绑定格式，如果是则提示使用绑定按钮
+            const bindPattern = /^(.{1,6})=([\d-\/]+)$/;
+            if (bindPattern.test(text)) {
+                alert('检测到尾号绑定格式！请使用旁边的「绑定尾号规则」按钮完成绑定。');
+                return;
+            }
+
+            try {
+                // 解析JSON数组
+                const importConfigs = JSON.parse(text);
+
+                // 验证格式：必须是数组，且每个元素是长度为4的数组
+                if (!Array.isArray(importConfigs)) {
+                    throw new Error('导入内容必须是JSON数组！');
+                }
+
+                const validConfigs = [];
+                importConfigs.forEach((config, index) => {
+                    if (!Array.isArray(config) || config.length !== 4) {
+                        alert(`第${index + 1}条配置格式错误，跳过该条（需为长度4的数组）`);
+                        return;
+                    }
+                    // 验证必填字段（街道）
+                    if (!config[2] || !config[2].trim()) {
+                        alert(`第${index + 1}条配置固定街道不能为空，跳过该条`);
+                        return;
+                    }
+                    validConfigs.push(config);
+                });
+
+                if (validConfigs.length === 0) {
+                    alert('未解析到有效配置！');
+                    return;
+                }
+
+                // 合并配置逻辑
+                const mergedConfigs = [...userCustomConfigs]; // 先复制现有配置
+                const duplicateIds = []; // 记录重复的ID
+
+                // 遍历导入的配置
+                validConfigs.forEach(importConfig => {
+                    const importId = importConfig[0];
+                    const existingIndex = mergedConfigs.findIndex(c => c[0] === importId);
+
+                    if (existingIndex === -1) {
+                        // ID未重复，直接添加
+                        mergedConfigs.push(importConfig);
+                    } else {
+                        // ID重复，记录并询问用户
+                        duplicateIds.push(importId);
+                        const choice = confirm(`ID为${importId}的配置已存在！
+请选择：
+确定 = 覆盖原有配置
+取消 = 自动生成唯一ID`);
+
+                        if (choice) {
+                            // 覆盖原有配置
+                            mergedConfigs[existingIndex] = importConfig;
+                        } else {
+                            // 自动生成唯一ID并添加
+                            const newId = getUniqueId(importId);
+                            importConfig[0] = newId;
+                            mergedConfigs.push(importConfig);
+                            alert(`ID${importId}已自动改为${newId}（避免重复）`);
+                        }
+                    }
+                });
+
+                // 更新用户配置
+                userCustomConfigs = mergedConfigs;
+                saveUserCustomConfigs();
+                mergeAllGenerateConfigs();
+                renderUserConfigTable();
+                renderAllGenerateButtons();
+
+                // 清空输入框并隐藏导入区域
+                document.getElementById('configImportText').value = '';
+                document.getElementById('importTextArea').style.display = 'none';
+
+                // 提示导入结果
+                let tip = `成功导入/合并 ${validConfigs.length} 条配置！`;
+                if (duplicateIds.length > 0) {
+                    tip += `\n其中ID${duplicateIds.join(',')}为重复ID，已按你的选择处理`;
+                }
+                alert(tip);
+
+            } catch (e) {
+                alert(`JSON解析失败：${e.message}！请检查格式是否正确`);
+                console.error(e);
+            }
+        }
+
+        // ====================== 其他功能 ======================
+        // 导出单条配置（JSON格式）
+        function exportSingleConfig(index) {
+            const config = [userCustomConfigs[index]];
+            const jsonStr = JSON.stringify(config, null, 4);
+
+            navigator.clipboard.writeText(jsonStr).then(() => {
+                alert(`已复制【${config[0][1]}】配置到剪贴板（JSON格式）！`);
+            }).catch(() => {
+                alert('复制失败，请手动复制！');
+            });
+        }
+
+        // 加载手机号历史
+        function loadPhoneHistory() {
+            const s = localStorage.getItem('phoneSuffix');
+            const p = localStorage.getItem('phonePrefixCustom');
+            if (s) document.getElementById('phoneSuffix').value = s;
+            if (p) document.getElementById('phonePrefixCustom').value = p;
+        }
+
+        // 清空配置表单
+        function clearForm() {
+            document.getElementById('configId').value = '';
+            document.getElementById('configName').value = '';
+            document.getElementById('configStreet').value = '';
+            document.getElementById('configRule').value = ''; // 清空默认值，改为自动补全
+            currentEditIndex = -1;
+            document.getElementById('configForm').style.display = 'none';
+        }
+
+        // 显示新增表单
+        function showAddForm() {
+            clearForm();
+            document.getElementById('configForm').style.display = 'block';
+        }
+
+        // 保存配置（自动补全和规则转换）
+        function saveConfig() {
+            // 获取表单值
+            let id = document.getElementById('configId').value.trim();
+            let name = document.getElementById('configName').value.trim();
+            const street = document.getElementById('configStreet').value.trim();
+            const ruleInput = document.getElementById('configRule').value.trim();
+
+            // 1. 验证必填项：仅固定街道必填
+            if (!street) {
+                alert('固定街道为必填项，请填写！');
+                return;
+            }
+
+            // 2. 自动补全ID：未填则分配大于50的唯一ID
+            if (!id) {
+                id = getAutoId();
+            } else {
+                // 编辑时验证ID唯一性（排除当前编辑项）
+                const exist = userCustomConfigs.some((c, i) => c[0] == id && i != currentEditIndex);
+                if (exist) {
+                    alert(`编号 ${id} 已存在，请更换！`);
+                    return;
+                }
+            }
+
+            // 3. 自动补全名称：未填则取固定街道前两个字符
+            if (!name) {
+                name = street.substring(0, 2); // 取前两个字符
+            }
+
+            // 4. 转换生成规则：空/1/2/3自动转换，其他值保留
+            const rule = transformRule(ruleInput);
+
+            // 保存配置
+            if (currentEditIndex !== -1) {
+                userCustomConfigs[currentEditIndex] = [id, name, street, rule];
+            } else {
+                userCustomConfigs.push([id, name, street, rule]);
+            }
+
+            saveUserCustomConfigs();
+            mergeAllGenerateConfigs();
+            clearForm();
+            renderUserConfigTable();
+            renderAllGenerateButtons();
+
+            alert(currentEditIndex === -1 ? '新增成功！' : '编辑成功！');
+        }
+
+        // 绑定复制事件
+        function bindCopy() {
+            document.querySelectorAll('.copy-btn').forEach(b => {
+                b.onclick = function () {
+                    navigator.clipboard.writeText(decodeURIComponent(this.dataset.txt));
+                    this.nextElementSibling.classList.add('show');
+                    setTimeout(() => this.nextElementSibling.classList.remove('show'), 1500);
+                }
+            });
+        }
+
+        // 绑定所有事件
+        function bindEvents() {
+            // 关闭地址管理按钮事件
+            document.getElementById('closeConfigBtn').onclick = function () {
+                document.getElementById('addressConfigSection').style.display = 'none';
+            };
+
+            // 删除所有配置按钮事件
+            document.getElementById('delAllConfigBtn').onclick = deleteAllConfigs;
+
+            document.getElementById('addConfigBtn').onclick = showAddForm;
+            document.getElementById('saveConfigBtn').onclick = saveConfig;
+            document.getElementById('cancelConfigBtn').onclick = clearForm;
+
+            // 表格操作事件
+            document.getElementById('configTableBody').onclick = e => {
+                const i = e.target.dataset.i;
+                if (e.target.classList.contains('edit')) {
+                    const c = userCustomConfigs[i];
+                    document.getElementById('configId').value = c[0];
+                    document.getElementById('configName').value = c[1];
+                    document.getElementById('configStreet').value = c[2];
+                    document.getElementById('configRule').value = c[3];
+                    currentEditIndex = i;
+                    document.getElementById('configForm').style.display = 'block';
+                } else if (e.target.classList.contains('export-item')) {
+                    exportSingleConfig(i);
+                } else if (e.target.classList.contains('del')) {
+                    if (confirm('确定删除该配置吗？')) {
+                        userCustomConfigs.splice(i, 1);
+                        saveUserCustomConfigs();
+                        mergeAllGenerateConfigs();
+                        renderUserConfigTable();
+                        renderAllGenerateButtons();
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
