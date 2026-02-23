@@ -1,34 +1,201 @@
-<!文档类型html >
-< 超文本标记语言 语言=“zh-CN” >
-< 头 >
-< 自指的 字符集=“UTF八号" />
-< 自指的 名字 = "视窗" 内容 = 宽度=设备宽度，初始比例=1.0/>
-<标题>正在跳转...</标题 >
-< 自指的 http-equiv = "刷新" 内容 = " 0;URL = http://116 .62。181 .169:8080 AAAA/% E5 % 95% 8A % E5 % 8F % 91% E5 % 8F % 91% E7 % 8E % B0 % E5 % 9C % ba。html？时间戳=125487665 " />
-<风格>
-正文{
-字体系列:Arial，无衬线；
-文本对齐:居中；
-填充顶部:100便士x
-背景色:# f5f5f5
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>24点游戏 - 所有解法</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
     }
-。正在加载{
-颜色:# 555；
+    h1 {
+      text-align: center;
+      color: #2c3e50;
     }
-身体
-</头 >
-风格正文>
-<“http://116 .62 .181 . 169:8080 AAAA/% E5 % 95% 8A % E5 % 8F % 91% E5 % 8F % 91% E7 % 8E % B0 % E5 % 9C % ba .html？时间戳=125487665 "班级班级差异"正在加载" >
-< p >页面跳转中,请稍候...</p >
-< p > < a href = “http://116 .62 . 181 . 169:8080 AAAA/% E5 % 95% 8A % E5 % 8F % 91% E5 % 8F % 91% E7 % 8E % B0 % E5 % 9C % ba .html？时间戳=125487665 " >如果未自动跳转,请点击此处</a></p >
-差异div >
+    .controls {
+      text-align: center;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .numbers {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+      font-weight: bold;
+      color: #e74c3c;
+    }
+    .solutions {
+      margin-top: 20px;
+    }
+    .solution-item {
+      background-color: #ecf0f1;
+      padding: 10px;
+      margin: 8px 0;
+      border-left: 4px solid #2ecc71;
+      font-family: monospace;
+      font-size: 16px;
+    }
+    .no-solution {
+      color: #e67e22;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔢 24点游戏 - 列出所有解法</h1>
+  <div class="controls">
+    <button onclick="generateAndSolve()">生成新题目</button>
+  </div>
+  <div class="numbers" id="numbers">点击“生成新题目”开始</div>
+  <div class="solutions" id="solutions"></div>
 
-<!-可选：使用Java 语言(一种计算机语言，尤用于创建网站)语言（一种计算机语言,尤用于创建网站)脚本语言作为备用跳转 - >
-<脚本>
-setTimeout(function() {
-窗户。位置href = " http://116 .62。181 .169:8080 AAAA/% E5 % 95% 8A % E5 % 8F % 91% E5 % 8F % 91% E7 % 8E % B0 % E5 % 9C % ba。html？时间戳= 125487665 ";
-    }, 1000);
-脚本脚本>
-身体正文>
-</超文本标记语言 >
+  <script>
+    // 检查两个浮点数是否近似相等（容忍 1e-10 误差）
+    function isEqual(a, b) {
+      return Math.abs(a - b) < 1e-10;
+    }
 
+    // 获取所有排列（4个数的全排列）
+    function getPermutations(arr) {
+      if (arr.length <= 1) return [arr];
+      let result = [];
+      for (let i = 0; i < arr.length; i++) {
+        let first = arr[i];
+        let rest = arr.slice(0, i).concat(arr.slice(i + 1));
+        let perms = getPermutations(rest);
+        for (let perm of perms) {
+          result.push([first].concat(perm));
+        }
+      }
+      return result;
+    }
+
+    // 所有可能的运算符组合（3个位置，每个位置4种运算）
+    const ops = ['+', '-', '*', '/'];
+    function getAllOpCombinations() {
+      let combos = [];
+      for (let a of ops)
+        for (let b of ops)
+          for (let c of ops)
+            combos.push([a, b, c]);
+      return combos;
+    }
+
+    // 安全除法：除零返回 NaN
+    function safeDivide(a, b) {
+      if (isEqual(b, 0)) return NaN;
+      return a / b;
+    }
+
+    // 根据表达式结构计算值
+    function calculate(a, b, op) {
+      switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return safeDivide(a, b);
+        default: return NaN;
+      }
+    }
+
+    // 生成所有可能的带括号表达式（5种二叉树结构）
+    function evaluateAllStructures(nums, ops) {
+      const [a, b, c, d] = nums.map(n => parseFloat(n));
+      const [o1, o2, o3] = ops;
+      let results = [];
+
+      // ((a o1 b) o2 c) o3 d
+      let v1 = calculate(calculate(calculate(a, b, o1), c, o2), d, o3);
+      if (!isNaN(v1) && isEqual(v1, 24))
+        results.push(`((${a} ${o1} ${b}) ${o2} ${c}) ${o3} ${d}`);
+
+      // (a o1 (b o2 c)) o3 d
+      let v2 = calculate(calculate(a, calculate(b, c, o2), o1), d, o3);
+      if (!isNaN(v2) && isEqual(v2, 24))
+        results.push(`(${a} ${o1} (${b} ${o2} ${c})) ${o3} ${d}`);
+
+      // (a o1 b) o2 (c o3 d)
+      let v3 = calculate(calculate(a, b, o1), calculate(c, d, o3), o2);
+      if (!isNaN(v3) && isEqual(v3, 24))
+        results.push(`(${a} ${o1} ${b}) ${o2} (${c} ${o3} ${d})`);
+
+      // a o1 ((b o2 c) o3 d)
+      let v4 = calculate(a, calculate(calculate(b, c, o2), d, o3), o1);
+      if (!isNaN(v4) && isEqual(v4, 24))
+        results.push(`${a} ${o1} ((${b} ${o2} ${c}) ${o3} ${d})`);
+
+      // a o1 (b o2 (c o3 d))
+      let v5 = calculate(a, calculate(b, calculate(c, d, o3), o2), o1);
+      if (!isNaN(v5) && isEqual(v5, 24))
+        results.push(`${a} ${o1} (${b} ${o2} (${c} ${o3} ${d}))`);
+
+      return results;
+    }
+
+    // 主求解函数
+    function solve24(numbers) {
+      const perms = getPermutations(numbers);
+      const opCombos = getAllOpCombinations();
+      let allSolutions = new Set(); // 用 Set 去重
+
+      for (let p of perms) {
+        for (let ops of opCombos) {
+          let exprs = evaluateAllStructures(p, ops);
+          for (let expr of exprs) {
+            // 标准化表达式（用于去重）
+            allSolutions.add(expr);
+          }
+        }
+      }
+
+      return Array.from(allSolutions).sort();
+    }
+
+    // 生成 4 个随机数（1~13，对应 A=1, J=11, Q=12, K=13）
+    function generateRandomNumbers() {
+      return Array.from({ length: 4 }, () => Math.floor(Math.random() * 13) + 1);return Array.from({ length: 4 }, () => Math.floor(Math.random() * 13) + 1);      const display = nums.map(formatNumber).join(' , '); Array.from({ length: 4 }, () => Math.floor(Math.random() * 13) + 1);
+    }
+
+    // 数字转显示（保留原样，或可选映射为 A,J,Q,K）// 数字转显示（保留原样，或可选映射为 A,J,Q,K）
+    function formatNumber(n) {function formatNumber(n) {
+      // 可选：return n === 1 ? 'A' : n === 11 ? 'J' : n === 12 ? 'Q' : n === 13 ? 'K' : n;// 可选：return n === 1 ? 'A' : n === 11 ? 'J' : n === 12 ? 'Q' : n === 13 ? 'K' : n;
+      return n;return n;
+    }
+
+    // 主入口
+    function generateAndSolve() {function generateAndSolve() {
+      const nums = generateRandomNumbers();const nums = generateRandomNumbers();
+      const display = nums.map(formatNumber).join(' , ');const display = nums.map(formatNumber).join(' , ');
+      document.getElementById('numbers').textContent = `数字：${display}`;document.getElementById('numbers').textContent = `数字：${display}`;
+
+      const solutions = solve24(nums);const solutions = solve24(nums);
+
+      const solDiv = document.getElementById('solutions');const solDiv = document.getElementById('solutions');
+      if (solutions.length === 0) {if (solutions.length === 0) {
+        solDiv.innerHTML = '<p class="no-solution">❌ 无解！这组数字无法算出24。</p>';solDiv.innerHTML = '<p class="no-solution">❌ 无解！这组数字无法算出24。</p>';
+      } else {} else {
+        solDiv.innerHTML = `solDiv.innerHTML =           <p>✅ 找到 ${solutions.length} 种解法：</p>
+          <p>✅ 找到 ${solutions.          ${solutions.map(s => `<div class="solution-item">${s} = 24</div>`).join('')}} 种解法：</p>
+          ${solutions.map(s => `<div class="solution-item">${s} = 24</div>`).join('')}
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
