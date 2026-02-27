@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+     
+</head>
+<body onload ="myFunction()">
+
+<style>
+   
+	.message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+	
+	ul {
+  list-style-type: none;  /* 去除默认的项目符号 */
+  padding: 0;  /* 去除默认的内边距 */
+  margin: 0;  /* 去除默认的外边距 */
+}
+
+li {
+  padding: 10px;  /* 内边距，增加元素内部的空间 */
+  background-color: #f8f9fa;  /* 背景颜色 */
+  border-bottom: 1px solid #dee2e6;  /* 底部边框，增加分隔效果 */
+  font-size: 16px;  /* 字体大小 */
+  color: #343a40;  /* 字体颜色 */
+  
+}
+
+li:hover {
+  background-color: #e9ecef;  /* 鼠标悬停时的背景颜色变化，提供交互反馈 */
+  cursor: pointer;  /* 鼠标悬停时变为指针形状，表示可点击 */
+}
+  </style>
+
+
+
+</br>
+
+
+
+
+<button onclick="zhibajian(1)"> 沿海</button>&nbsp;&nbsp;
+<button onclick="zhibajian(2)"> 年轻人</button>&nbsp;&nbsp;
+<button onclick="zhibajian(3)"> wu</button>&nbsp;&nbsp;
+<button onclick="zhibajian(4)"> 阿英英</button>&nbsp;&nbsp;
+<button onclick="zhibajian(5)"> ONE DAY</button>&nbsp;&nbsp;
+<!--<button onclick="zhibajian(6)"> 吸管好物</button>&nbsp;&nbsp;
+<button onclick="zhibajian(7)"> 花道不花</button>&nbsp;&nbsp;
+<button onclick="zhibajian(8)"> 美家乐</button>&nbsp;&nbsp;
+<button onclick="zhibajian(9)"> 云朵好物</button>*/-->
+
+<div id="message" class="message"></div>
+
+</br>
+<font color="yellow" size="5"> <p id="idpp" ></p></font>
+
+<p id="idp" ></p>
+
+<p id="k"></p>
+</body>
+
+
+<script>
+
+function zhibajian(i) {
+var text="";
+switch(i){
+	case 1:
+		text="3-1.8凑0.02  3$ZwRr3EatvMW$:// CZ6144";	
+		
+		break;
+	case 2:
+		text="6$N6Gr3Eawjdj$:// CZ3457";
+		break;
+	case 3:
+		text="3$0KkA3EaOZzR$:// CZ3148";
+		break;
+	case 4:
+		text="7$RkuE3EaBr2Q$:// HU7679";
+		break;
+	case 5:
+		text="9$4Z963EZ05kH$:// MF3106";
+		break;	
+	case 6:
+		text="98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+		break;
+	case 7:
+		text="98《5wtE3v6spJa₴ https://m.tb.cn/h.TWn9y5e  HU9046 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+		break;
+	case 8:
+		text="19₴x1sj3v6I2X9✔ https://m.tb.cn/h.TWPhtzk  CZ0000 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+		break;	
+	case 9:
+		text="98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+		break;	
+	default:	
+	text='';
+}
+console.log(text);
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+ 
+  showMessage(text);
+  
+}
+
+
+ //复制成功显示
+    function showMessage(s) {
+      var messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = s;
+      messageDiv.style.display = 'block';
+
+      setTimeout(function() {
+        messageDiv.style.display = 'none';
+      }, 1000);
+    }
+
+
+</script>
+</html>

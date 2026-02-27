@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片上传、显示与删除</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 p-4">
+<input type="file" id="image-upload" multiple class="mb-4">
+<div id="image-gallery" class="flex flex-wrap gap-4"></div>
+
+<script>
+    // 页面加载时获取服务器上的图片
+    window.onload = function () {
+        fetch('/aaaa/get-images')
+            .then(response => response.json())
+            .then(images => {
+                const gallery = document.getElementById('image-gallery');
+                let paht=images['applicationPath'].replace(/\\/g,'/');
+                images.imageNames.forEach(image => {
+                    const img = document.createElement('img');
+                    img.src = `../${paht}/${image}`;
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+                    deleteButton.classList.add('absolute', 'top-2', 'right-2', 'bg-red-500', 'text-white', 'p-1', 'rounded-full', 'hover:bg-red-600');
+                    deleteButton.addEventListener('click', function () {
+                        const imageName = image;
+                        fetch(`/aaaa/delete/${imageName}`, {
+                            method: 'DELETE'
+                        }).then(response => {
+                            if (response.ok) {
+                                gallery.removeChild(img.parentNode);
+                            } else {
+                                console.error('删除失败');
+                            }
+                        });
+                    });
+
+                    const downloadButton = document.createElement('button');
+                    downloadButton.innerHTML = '<i class="fa-solid fa-download"></i>';
+                    downloadButton.classList.add('absolute', 'top-2', 'left-2', 'bg-blue-500', 'text-white', 'p-1', 'rounded-full', 'hover:bg-blue-600');
+                    downloadButton.addEventListener('click', function () {
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = `/${paht}/${image}`;
+                        downloadLink.download = image;
+                        downloadLink.click();
+                    });
+
+                    const item = document.createElement('div');
+                    item.classList.add('relative', 'w-48', 'rounded-md', 'overflow-hidden', 'shadow-md', 'hover:shadow-lg');
+                    item.appendChild(img);
+                    item.appendChild(deleteButton);
+                    item.appendChild(downloadButton);
+                    gallery.appendChild(item);
+                });
+            });
+    };
+
+    document.getElementById('image-upload').addEventListener('change', function (e) {
+        const files = e.target.files;
+        const gallery = document.getElementById('image-gallery');
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const img = document.createElement('img');
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                img.src = reader.result;
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            deleteButton.classList.add('absolute', 'top-2', 'right-2', 'bg-red-500', 'text-white', 'p-1', 'rounded-full', 'hover:bg-red-600');
+            const imageId = Date.now() + '-' + file.name;
+            deleteButton.dataset.imageId = imageId;
+            deleteButton.addEventListener('click', function () {
+                const imageIdToDelete = this.dataset.imageId;
+                // 这里发送删除请求到服务器
+                fetch(`/aaaa/delete/${imageIdToDelete}`, {
+                    method: 'DELETE'
+                }).then(response => {
+                    if (response.ok) {
+                        gallery.removeChild(img.parentNode);
+                    } else {
+                        console.error('删除失败');
+                    }
+                });
+            });
+
+            const downloadButton = document.createElement('button');
+            downloadButton.innerHTML = '<i class="fa-solid fa-download"></i>';
+            downloadButton.classList.add('absolute', 'top-2', 'left-2', 'bg-blue-500', 'text-white', 'p-1', 'rounded-full', 'hover:bg-blue-600');
+            downloadButton.addEventListener('click', function () {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = img.src;
+                downloadLink.download = file.name;
+                downloadLink.click();
+            });
+
+            const item = document.createElement('div');
+            item.classList.add('relative', 'w-48', 'rounded-md', 'overflow-hidden', 'shadow-md', 'hover:shadow-lg');
+            item.dataset.imageId = imageId;
+            item.appendChild(img);
+            item.appendChild(deleteButton);
+            item.appendChild(downloadButton);
+            gallery.appendChild(item);
+
+            // 上传图片到服务器
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('imageId', imageId);
+            fetch('/aaaa/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('上传失败');
+                }
+            });
+        }
+    });
+</script>
+</body>
+
+</html>

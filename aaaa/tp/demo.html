@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快捷导航</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#6366F1',
+                        neutral: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .btn-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .grid-buttons {
+                @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen font-sans">
+<!-- 顶部导航 -->
+<header class="bg-white shadow-md fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="header">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <i class="fa fa-map-marker text-primary text-2xl"></i>
+            <h1 class="text-xl font-bold text-neutral">快捷导航</h1>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa fa-home mr-1"></i> 首页</a>
+            <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa fa-question-circle mr-1"></i> 帮助</a>
+            <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa fa-user mr-1"></i> 登录</a>
+        </div>
+        <button class="md:hidden text-gray-600 focus:outline-none" id="mobile-menu-button">
+            <i class="fa fa-bars text-xl"></i>
+        </button>
+    </div>
+    <!-- 移动端菜单 -->
+    <div class="md:hidden hidden bg-white border-t" id="mobile-menu">
+        <div class="container mx-auto px-4 py-3 flex flex-col space-y-3">
+            <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa fa-home mr-1"></i> 首页</a>
+            <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa fa-question-circle mr-1"></i> 帮助</a>
+            <a href="#" class="text-gray-600 hover:text-primary transition-colors"><i class="fa fa-user mr-1"></i> 登录</a>
+        </div>
+    </div>
+</header>
+
+<!-- 主内容区 -->
+<main class="container mx-auto px-4 pt-24 pb-16">
+    <!-- 页面标题 -->
+    <div class="text-center mb-10">
+        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-neutral mb-2">常用功能导航</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">点击下方按钮快速访问各个系统和功能模块</p>
+    </div>
+
+    <!-- 按钮区域 -->
+    <div class="grid-buttons mb-12">
+        <button onclick="A(1)" class="btn-hover bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-building text-3xl mb-3"></i>
+            <span class="font-medium">丰台地址</span>
+        </button>
+
+        <button onclick="A(2)" class="btn-hover bg-gradient-to-br from-green-500 to-green-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-building-o text-3xl mb-3"></i>
+            <span class="font-medium">中海地址</span>
+        </button>
+
+        <button onclick="A(3)" class="btn-hover bg-gradient-to-br from-yellow-500 to-yellow-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-map-o text-3xl mb-3"></i>
+            <span class="font-medium">大兴地址</span>
+        </button>
+
+        <button onclick="A(4)" class="btn-hover bg-gradient-to-br from-red-500 to-red-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-map-marker text-3xl mb-3"></i>
+            <span class="font-medium">杭州地址</span>
+        </button>
+
+        <button onclick="A(5)" class="btn-hover bg-gradient-to-br from-purple-500 to-purple-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-map-signs text-3xl mb-3"></i>
+            <span class="font-medium">天津地址</span>
+        </button>
+
+        <button onclick="A(6)" class="btn-hover bg-gradient-to-br from-indigo-500 to-indigo-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-search text-3xl mb-3"></i>
+            <span class="font-medium">低派查询</span>
+        </button>
+
+        <button onclick="A(7)" class="btn-hover bg-gradient-to-br from-pink-500 to-pink-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-calculator text-3xl mb-3"></i>
+            <span class="font-medium">神庙结算</span>
+        </button>
+
+        <button onclick="A(8)" class="btn-hover bg-gradient-to-br from-teal-500 to-teal-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-money text-3xl mb-3"></i>
+            <span class="font-medium">中海结算</span>
+        </button>
+
+        <button onclick="A(9)" class="btn-hover bg-gradient-to-br from-amber-500 to-amber-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-cny text-3xl mb-3"></i>
+            <span class="font-medium">大兴结算</span>
+        </button>
+
+        <button onclick="A(10)" class="btn-hover bg-gradient-to-br from-emerald-500 to-emerald-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-balance-scale text-3xl mb-3"></i>
+            <span class="font-medium">天津结算</span>
+        </button>
+
+        <button onclick="A(11)" class="btn-hover bg-gradient-to-br from-sky-500 to-sky-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-book text-3xl mb-3"></i>
+            <span class="font-medium">杭州结算</span>
+        </button>
+
+        <button onclick="A(12)" class="btn-hover bg-gradient-to-br from-rose-500 to-rose-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-ban text-3xl mb-3"></i>
+            <span class="font-medium">禁拍查询</span>
+        </button>
+
+        <button onclick="A(13)" class="btn-hover bg-gradient-to-br from-fuchsia-500 to-fuchsia-700 text-white p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+            <i class="fa fa-database text-3xl mb-3"></i>
+            <span class="font-medium">数据收集</span>
+        </button>
+    </div>
+
+    <!-- 系统状态 -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-12">
+        <h3 class="text-lg font-semibold text-neutral mb-4 flex items-center">
+            <i class="fa fa-info-circle text-primary mr-2"></i> 系统状态
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-blue-50 rounded-lg p-4 flex items-center">
+                <div class="bg-blue-100 p-3 rounded-full mr-3">
+                    <i class="fa fa-server text-blue-500"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">服务器状态</p>
+                    <p class="font-medium text-blue-600">在线</p>
+                </div>
+            </div>
+            <div class="bg-green-50 rounded-lg p-4 flex items-center">
+                <div class="bg-green-100 p-3 rounded-full mr-3">
+                    <i class="fa fa-clock-o text-green-500"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">最后更新</p>
+                    <p class="font-medium text-green-600" id="last-update">2025-06-04 10:30</p>
+                </div>
+            </div>
+            <div class="bg-purple-50 rounded-lg p-4 flex items-center">
+                <div class="bg-purple-100 p-3 rounded-full mr-3">
+                    <i class="fa fa-users text-purple-500"></i>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">在线用户</p>
+                    <p class="font-medium text-purple-600">128</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 使用指南 -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+        <h3 class="text-lg font-semibold text-neutral mb-4 flex items-center">
+            <i class="fa fa-book text-primary mr-2"></i> 使用指南
+        </h3>
+        <div class="space-y-4">
+            <div class="flex items-start">
+                <div class="bg-blue-100 text-blue-500 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3">1</div>
+                <p>点击上方对应区域的按钮，可快速访问相关地址信息</p>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-100 text-blue-500 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3">2</div>
+                <p>结算类功能需要管理员权限，请确保已登录系统</p>
+            </div>
+            <div class="flex items-start">
+                <div class="bg-blue-100 text-blue-500 rounded-full w-6 h-6 flex items-center justify-center mt-1 mr-3">3</div>
+                <p>所有链接会自动添加时间戳，确保访问的是最新内容</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-neutral text-white py-8">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="text-lg font-semibold mb-4">快捷导航系统</h4>
+                <p class="text-gray-300 text-sm">提供便捷的内部系统访问入口，提高工作效率</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">联系我们</h4>
+                <p class="text-gray-300 text-sm"><i class="fa fa-phone mr-2"></i> 客服电话: 400-123-4567</p>
+                <p class="text-gray-300 text-sm"><i class="fa fa-envelope mr-2"></i> 邮箱: support@example.com</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4">关注我们</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="bg-gray-700 hover:bg-primary transition-colors p-2 rounded-full">
+                        <i class="fa fa-weixin"></i>
+                    </a>
+                    <a href="#" class="bg-gray-700 hover:bg-primary transition-colors p-2 rounded-full">
+                        <i class="fa fa-weibo"></i>
+                    </a>
+                    <a href="#" class="bg-gray-700 hover:bg-primary transition-colors p-2 rounded-full">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
+            <p>© 2025 快捷导航系统 版权所有</p>
+        </div>
+    </div>
+</footer>
+
+<!-- 脚本 -->
+<script>
+    function A(index) {
+        // 按钮点击动画
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => btn.classList.remove('animate-pulse'));
+
+        const clickedBtn = document.querySelector(`[onclick="A(${index})"]`);
+        if (clickedBtn) {
+            clickedBtn.classList.add('animate-pulse');
+
+            // 300ms后跳转
+            setTimeout(() => {
+                if (index === 1) {
+                    window.location.href = "http://60.204.211.179/ft.html?timestamp=" + new Date().getTime();
+                } else if (index === 2) {
+                    window.location.href = "http://60.204.211.179/zh.html?timestamp=" + new Date().getTime();
+                } else if (index === 3) {
+                    window.location.href = "http://60.204.211.179/dx2.html?timestamp=" + new Date().getTime();
+                } else if (index === 4) {
+                    window.location.href = "http://60.204.211.179/hz.html?timestamp=" + new Date().getTime();
+                } else if (index === 5) {
+                    window.location.href = "http://60.204.211.179/tj.html?timestamp=" + new Date().getTime();
+                } else if (index === 6) {
+                    window.location.href = "http://60.204.211.179/dipai.html?timestamp=" + new Date().getTime();
+                } else if (index === 7) {
+                    window.location.href = "http://60.204.211.179/CheckoutInquirySystem-丰台.html?timestamp=" + new Date().getTime();
+                } else if (index === 8) {
+                    window.location.href = "http://60.204.211.179/CheckoutInquirySystem-中海.html?timestamp=" + new Date().getTime();
+                } else if (index === 9) {
+                    window.location.href = "http://60.204.211.179/CheckoutInquirySystem-大兴.html?timestamp=" + new Date().getTime();
+                } else if (index === 10) {
+                    window.location.href = "http://60.204.211.179/CheckoutInquirySystem-.html?timestamp=" + new Date().getTime();
+                } else if (index === 11) {
+                    window.location.href = "http://60.204.211.179/CheckoutInquirySystem-杭州.html?timestamp=" + new Date().getTime();
+                } else if (index === 12) {
+                    window.location.href = "http://60.204.211.179/jin_pai.html?timestamp=" + new Date().getTime();
+                } else if (index === 13) {
+                    window.location.href = "https://kdocs.cn/l/ccBUq3qvsp0e?timestamp=" + new Date().getTime();
+                }
+            }, 300);
+        }
+    }
+
+    // 移动端菜单切换
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // 滚动效果
+    window.addEventListener('scroll', function() {
+        const header = document.getElementById('header');
+        if (window.scrollY > 10) {
+            header.classList.add('py-2', 'shadow-lg');
+            header.classList.remove('py-4', 'shadow-md');
+        } else {
+            header.classList.add('py-4', 'shadow-md');
+            header.classList.remove('py-2', 'shadow-lg');
+        }
+    });
+
+    // 更新最后更新时间
+    document.getElementById('last-update').textContent = new Date().toLocaleString();
+</script>
+</body>
+</html>    

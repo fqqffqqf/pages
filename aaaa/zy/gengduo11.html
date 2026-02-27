@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximun-scale=1.0,user-scalable-no">
+    <title>liu</title>
+    <style>
+        body {
+            background-image: url('../img/2.jpg');  /* 替换为您喜欢的背景图片链接 */
+            background-size: cover;  /* 使背景图片覆盖整个页面 */
+            background-repeat: no-repeat;  /* 防止背景图片重复 */
+            background-attachment: fixed;  /* 固定背景，滚动页面时背景不动 */
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+
+
+        /* 基本样式：背景色、字体颜色、边框、圆角 */
+        input[type="submit"] {
+            padding: 2px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* 鼠标悬停时的样式：颜色变化、阴影效果 */
+        input[type="submit"]:hover {
+            background-color: #388e3c;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 按下时的样式 */
+        input[type="submit"]:active {
+            transform: scale(0.95);
+        }
+
+        /*  button {
+              padding: 15px 30px;
+              background-color: #4CAF50;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              box-shadow: 0 3px 0 #388e3c;
+              transition: all 0.3s ease;
+          }
+
+         button {
+              padding: 15px 30px;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              box-shadow: 0 0 10px 0 rgba(0, 123, 255, 0.5);
+              transition: all 0.3s ease;
+          }
+
+          button:hover {
+              box-shadow: 0 0 20px 0 rgba(0, 123, 255, 0.8);
+          }
+
+          button:hover {
+              box-shadow: 0 0 0 #388e3c;
+              transform: translateY(3px);
+          }
+
+  */
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        input[type="submit"], button {
+            padding: 10px 20px;
+        }
+
+        button {
+            white-space: nowrap;
+            padding: 8px 18px;
+            background: linear-gradient(to right, #007bff, #6610f2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        table {
+            width: 100%; /* 限制表格宽度为页面的 90%，两边留出距离 */
+            margin: 0 auto; /* 水平居中 */
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* 隐藏超出部分 */
+            white-space: nowrap; /* 内容不换行 */
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        th,
+        td {
+            width: auto;
+            max-width: 200px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th:nth-child(1) {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            color: #333333;
+            width: 10%;
+        }
+
+        th:nth-child(2) {
+            width: 40%;
+        }
+
+        th:nth-child(3) {
+            width: 40%;
+        }
+
+        th:nth-child(4) {
+            width: 10%;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .selected-row {
+            animation: backgroundChange 2s ease-in-out infinite;
+        }
+
+        @keyframes backgroundChange {
+            0% {
+                background-color: lightblue;
+            }
+            50% {
+                background-color: lightgreen;
+            }
+            100% {
+                background-color: lightpink;
+            }
+        }
+    </style>
+</head>
+
+
+<div>
+    <input placeholder="id" type="text" value="" id="a">
+    <input placeholder="weihao" type="text" value="" id="b">
+    <input type="submit" value="添加" onclick="insertServlet()">
+</div>
+<div>
+    <input placeholder="ID" type="text" value="" id="c">
+    <input placeholder="删除码" type="text" value="" id="d">
+    <input type="submit" value="删除" onclick="delByIdFzServlet()">
+</div>
+<div>
+    <input type="text" placeholder="3-1.8" value="" id="id2">
+    <button onclick="f()">查询</button>&nbsp&nbsp
+
+</div>
+<div id="message" class="message"></div>
+
+<table>
+    <!-- 表格内容将在此动态添加 -->
+</table>
+
+<script>
+
+
+    window.onload = function () {
+        fetch('/aaaa/FindZyServlet')
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+
+
+    function insertServlet() {
+        var username = document.getElementById("a").value;
+        var lianjie = document.getElementById("b").value;
+        fetch(`/aaaa/insertZyServlet?id=${username}&weihao=${lianjie}`)
+            .then(response => response.json())
+            .then(data => {
+
+                showMessage(data.message)
+            })
+            .catch(error => showMessage(data.message));
+    }
+
+    function delByIdFzServlet() {
+        var id = document.getElementById("c").value;
+        var password = document.getElementById("d").value;
+        fetch(`/aaaa/delByIdZyServlet?id=${id}&password=${password}`)
+            .then(response => response.text())
+            .then(data => showMessage("删除"))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function showData(data) {
+        let existingTable = document.querySelector('table');
+        if (existingTable) {
+            existingTable.remove();
+        }
+
+        let table = document.createElement('table');
+
+        let thead = table.createTHead();
+        let row = thead.insertRow();
+        let headers = Object.keys(data[0]);
+
+        let tbody = table.createTBody();
+        for (let item of data) {
+            let row = tbody.insertRow();
+            let x = '';
+            for (let header of headers) {
+                x = header;
+                let cell = row.insertCell();
+                cell.innerHTML = item[header];
+                cell.classList.add('long-cell');
+            }
+            let cell = row.insertCell();
+            cell.innerHTML = '<button onclick="copyToClipboard(\'' + item[x] + '\')">复制</button>';
+        }
+
+        document.body.appendChild(table);
+
+        // 为表格行添加鼠标悬停事件处理程序
+        tbody.addEventListener('mouseover', function(event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                let rows = tbody.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].classList.remove('selected-row');
+                }
+                target.classList.add('selected-row');
+            }
+        });
+
+        tbody.addEventListener('mouseout', function(event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                target.classList.remove('selected-row');
+            }
+        });
+    }
+
+    function f() {
+
+        var elementById = document.getElementById("id2").value;
+
+        g(elementById);
+    }
+
+    function g(guanjianzhi) {
+        fetch(`/aaaa/MohuchaxunLjServlet?tiaojian=${guanjianzhi}`)
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function copyToClipboard(text) {
+        let tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showMessage(text);
+    }
+
+    function showMessage(s) {
+        var messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = s;
+        messageDiv.style.position = 'fixed';
+        messageDiv.style.top = '50%';
+        messageDiv.style.left = '50%';
+        messageDiv.style.transform = 'translate(-50%, -50%)';
+        messageDiv.style.display = 'block';
+
+        setTimeout(function () {
+            messageDiv.style.display = 'none';
+        }, 1000);
+    }
+
+
+
+
+</script>
+</body>
+
+</html>

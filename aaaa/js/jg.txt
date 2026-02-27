@@ -1,0 +1,3 @@
+zy      {首页 :zy                 ,绑定1:dz,                                   地址:/dzscq/gengduo,      自用:/zy/gengduo,   链接:/lj/gengduo,  更多:gengduo}
+短      {首页 :index/abc     ,绑定1:ddz,     绑定2:ddztest        地址:/dzscq/gengduo11,   }
+其      {首页 :i啊                ,绑定1:,ddz1           绑定2:dddz            地址:/dzscq/gengduo22,   }

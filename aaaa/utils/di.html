@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xlsx</title>
+    <style>
+        #copyFeedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<input type="file" id="fileInput"/>
+<select id="searchColumnSelect"></select>
+<input type="text" id="searchInput" placeholder="请输入搜索内容" />
+<table id="resultTable" border="1"></table>
+<div id="copyFeedback"></div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+    document.getElementById('fileInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                const table = document.getElementById('resultTable');
+                const searchColumnSelect = document.getElementById('searchColumnSelect');
+                table.innerHTML = '';
+
+                // 根据第二行的列数动态创建表头，添加序号列
+                const secondRowLength = jsonData[1]? jsonData[1].length : 0;
+                const headers = [];
+                headers.push('序号');
+                for (let i = 0; i < secondRowLength; i++) {
+                    headers.push(jsonData[0][i] || `第${i + 1}列`);
+                }
+
+                // 创建表头行
+                const headerRow = document.createElement('tr');
+                headers.forEach((header, index) => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    headerRow.appendChild(th);
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = header;
+                    searchColumnSelect.appendChild(option);
+                });
+
+                // 添加“复制所有”按钮到表头最后一列
+                const copyAllButtonCell = document.createElement('th');
+                const copyAllButton = document.createElement('button');
+                copyAllButton.textContent = '复制所有';
+                copyAllButton.addEventListener('click', function () {
+                    const rows = table.querySelectorAll('tr');
+                    const columnData = [];
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        if (row.style.display!== 'none') {
+                            const rowIndex = parseInt(row.cells[0].textContent);
+                            columnData.push(jsonData[rowIndex][0]);
+                        }
+                    }
+                    const textToCopy = columnData.join('\n');
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => {
+                            showCopyFeedback(textToCopy);
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy text: ', err);
+                        });
+                });
+                copyAllButtonCell.appendChild(copyAllButton);
+                headerRow.appendChild(copyAllButtonCell);
+                table.appendChild(headerRow);
+
+                // 找到第二行中值为3到4位数字的列，把该列设置为下拉框的默认列
+                let defaultColumnIndex = 0;
+                const secondRow = jsonData[1];
+                for (let colIndex = 0; colIndex < secondRowLength; colIndex++) {
+                    let cellValue = secondRow[colIndex];
+                    // 如果是数字类型，转换为字符串类型
+                    if (typeof cellValue === 'number') {
+                        cellValue = cellValue.toString();
+                    }
+                    const option = document.createElement('option');
+                    option.value = colIndex;
+                    option.textContent = jsonData[0][colIndex] || `第${colIndex + 1}列`;
+                    searchColumnSelect.appendChild(option);
+                    // 找到值为3到4位数字的列，设置为默认选中
+                    if (typeof cellValue ==='string' && /^\d{3,4}$/.test(cellValue)) {
+                        defaultColumnIndex = colIndex + 1;
+                        break;
+                    }
+                }
+                searchColumnSelect.value = defaultColumnIndex;
+
+                // 创建数据行
+                for (let i = 1; i < jsonData.length; i++) {
+                    const row = document.createElement('tr');
+                    const serialNumberCell = document.createElement('td');
+                    serialNumberCell.textContent = i;
+                    row.appendChild(serialNumberCell);
+
+                    const dataRow = jsonData[i];
+                    for (let j = 0; j < secondRowLength; j++) {
+                        const td = document.createElement('td');
+                        td.textContent = dataRow[j] || `第${j + 1}列`;
+                        row.appendChild(td);
+                    }
+
+                    // 最后一列是复制按钮
+                    const copyButtonCell = document.createElement('td');
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = '复制';
+                    copyButton.addEventListener('click', function () {
+                        const textToCopy = jsonData[i][0];
+                        navigator.clipboard.writeText(textToCopy)
+                            .then(() => {
+                                showCopyFeedback(textToCopy);
+                            })
+                            .catch(err => {
+                                console.error('Failed to copy text: ', err);
+                            });
+                    });
+                    copyButtonCell.appendChild(copyButton);
+                    row.appendChild(copyButtonCell);
+
+                    table.appendChild(row);
+                }
+
+                // 实现搜索功能，根据下拉框选择的列和搜索框的输入内容，显示或隐藏相应的行
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', function () {
+                    const searchText = this.value.toLowerCase();
+                    const selectedColumnIndex = parseInt(searchColumnSelect.value);
+                    const rows = table.querySelectorAll('tr');
+                    rows.forEach((row, index) => {
+                        if (index > 0) {
+                            const cell = row.querySelectorAll('td')[selectedColumnIndex];
+                            if (cell) {
+                                const cellText = cell.textContent.toLowerCase();
+                                if (searchText === '' || cellText.includes(searchText)) {
+                                    row.style.display = 'table-row';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            }
+                        }
+                    });
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    });
+
+    function showCopyFeedback(text) {
+        const feedback = document.getElementById('copyFeedback');
+        feedback.textContent = `已复制: ${text}`;
+        feedback.style.display = 'block';
+        setTimeout(() => {
+            feedback.style.display = 'none';
+        }, 1500);
+    }
+</script>
+</body>
+
+</html>

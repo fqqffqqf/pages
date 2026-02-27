@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="Pragma">
+    <meta content="0" http-equiv="Expires">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+
+
+<script>
+
+    function scr(url) {
+        //script.src = `js/gzby_jd.js?timestamp=${timestamp}`;
+        const timestamp = new Date().getTime();
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = `${url}?timestamp=${timestamp}`;
+        console.log(script.src)
+        document.head.appendChild(script);
+    }
+
+    scr("js/gzby_jd.js");
+    scr("js/ty.js");
+</script>
+
+
+<style>
+
+    #edi{
+
+       
+
+
+        overflow-y: auto;
+     
+        height: 100%;
+        overflow: auto;
+
+
+
+    }
+
+
+
+
+
+
+    #image-gallery{
+
+       
+
+        
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px;
+
+
+
+    }
+
+
+    .message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: none;
+    }
+
+    ul {
+        list-style-type: none; /* 去除默认的项目符号 */
+        padding: 0; /* 去除默认的内边距 */
+        margin: 0; /* 去除默认的外边距 */
+    }
+
+    li {
+        padding: 10px; /* 内边距，增加元素内部的空间 */
+        background-color: #f8f9fa; /* 背景颜色 */
+        border-bottom: 1px solid #dee2e6; /* 底部边框，增加分隔效果 */
+        font-size: 16px; /* 字体大小 */
+        color: #343a40; /* 字体颜色 */
+
+    }
+
+    li:hover {
+        background-color: #e9ecef; /* 鼠标悬停时的背景颜色变化，提供交互反馈 */
+        cursor: pointer; /* 鼠标悬停时变为指针形状，表示可点击 */
+    }
+
+    .button-container {
+        display: flex;
+        flex-wrap: wrap; /* 换行 */
+        gap: 6px; /* 设置按钮之间的间隔为 6px */
+        width: 100%; /* 设置宽度为100%，可根据需要调整 */
+        margin: 10px 0; /* 设置上下边距为10px，左右边距为0，可根据需要调整 */
+        padding: 0; /* 清除内边距 */
+    }
+
+    .button-container1 {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 2px;
+    }
+
+    .button-container2 {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 2px;
+    }
+
+    button {
+        white-space: nowrap;
+        padding: 4px 10px;
+        background: linear-gradient(to right, #007bff, #6610f2);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        opacity: 0.5;
+    }
+
+    .edit-popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .edit-popup-content {
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 90%;
+        width: 300px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edit-popup-content input {
+        width: 100%;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+    }
+
+    .button-container3 {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+        gap: 15px;
+    }
+</style>
+<div>
+    <input id="id1" placeholder="短号或查询码" type="text" value="">
+    <input id="id2" placeholder="号段:165160140" type="text" value="">
+    <input id="id3" type="text" value="">
+</div>
+</br>
+<div class="button-container" id="button-container">
+    <button id="dz1" onclick="f(1)">1.青岛</button>
+    <button id="dz2" onclick="f(2)" style="display: none;">2. 上塘</button>
+    <button id="dz3" onclick="f(3)"> 3.低派福</button>
+    <button id="dz4" onclick="f(4)"> 4.低派杭</button>
+    <button id="dz5" onclick="f(5)"> 5.车公庄</button>
+    <button id="dz6" onclick="f(6)"> 6.朝阳</button>
+    <button id="dz7" onclick="f(7)"> 7.莫干山(杭)</button>
+    <button id="dz8" onclick="f(8)">8.动物园</button>
+
+    <button id="dz9" onclick="f(9)"> 9.看丹K</button>
+    <button id="dz10" onclick="f(10)" style="display: none;">10.上海</button>
+    <button id="dz11" onclick="f(11)" style="display: none;"> 11.广州低</button>
+    <button id="dz12" onclick="f(12)" style="display: none;"> 12.京广白</button>
+    <button id="dz13" onclick="f(13)" style="display: none;"> 13.上海(邮1)</button>
+    <button id="dz14" onclick="f(14)">14. 广州</button>
+    <button id="dz15" onclick="f(15)" style="display: none;"> 15.好大兴</button>
+    <button id="dz16" onclick="f(16)" style="display: none;"> 16.好丰台</button>
+    <button id="dz17" onclick="f(17)" style="display: none;">17.上海(好)</button>
+    <button id="dz18" onclick="f(18)" style="display: none;">18.高地</button>
+    <button id="dz19" onclick="f(19)" style="display: none;">19.短短上海</button>
+    <button id="dz20" onclick="f(20)" style="display: none;">20.上海(邮2)</button>
+    <button id="dz21" onclick="f(21)" style="display: none;">21.上海(邮3)</button>
+    <button id="dz22" onclick="f(22)" style="display: none;">22.上海(邮4)</button>
+    <button id="dz23" onclick="f(23)">23.大兴</button>
+    <button id="dz24" onclick="f(24)">24.德胜</button>
+    <button id="dz25" onclick="f(25)" style="display: none;">25.海定(好)</button>
+    <button id="dz26" onclick="f(26)">26.王马路(杭)</button>
+    <button id="dz27" onclick="f(27)" style="display: none;">27.海定邮政(好)</button>
+    <button id="dz28" onclick="f(28)" style="display: none;">28.杭州莫干山(好)</button>
+    <button id="dz29" onclick="f(29)" style="display: none;">29.上塘(杭)</button>
+    <button id="dz30" onclick="f(30)" style="display: none;">30.大兴(狼垡)</button>
+    <button id="dz31" onclick="f(31)" style="display: none;">31.天津</button>
+
+
+</div>
+
+<!--d
+
+
+<button onclick="indxe_02()">其他1</button>
+<button onclick="g(6)"> 一键生成</button>
+-->
+<br>
+<div class="button-container1" id="button-container1">
+
+    <button onclick="copyToClipboard1(1)"> 1.5-1</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(2)"> 0.15无门槛</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(11)" style="display: none;"> 红包3</button>
+    <button onclick="copyToClipboard1(3)" style="display: none;"> 超级红包</button>&nbsp;&nbsp;
+
+    <!--<button onclick="copyToClipboard1(12)"> 红包5</button>&nbsp;&nbsp;-->
+
+    <button onclick="copyToClipboard1(4)" style="display: none;"> 喜从天降</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(5)" style="display: none;"> U选红包</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(6)"> 3个0.2红包</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(31)"> 农场红包</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(20)"> 签到</button>&nbsp;&nbsp;
+</div>
+<br>
+
+<div class="button-container2">
+
+
+    <button onclick="dzz()">尾号绑定</button>
+
+
+    
+
+    <button onclick="sx()">刷新</button>
+</div>
+
+<div class="message" id="message"></div>
+
+<div id="editPopup" class="edit-popup">
+    <div class="edit-popup-content">
+        <h3>修改内容</h3>
+        <input type="hidden" id="editId" placeholder="Id">
+        <input type="text" id="editName" placeholder="名字">
+        <input type="text" id="editLianjie" placeholder="鏈接">
+        <input type="hidden" id="editFalt" placeholder="设置0-删除">
+
+        <input type="hidden" id="oldId">
+        <div class="button-container3">
+            <button onclick="saveEdit()">修改</button>
+            <button onclick="closeEditPopup()">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="edi" class="edit-popup">
+    <div class="edit-popup-content" >
+
+        <div id="image-gallery" class="flex flex-wrap gap-4"></div>
+        <input type="file" id="image-upload" multiple class="mb-4">
+        <button onclick="closeEdit()">关闭</button>
+       
+    </div>
+
+
+</div>
+
+</br>
+<font color="yellow" size="5"><p id="idpp"></p></font>
+
+<p id="idp"></p>
+
+<p id="k"></p>
+</body>
+
+
+<!---->
+<script>
+
+
+    function dianji() {
+
+        window.location.href = "ts.html"
+
+    }
+
+
+    function indxe_02() {
+
+        window.location.href = "index02.html"
+
+    }
+
+    function dizhi() {
+
+        window.location.href = "dizhi.html"
+
+    }
+
+    function goudong() {
+
+        window.location.href = "https://y-03.cn/1ftPEd"
+
+    }
+
+    function gengduo() {
+
+        window.location.href = "gengduo.html"
+
+    }
+
+
+    window.onload = function () {
+       dzscq( getJsonDataSync(`/aaaa/FindDzscqServlet`));
+        /*fetch(`/aaaa/FindDzscqServlet`)
+            .then(response => response.json())
+            .then(data => dzscq(data))
+            .catch(error => console.error('Error:', error));*/
+
+        fetch(`/aaaa/FindLjServlet`)
+            .then(response => response.json())
+            .then(data => lj(data))
+            .catch(error => console.error('Error:', error));
+
+        if (localStorage.getItem("duanHao")) {
+           let str=localStorage.getItem("duanHao");
+            document.getElementById("id1").value = str;
+
+            const data = getJsonDataSync(`/aaaa/FindDzBynameServlet?name=${str}`);
+
+            if (Object.keys(data).length) {
+
+                ycc(num);
+                let arr = convertString(data[0].lianjie)
+                xss(arr[0])
+
+            }
+
+        }
+        if (localStorage.getItem("id3")) {
+
+
+            document.getElementById("id3").value =localStorage.getItem("id3");
+        }
+
+    }
+
+    function dzscq(dzscqdata) {
+        for (let i = 0; i < dzscqdata.length; i++) {
+            //加載地址
+            deliverAddresses[dzscqdata[i].id] = dzscqdata[i].dz;
+            arradd[dzscqdata[i].id] = dzscqdata[i].dm;
+
+            //根据id配置值默认短号
+            arrduanhao[dzscqdata[i].id] = (1 + dzscqdata[i].id + "xxxx").slice(0, 4);
+
+            num[dzscqdata[i].id] = "dz" + (dzscqdata[i].id + 1)
+
+            let newbut;
+            let falt = document.getElementById("dz" + (dzscqdata[i].id + 1));
+            //是否存在了
+            if (falt) {
+                newbut = falt;
+            } else {
+                //不存在
+                //獲取所有按鈕
+                var children = document.getElementById("button-container").children;
+                //最后一个按钮
+                var oribut = children[children.length - 1]
+                newbut = document.createElement('button');
+
+
+                newbut.addEventListener('click', function () {
+
+                    f(dzscqdata[i].id + 1);
+                })
+                newbut.id = "dz" + (dzscqdata[i].id + 1);
+                oribut.parentNode.insertBefore(newbut, oribut.nextSibling);
+            }
+
+              if (dzscqdata[i].yc === "0") {
+
+                newbut.style = "display: none;";
+            } else if (dzscqdata[i].yc === "1") {
+                newbut.style = "display: inline;";
+            }
+
+
+
+            newbut.addEventListener('mousedown', function () {
+                startLong(this);
+            });
+            newbut.addEventListener('mouseup', endLong);
+            newbut.addEventListener('mouseout', endLong);
+
+            newbut.addEventListener('touchstart', function () {
+                startLong(this);
+            });
+            newbut.addEventListener('touchend', endLong);
+            newbut.addEventListener('touchmove', endLong);
+
+
+            newbut.innerHTML = dzscqdata[i].id + 1 + '.' + dzscqdata[i].name;
+            if (dzscqdata[i].sx === "0") {
+
+                newbut.remove();
+            }
+        }
+
+
+    }
+
+    function lj(ljdata) {
+        if (ljdata) {
+            let byid = document.getElementById("button-container1");
+            byid.innerHTML = "";
+            for (let i = 0; i < ljdata.length; i++) {
+
+                if (parseInt(ljdata[i].id) === 30) {
+                    break;
+                }
+                if (ljdata[i].falt === "1") {
+
+                    newbut = document.createElement('button');
+                    newbut.innerHTML = ljdata[i].name;
+
+                    newbut.dataset.id = JSON.stringify(ljdata[i]);
+
+                    newbut.dataset.link = ljdata[i].lianjie;
+                    newbut.addEventListener('mousedown', function () {
+                        startLongPress(this);
+                    });
+                    newbut.addEventListener('mouseup', endLongPress);
+                    newbut.addEventListener('mouseout', endLongPress);
+
+                    newbut.addEventListener('touchstart', function () {
+                        startLongPress(this);
+                    });
+                    newbut.addEventListener('touchend', endLongPress);
+                    newbut.addEventListener('touchmove', endLongPress);
+
+                    newbut.addEventListener('click', function () {
+                        copyToClipboardt(this.dataset.link);
+                    });
+
+
+                    byid.appendChild(newbut);
+                }
+
+            }
+        }
+    }
+
+
+    //地址数组
+    let deliverAddresses = [
+        "山东省青岛市市南区八大湖街道山东路38号粨桉居8层",
+        "浙江省杭州市拱墅区上塘街道湖州东路80号",
+        "福建泉州市安溪县城厢镇详细地址：过溪明珠茶叶城共派仓库脸脸路",
+        " 杭州市拱墅区东新街道长浜路与新天地街交叉口绿城时代星火城",
+        "北京市西城区展览路街道车公庄大街北里61号",
+
+        "北京市朝阳区呼家楼街道人民日报社西门",
+        "浙江省拱墅区和睦街道",
+        "北京市西城区展览路街道展览路街道动物园世纪天乐批发市场",
+        "北京市丰台区看丹街道丰葆路",
+        "上海上海市杨浦区新江湾城街道政和路1200弄",
+
+        "广东省广州市番禺区钟村锦绣生态园",
+        "",
+        "上海市闵行区虹桥镇虹中路336弄",
+        "广州黄埔区文冲街道黄埔东路1082号黄埔仓T",
+        "北京大兴区清源街道康和名居",
+
+        "北京市丰台区新村街道",
+        "上海上海市杨浦区新江湾城街道政和路1200弄",
+        " 北京市丰台区东高地街道警备东路寇龄酒店旁 ",
+        "上海市闵行区华漕镇许浦村夏华路200弄",
+        " 上海市闵行区七宝镇星中路889弄",
+
+        "上海市闵行区七宝镇航东路773弄 ",
+        "上海市闵行区七宝镇沪青平公路541弄",
+        "北京大兴区清源街道",
+        "北京市西城区德胜街道黄寺大街14号",
+        "北京市海淀区学院路30号天工大厦",
+
+        "杭州市拱墅区东新街道",
+        "北京北京市海淀区上地街道 上地十街1号院",
+        "浙江省拱墅区和睦街道",
+        "浙江省杭州市拱墅区上塘街道湖州东路300 号",
+        "北京市大兴区黄村镇狼垡中置化学家园",
+
+        "地址:天津市和平区劝业场街道花园路一号",
+    ];
+
+    //上海市闵行区七宝镇星中路889弄 后面随便编辑  上海市闵行区七宝镇航东路773弄 后面随便编辑  上海市闵行区七宝镇沪青平公路541弄 后面随便编辑
+    let yuhang = ["南区", "北区"];
+    let combinedLocations = [
+        "便利店门口",
+        "超市门口",
+        "水果店门口",
+        "咖啡店门口",
+        "面包店门口",
+        "书店门口",
+        "花店门口",
+        "五金店门口",
+        "药店门口",
+        "文具店门口",
+        "眼镜店门口",
+        "宠物店门口",
+        "快餐店门口",
+        "干洗店门口",
+        "母婴店门口",
+        "家电店门口",
+        "运动用品店门口",
+        "美容美发店门口",
+        "家居用品店门口",
+        "玩具店门口",
+        "服装定制店门口",
+        "鞋店门口",
+        "茶叶店门口",
+        "珠宝店门口",
+        "数码产品店门口",
+        "礼品店门口",
+        "内衣店门口",
+        "童装店门口",
+        "窗帘店门口",
+        "床上用品店门口"
+    ];
+    let ifalt;
+    let arradd = [];
+    let duanhao = [2988, 2313, 2495, 4650, 9281, 3784, 2318, 8018, 1111, 1111, 2222, 2222, 3333, 4444, 5555, 6668];
+    // 常见的小区修饰词
+    const modifiers = ["阳光", "花园", "锦绣", "温馨", "幸福", "和谐", "风尚", "绿洲", "雅园", "翠景"];
+    // 常见的小区名词
+    const nouns = ["小区", "家园", "社区", "庭苑", "里弄", "公寓"];
+    // 常见的百家姓
+    let surnames = ["赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许", "马"];
+    // 常见的名字汉字
+    const givenNames = ["伟", "芳", "娜", "敏", "强", "静", "磊", "涛", "丽", "华", "勇", "杰", "军", "玲", "辉", "鹏", "燕", "明", "宇", "超"]
+    //杭州小区
+    let hangZhouXiaoQu = ["佳域小区", "希望小区", "佳金茂小区"];
+    //北京西城
+    let beiJing = ["东区未来城科技园", "西区国际财智大厦", "北区旺角国际中心"];
+    //号段
+    let prefixoptions = ['140', '160', '161'];
+
+    //名字后缀
+    let namehouzhui = ["", "", "", "", "", "", ""];
+    //
+
+    let color = ["green", "feba07", "red", 'feab70', 'fasdas', 'abef11', '125847', '5874as', 'aef584', 'ff5632', 'ca8213', '25dda2', '52ae52', '11c258', 'ac25ef', '25ae32', '259645', '542787'];
+
+
+    let value = '';    //输入框类容
+    let a;			// 收件人
+    let b;         //手机号
+    let c;         //详细地址
+    let array = [];
+    let duanHao = [];
+    let prefixOptions = [];
+    let nameHuizhui = [];
+
+
+    //  function gg(){g(4);}
+
+
+    function f(x) {
+        inputData()
+        for (var i = 0; i < 25; i++) {
+	let aaa="";
+
+            getAddressAndPhone(x);
+            if (ifalt === ".") {
+                aaa= "";
+
+            } else {
+
+                aaa = i;
+            }
+            getAddressAndPhone(x);
+
+            //随机名字
+            a = generateRandomChineseName() + aaa;
+
+            var f = "<font color='" + color[14] + "' size='2'>" + "</br>" + "收件人：" + a + "</br>" + "手机号：" + b.slice(0, 7) + "<strong style='color: red'>" + b.slice(-4) + "</strong>" + "</br>" + "所在地区: " + deliverAddresses[x - 1] + "</br>" + "详细地址: " + c + "</br>" + "<button onclick=" + "copyToClipboard(" + array.length + ")" + "> 复制到剪贴板</button>" + "</br>" + "</font>";
+
+
+            document.getElementById("idp").innerHTML += f;
+            array.push("收件人：" + a + "\n手机号：" + b + "\n所在地区:" + deliverAddresses[x - 1] + "\n详细地址: " + c);
+        }
+
+    }
+
+
+    //处理数据
+
+    function inputData() {
+
+        //清空粘贴数组
+        array = [];
+        //处理输入数据
+
+        document.getElementById("k").innerHTML = ""
+
+        document.getElementById("idp").innerHTML = "";
+
+
+        value1 = document.getElementById("id1").value;
+        duanHao = replaceValuesInArray(value1, duanhao);
+
+        value2 = document.getElementById("id2").value;
+        prefixOptions = processStringAndArray(value2, prefixoptions);
+
+        value3 = document.getElementById("id3").value;
+        //nameHouzhui = splitStringToCharArray(value3, namehouzhui);
+        let t = value3.split(".")[0];
+
+        if (t === "1") {
+            //ab
+            surnames = rname[0].concat(rname[1]);
+        } else if (t === "2") {
+            //cd
+            surnames = rname[2].concat(rname[3]);
+        } else if (t === "3") {
+            //fg
+            surnames = rname[5].concat(rname[6]);
+        } else if (t === "4") {
+            //hj
+            surnames = rname[7].concat(rname[9]);
+        } else if (t === "5") {
+            //kl
+            surnames = rname[10].concat(rname[11]);
+        } else if (t === "6") {
+            //mn
+            surnames = rname[12].concat(rname[13]);
+        } else if (t === "7") {
+            //por
+            surnames = rname[15].concat(rname[16], rname[17]);
+        } else if (t === "8") {
+            //st
+            surnames = rname[18].concat(rname[19]);
+        } else if (t === "9") {
+            //wx
+            surnames = rname[22].concat(rname[23]);
+        } else if (t === "10") {
+            //yz
+            surnames = rname[24].concat(rname[25]);
+        }
+
+        if (value3.slice(-1) === ".") {
+
+            ifalt = ".";
+        }
+
+localStorage.setItem("duanHao", value1);
+localStorage.setItem("id3", value3);
+
+        //setCookie("duanHao", value1, 3);
+       // setCookie("id3", value3, 2);
+
+    }
+
+    //f
+    function setCookieIfNotExists(name, value, days) {
+        if (!getCookie(name)) {
+            setCookie(name, value, days);
+
+        }
+    }
+
+
+    //获取手机号详细地址
+    function getAddressAndPhone(x) {
+
+        //根据短号随机生成手机号
+        b = generateMobileNumber(duanHao[x - 1], x);
+
+        b = b.slice(0, 7) + b.slice(-4)
+        //详细地址
+        c = getAddress(x);
+
+    }
+
+
+    //根据不同地区获取不同详细地址
+    /*北京:帧泊小区35栋78单元368房
+    杭州:襄沿小区51楼88单元A8825
+    福建:xxx单元x号*/
+    function getAddress(m) {
+        var add = "";
+        if (arradd[m - 1]) {
+            const str = arradd[m - 1];
+            const func = new Function(str);
+            const result = func();
+            add = result;
+        } else {
+            switch (m) {
+                case 1:
+                    add = Math.floor(Math.random() * 10 + 1) + "区" + Math.floor(Math.random() * 1000 + 1) + "号"
+                    break;
+                case 2:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + generateRandomString(1) + "房"
+                    break;
+                case 3:
+                    add = generateRandomCommunityName() + getFirstAndLastThreeToArray(duanHao[2])[0] + "单元" + getFirstAndLastThreeToArray(duanHao[2])[1] + "号";
+                    break;
+                case 4:
+                    add = Math.floor(Math.random() * 100 + 71) + "号楼" + combinedLocations[Math.floor(Math.random() * combinedLocations.length)];
+                    break;
+                case 5:
+                    add = beiJing[Math.floor(Math.random() * beiJing.length)] + getRandomLetter() + "栋" + Math.floor(Math.random() * 900 + 101) + "室";
+                    break;
+//朝阳
+                case 6:
+
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 9 + 1) + Math.floor(Math.random() * 9 + 1) + "单元" + "K" + Math.floor(Math.random() * 8990 + 1000);
+                    break;
+//石山改莫干山
+                case 7:
+                    add = "莫干山路738号" + mgs[Math.floor(Math.random() * mgs.length)] + Math.floor(Math.random() * 10 + 1) + "层" + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + Math.floor(Math.random() * 10) + String.fromCharCode(Math.floor(Math.random() * (90 - 65 + 1)) + 65)
+                    break;
+                case 8:
+                    add = Math.floor(Math.random() * 100) + "排" + Math.floor(Math.random() * 100) + "号" + combinedLocations[Math.floor(Math.random() * combinedLocations.length)];
+                    break;
+                case 9:
+                    add = Math.floor(Math.random() * 1000 + 1000) + "号" + generateRandomCommunityName() + Math.floor(Math.random() * 100) + "栋" + Math.floor(Math.random() * 100) + "单元" + Math.floor(Math.random() * 900 + 101) + "室";
+                    break;
+
+                case 10:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+                case 11:
+
+
+                    add = generateRandomCommunityName() + "苑" + generateRandomString();
+                    break;
+
+                case 12:
+                    //广州京东
+                    add = addressList[Math.floor(Math.random() * addressList.length)] + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房DD";
+                    break;
+
+
+                case 14:
+                    //短广州
+                    add = Math.floor(Math.random() * 100 + 11) + "栋" + Math.floor(Math.random() * 33 + 1) + "层" + Math.floor(Math.random() * 999 + 1) + "号";
+                    break;
+                case 15:
+                    //大兴
+                    add = Math.floor(Math.random() * 21 + 20) + "号楼" + Math.floor(Math.random() * 31 + 10) + "单元" + Math.floor(Math.random() * 3000 + 101) + "室";
+                    break;
+//纪家庙
+                case 16:
+                    add = "纪家庙" + Math.floor(Math.random() * 698 + 301) + "号瑞福花园" + Math.floor(Math.random() * 100 + 21) + "号楼" + Math.floor(Math.random() * 100 + 1) + "单元" + Math.floor(Math.random() * 100 + 1) + "室";
+                    break;
+//好孩子上海
+                case 17:
+                    add = Math.floor(Math.random() * 100) + "号楼" + Math.floor(Math.random() * 100) + "室";
+                    break;
+//丰台高地
+                case 18:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+//上海
+                case 19:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+//大兴
+                case 23:
+                    add = "康和名居" + Math.floor(Math.random() * 21 + 20) + "号楼" + Math.floor(Math.random() * 31 + 10) + "单元" + Math.floor(Math.random() * 3000 + 101) + "室";
+                    break;
+//德胜
+                case 24:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 20 + 1) + "栋" + Math.floor(Math.random() * 20 + 1) + "单元" + Math.floor(Math.random() * 1903 + 101) + "室";
+                    break;
+//海定好
+                case 25:
+                    add = (Math.random() < 0.5 ? "F" : "G") + generateRandomCommunityName() + Math.floor(Math.random() * 20 + 1) + "栋" + Math.floor(Math.random() * 20 + 1) + "单元" + Math.floor(Math.random() * 1903 + 101) + "室";
+                    break;
+//杭王马路
+                case 26:
+                    add = "王马路35号" + generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + "A" + Math.floor(Math.random() * 899 + 100);
+                    break;
+//好海定邮政
+                case 27:
+                    add = Math.floor(Math.random() * 100 + 11) + "号楼" + Math.floor(Math.random() * 33 + 1) + "层" + Math.floor(Math.random() * 999 + 1) + "号";
+                    break;
+//好孩子杭
+                case 28:
+                    add = "莫干山路738号" + mgs[Math.floor(Math.random() * mgs.length)] + "院内" + generateRandomCommunityName() + Math.floor(Math.random() * 10 + 1) + "-" + Math.floor(Math.random() * 150 + 150) + "C";
+                    break;
+//大兴狼垡
+                case 30:
+                    var a = Math.floor(Math.random() * 18 + 1)
+                    add = Math.floor(Math.random() * 15 + 1) + "栋" + Math.floor(Math.random() * 6 + 1) + "单元" + a + "层" + a + "0" + Math.floor(Math.random() * 4 + 1);
+                    break;
+//天津
+                case 31:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 10 + 1) + "栋" + Math.floor(Math.random() * 1600 + 100) + "室"
+                    break;
+                default:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+            }
+        }
+
+
+        return add;
+    }
+
+    //复制1
+    function copyToClipboard(i) {
+        var text = array[i];
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage("复制成功,核对街道 尾号 地址后缀");
+
+    }
+
+    function getRandomLetter() {
+        let characters = 'ABCDEF';
+        return characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+
+    //复制2
+    function copyToClipboard1(i) {
+        var text = "";
+        switch (i) {
+            case 1:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚲᚣᚩᚧᚵᙰᚶᚯᚣᚮᚮᙰᚥᚱᚯᙱᚹᚱᚹᙱᚼᙱᚪᚦᚹᚭᙱᙴᙲᙴᙳᚶᚯᚨᚣᚴᚯᙱᚥᚱᚷᚲᚱᚰᙯᚤᚷᚻᚁᚡᙿᚣᙴᙳᙳᙵᚹᙰᙴᙺᙶᙴᙸᙷᙹᙸᙰᙹᙵᙸᙳᙶᙴᙺᙺᙻᙲᙰᙳ";
+
+
+                break;
+            case 2:
+                text = Math.random() < 0.5 ? "ᙲᙦ᚜ᚻᚥᚲᚧᚔᚈᚗᚎᚗᚋᙦᙼᙱᙱᙢᚊᚗᙹᙸᙹᙻ" : "ᙵᙦᚈᙸᚳᚴᚧᙺᚒᙳᚓᚒᚍᙦᙼᙱᙱᙢᚅᚃᙳᙷᙲᙳ";
+                break;
+            case 11:
+                text = "ᙶᙦᚵᚭᚤᚙᙵᚈᚸᚸᚥᚷᚦᙦᙼᙱᙱᙢᚏᚈᙵᙲᙺᙶ";
+                break;
+            case 3:
+                text = "ᙳᙦᚦ᚜ᚨᚶᚧᚭᙺᚉᚯᙻᚱᙦᙼᙱᙱᙢᚊᚗᙹᙳᙹᙹ";
+                break;
+            case 4:
+                text = "ᙹᙻᙢᚏᚈᙳᙸᙶᙵᙢᙢᙴᙼᙱᚖᚚᚆᙶᙵᚷᚺᙻᚈᚹᚃ㛦摋ᙴᙺᙸᙳᙹᙺᙹᙷ摬铤楇症껈樘ᕎ瘭綧ᕃ";
+                break;
+            case 20:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚵᙰᚥᚮᚫᚥᚭᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚍᚊᚺᚩᚹᚙᚶᚁᚦᚫᚵᚣᚤᚮᚧᚐᚣᚸᙿ᚛ᚇᚕ";
+                break;
+            case 21:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚵᙰᚥᚮᚫᚥᚭᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚚᚒᚏᚗᙸᚗᚶᚁᚦᚫᚵᚣᚤᚮᚧᚐᚣᚸᙿ᚛ᚇᚕ";
+                break;
+            case 5:
+                text = "ᙲᙹᙢᚊᚗᙻᙲᙶᙸᙢᙢᙴᙼᙱ㛶ᚊᙶᚰᚄᙵᚷᚺᚒᚰᚹᚓ摋衳萚營ᙯᚗꙋ澿改";
+                break;
+            case 6:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚯᚱᙰᚯᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚷᚰᚫᚱᚰᙴᙱᚲᚣᚩᚧᚡᙳᙸᙻᙲᙴᙷᙸᙺᙹᙸᙳᙹᙳ";
+                break;
+            case 12:
+                text = "ᙵᙦᚱᚶᚺᚘᙵᚹᚘᚸᚸᚃᚷᙦᙼᙱᙱᙢᚏᚈᙵᙳᙵᙷ";
+                break;
+            case 13:
+                text = "ᙺᙦᚰᚳᚗᚣᙵᚹᚹᙺᚦᚸᚘᙦᙼᙱᙱᙢᚊᚗᙹᙳᙹᙹ";
+                break;
+            case 31:
+                text = "ᙺᘧᙢᚅ᚜ᙲᙲᙲᙳᙢᙶᘧᚈᚫᚣᚨᙵᙹᚗᚔᙳᙳᚻᘧᙱᙢᚅ᚜ᙲᙲ";
+                break;
+            default:
+                text = '';
+        }
+        text = de(text, 5698);
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(text);
+
+    }
+
+    //口令
+    function zhibajian(i) {
+        var text = "";
+        switch (i) {
+            case 1:
+                text = "5$4u0a3xWhk38$:// CA1710";
+
+                break;
+            case 2:
+                text = "0$mBT03xW8ThH$:// CA1710";
+                break;
+            case 3:
+                text = "97£xbL63v6KQlf🔐 https://m.tb.cn/h.TWPTUUw  CA6496 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 4:
+                text = "37🗝vgPt3v6qvFV£ https://m.tb.cn/h.TWPTqFb  CZ3456 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 5:
+                text = "27✔EPv83v6HDew₴ https://m.tb.cn/h.TWnQygH  HU0854 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 6:
+                text = "98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+                break;
+            case 7:
+                text = "98《5wtE3v6spJa₴ https://m.tb.cn/h.TWn9y5e  HU9046 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 8:
+                text = "19₴x1sj3v6I2X9✔ https://m.tb.cn/h.TWPhtzk  CZ0000 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 9:
+                text = "98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+                break;
+            default:
+                text = '';
+        }
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(text);
+
+    }
+
+
+    function generateRandomCommunityName() {
+        let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+        let noun = nouns[Math.floor(Math.random() * nouns.length)];
+        return modifier + noun;
+    }
+
+    //生成名字
+
+    function generateRandomChineseName() {
+        let surname = surnames[Math.floor(Math.random() * surnames.length)];
+        let nameLength = Math.random() < 0.3 ? 2 : 3;  // 50% 的概率生成 2 个字的名字，50% 的概率生成 3 个字的名字
+
+        let givenName = '';
+        for (let i = 0; i < nameLength - 1; i++) {
+            givenName += givenNames[Math.floor(Math.random() * givenNames.length)];
+        }
+
+        return surname + givenName;
+    }
+
+
+    //生成手机号
+    function generateMobileNumber(a, b) {
+        a = a + "";
+        let prefix = '';
+        if (a.length === 4) {
+            switch (b) {
+                case 1:
+                    prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                    break;
+                case 2:
+                    prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                    break;
+                case 3:
+                    prefix = 165;
+                    break;
+                case 4:
+                    prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                    break;
+                case 5:
+                    prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                    break;
+                case 6:
+                    prefix = 140;
+                    break;
+                case 16:
+                    prefix = Math.random() < 0.5 ? 160 : 154;
+                    break;
+                case 30:
+                    prefix = Math.random() < 0.5 ? 160 : 154;
+                    break;
+                default:
+                    prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                    ;
+            }
+            let middle = '';
+            for (let i = 0; i < 4; i++) {
+                middle += Math.floor(Math.random() * 10);
+            }
+            let suffix = a;
+            return prefix + middle + suffix;
+        } else if (a.length === 11) {
+            return a;
+        }
+
+
+    }
+
+
+    //福建根据短号获取详细地址
+    function getFirstAndLastThreeToArray(str) {
+        str = str + '';
+        if (str.length < 4) {
+            return "字符串长度不足 4 位";
+        }
+        let firstChar = str.charAt(0);
+        let lastThree = str.slice(-3);
+        return [firstChar, lastThree];
+    }
+
+    //反转字符串
+    function reverseString(str) {
+        return str.split('').reverse().join('');
+    }
+
+
+    function de(encryptedStr, key) {
+        let decrypted = '';
+        for (let i = 0; i < encryptedStr.length; i++) {
+            decrypted += String.fromCharCode(encryptedStr.charCodeAt(i) - key);
+        }
+        return decrypted;
+    }
+
+
+    //随机生成一个字符串  4123a
+    function generateRandomString(m) {
+        let numPart = '';
+
+        let letterPart = "";
+        for (let i = 0; i < 4; i++) {
+            numPart += Math.floor(Math.random() * 10);
+        }
+        switch (m) {
+            case 1:
+                letterPart = "A";
+                break;
+
+            default:
+                letterPart = String.fromCharCode(Math.floor(Math.random() * 26) + 65);  // 生成小写字母 a 到 z
+        }
+
+
+        return numPart + letterPart;
+    }
+
+    function replaceValuesInArray(str, duanhao1) {
+
+
+        if (/^\d{4}$|^\d{11}$/.test(str)) {
+
+            let copyStr = [];
+
+            for (i = 0; i < arrduanhao.length; i++) {
+                copyStr[i] = str;
+            }
+            return copyStr;
+        } else {
+
+
+            const data = getJsonDataSync(`/aaaa/FindDzBynameServlet?name=${str}`);
+            if (Object.keys(data).length) {
+                ycc(num);
+                let arr = convertString(data[0].lianjie)
+                xss(arr[0])
+                return arr[1]
+            }
+            switch (str) {
+
+//return [1111,2222,3333,4444,5555,6666,7777,8888,9999];
+//           八里   杭州   福建 低杭  车工   余杭   石山  动物  看蛋
+
+                case "`12qwe321":
+                    xs("g");
+                    xs("dz");
+                    xss(num);
+                    return arrduanhao;
+                    break;
+//嗯
+
+                case "1":
+                    xs("dz3", "dz4", "dz7", "dz8");
+                    yc("dz1", "dz2", "dz5", "dz6", "dz9");
+
+                    return [1111, 2222, 8922, 4726, 5555, 6666, 8126, 6606, 9999];
+
+
+
+//微风
+
+
+                default:
+                    showMessage("输入错误")
+                    return;
+
+
+            }
+        }
+
+
+    }
+
+    function processStringAndArray(str, arr) {
+        let copyStr = arr.slice();
+        let newArr = [];
+        for (let i = 0; i < str.length; i += 3) {
+            if (i + 3 <= str.length) {
+                newArr.push(str.substring(i, i + 3));
+            }
+        }
+        return newArr.length > 0 ? newArr : copyStr;
+    }
+
+
+    function splitStringToCharArray(str, arr) {
+        let newArr = arr.slice();
+
+        for (let i = 0; i < str.length; i++) {
+            newArr[i] = str[i];
+        }
+        return newArr;
+    }
+
+
+    function isFourDigits(str) {
+        let digitCount = 0;
+        for (let char of str) {
+            if (char >= '0' && char <= '9') {
+                digitCount++;
+            }
+        }
+        return digitCount === 4;
+    }
+
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // 获取指定名称的 Cookie 值
+    function getCookie(name) {
+
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1, c.length);
+            }
+            if (c.indexOf(nameEQ) === 0) {
+                return c.substring(nameEQ.length, c.length);
+            }
+        }
+        return null;
+    }
+
+    // 删除指定名称的 Cookie
+    function deleteCookie(name) {
+        setCookie(name, "", -1);
+    }
+
+
+    window.addEventListener('popstate', function (event) {
+
+        // 检查浏览器历史记录是否有可返回的页面
+        if (window.history.length > 1) {
+            window.history.back(); // 返回到上一页
+
+        } else {
+            // 如果没有可返回的页面，您可以自定义处理，比如跳转到特定页面（如 a.html）
+            window.location.href = "a.html";
+
+        }
+    });
+
+
+    let longPressTimer;
+
+    function startLongPress(button) {
+        longPressTimer = setTimeout(() => {
+            openEditPopup(button);
+        }, 1000);
+    }
+
+    function endLongPress() {
+        clearTimeout(longPressTimer);
+    }
+
+    function openEditPopup(button) {
+        let but = JSON.parse(button.dataset.id)
+        document.getElementById('editId').value = but.id;
+        document.getElementById('oldId').value = but.id;
+
+
+        document.getElementById('editName').value = but.name;
+        document.getElementById('editLianjie').value = but.lianjie;
+        document.getElementById('editFalt').value = but.falt;
+        document.getElementById('editPopup').style.display = 'flex';
+    }
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
+    function saveEdit() {
+        let id = document.getElementById('editId').value;
+        let name = document.getElementById('editName').value;
+        let lianjie = document.getElementById('editLianjie').value;
+        let falt = document.getElementById('editFalt').value;
+        let oldId = document.getElementById('oldId').value;
+
+        if (parseInt(oldId) <= 25) {
+            showMessage("禁止修改");
+            closeEditPopup();
+            return;
+        }
+
+        const params = new URLSearchParams({
+            id,
+            falt,
+            name,
+            lianjie,
+            oldId
+        });
+        fetch(`/aaaa/UpdateLjServlet?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));
+    }
+
+
+
+
+
+
+
+
+
+    let longPress;
+
+    function startLong(button) {
+        longPress = setTimeout(() => {
+            openE(button);
+        }, 1000);
+    }
+
+    function endLong() {
+        clearTimeout(longPress);
+    }
+
+    function closeEdit() {
+        document.getElementById('edi').style.display = 'none';
+    }
+
+
+
+
+
+    function openE(button) {
+    const gallery = document.getElementById('image-gallery');
+
+    // 清空现有图片
+    const existingItems = gallery.querySelectorAll('[data-image-id], [data-server-image]');
+    existingItems.forEach(item => {
+        gallery.removeChild(item);
+    });
+
+    // 从服务器获取图片
+    fetch(`/aaaa/getImage?id=${button.id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('获取图片失败');
+            }
+            return response.json();
+        })
+        .then(images => {
+            const appPath = images['applicationPath'].replace(/\\/g, '/');
+
+            images.imageNames.forEach(image => {
+                const imageId = `server-${image}`;
+                createImageItem(gallery, appPath, image, imageId, true);
+            });
+        })
+        .catch(error => {
+            console.error('加载图片出错:', error);
+            alert('加载图片失败，请稍后重试');
+        });
+
+    // 确保只绑定一次文件上传监听器
+    const uploadInput = document.getElementById('image-upload');
+    
+    // 存储当前 button ID 到 DOM 元素
+    uploadInput.dataset.currentButtonId = button.id;
+    
+    // 移除现有监听器（如果存在）
+    if (uploadInput._currentHandler) {
+        uploadInput.removeEventListener('change', uploadInput._currentHandler);
+    }
+    
+    // 创建新的监听器函数
+    function handleFileChange(e) {
+        // 从 DOM 元素读取当前 button ID，而不是通过闭包
+        const currentButtonId = e.target.dataset.currentButtonId;
+        const files = e.target.files;
+        if (!files.length) return;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            
+            // 文件类型验证
+            if (!file.type.startsWith('image/')) {
+                alert('请选择图片文件');
+                continue;
+            }
+            
+            // 文件大小验证 (10MB限制)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('图片大小不能超过10MB');
+                continue;
+            }
+            
+            const imageId = `${currentButtonId}-${Date.now()}-${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imgUrl = event.target.result;
+                const item = createImageItem(gallery, '', file.name, imageId, false, imgUrl);
+
+                // 上传图片到服务器
+                uploadImage(file, imageId, item)
+                    .then(() => {
+                        console.log('图片上传成功:', imageId);
+                    })
+                    .catch(error => {
+                        console.error('图片上传失败:', error);
+                        alert('图片上传失败，请重试');
+                    });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 清空输入，允许重复选择同一文件
+        this.value = '';
+    }
+    
+    // 保存当前监听器引用
+    uploadInput._currentHandler = handleFileChange;
+    uploadInput.addEventListener('change', handleFileChange);
+    uploadInput._listenerAttached = true;
+
+    // 显示编辑区域
+    document.getElementById('edi').style.display = 'flex';
+}    
+
+    // 创建图片项的辅助函数
+    function createImageItem(gallery, path, name, imageId, isServerImage, imgUrl = null) {
+        const item = document.createElement('div');
+        item.classList.add('relative', 'w-48', 'rounded-md', 'overflow-hidden', 'shadow-md', 'hover:shadow-lg', 'm-2');
+        item.dataset.imageId = imageId;
+        if (isServerImage) {
+            item.dataset.serverImage = 'true';
+        }
+
+        const img = document.createElement('img');
+        img.className = "class-img w-full h-48 object-cover";
+        img.src = isServerImage ? `${path}/${name}` : imgUrl;
+        img.style.width='100%';
+        img.style.height='8%';
+        item.appendChild(img);
+
+        // 删除按钮
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        deleteButton.className = "class-but1 absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors";
+        deleteButton.addEventListener('click', function() {
+            if (confirm('确定要删除这张图片吗？')) {
+                deleteImage(imageId, item, isServerImage,name);
+            }
+        });
+        item.appendChild(deleteButton);
+
+        // 下载按钮
+        const downloadButton = document.createElement('button');
+        downloadButton.innerHTML = '<i class="fa-solid fa-download"></i>';
+        downloadButton.className = "absolute top-2 left-2 bg-blue-500 text-white p-1 rounded-full hover:bg-blue-600 transition-colors";
+        downloadButton.addEventListener('click', function() {
+            downloadImage(img.src, name);
+        });
+        item.appendChild(downloadButton);
+
+        gallery.appendChild(item);
+        return item;
+    }
+
+    // 上传图片到服务器
+    function uploadImage(file, imageId, item) {
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('imageId', imageId);
+
+        fetch('/aaaa/uploadImage', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('上传失败');
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('图片上传成功:', result);
+                // 可以选择更新图片ID为服务器返回的ID
+            })
+            .catch(error => {
+                console.error('上传出错:', error);
+                alert('图片上传失败');
+                // 上传失败时移除预览
+                if (item && item.parentNode) {
+                    item.parentNode.removeChild(item);
+                }
+            });
+    }
+
+    // 删除图片
+    function deleteImage(imageId, item, isServerImage,name) {
+
+        const endpoint = isServerImage
+            ? `/aaaa/deleteImage/${imageId.replace('server-', '')}`
+            : `/aaaa/deleteImage/${imageId}-${name}`;
+
+        fetch(endpoint, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('删除失败');
+                }
+                if (item.parentNode) {
+                    item.parentNode.removeChild(item);
+                }
+                console.log('图片删除成功');
+            })
+            .catch(error => {
+                console.error('删除出错:', error);
+                alert('图片删除失败');
+            });
+    }
+
+    // 下载图片
+    function downloadImage(url, filename) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = filename;
+
+        // 模拟点击下载
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+
+
+</script>
+<!--<iframe src="/daohang.html" width="100%" ,height="15%"> </iframe> -->
+</html>

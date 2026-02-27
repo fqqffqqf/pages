@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP地址查询</title>
+    <style>         body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        width: 400px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    button {
+        background-color: #007BFF;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #result {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        background-color: #f9f9f9;
+        white-space: pre-wrap;
+    }     </style>
+</head>
+<body>
+<div class="container"><h1>IP地址查询</h1>
+    <label for="ipInput">请输入IP地址：</label>
+    <input type="text" id="ipInput" placeholder="例如：192.168.1.1">
+    <button onclick="queryIPAddress()">查询</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    function queryIPAddress() {
+    const ip = document.getElementById('ipInput').value;
+    if (!/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip)) {
+        document.getElementById('result').innerHTML = '请输入合法的IP地址';
+        return;
+    }
+    const apiUrl = `http://ip-api.com/json/${ip}`;
+    fetch(apiUrl).then(response => response.json()).then(data => {
+        if (data.status === 'success') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<p>城市: ${data.city}</p> <p>地区: ${data.regionName}</p>                             <p>国家: ${data.country}</p>                             <p>纬度: ${data.lat}</p>                             <p>经度: ${data.lon}</p>                         `;
+        } else {
+            document.getElementById('result').innerHTML = '无法获取该IP地址的信息';
+        }
+    }).catch(error => {
+        console.error('获取地址失败:', error);
+        document.getElementById('result').innerHTML = '获取地址失败，请检查网络连接或IP地址';
+    });
+}     </script>
+</body>
+</html>

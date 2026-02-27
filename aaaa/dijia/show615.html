@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品数据展示与下单链接复制</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#10B981',
+            neutral: '#1F2937',
+            'base-100': '#FFFFFF',
+            success: '#36D399',
+            warning: '#FBBD23',
+            error: '#F87272',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .transition-custom {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .card-shadow {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+      .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .copy-animation {
+        animation: copyFeedback 0.5s ease-in-out;
+      }
+      @keyframes copyFeedback {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- 页面标题 -->
+    <header class="text-center mb-8">
+      <h1 class="text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-neutral mb-2">商品数据展示</h1>
+      <p class="text-gray-600 max-w-2xl mx-auto">按价格升序排列，点击按钮可复制对应商品的下单链接</p>
+    </header>
+
+    <!-- 搜索和筛选区域 -->
+    <div class="bg-white rounded-xl p-4 mb-8 card-shadow">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="w-full md:w-1/3">
+          <div class="relative">
+            <input type="text" id="search-input" placeholder="搜索商品..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-custom">
+            <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center">
+            <i class="fa fa-sort-amount-asc text-primary mr-2"></i>
+            <span class="text-sm font-medium">排序：</span>
+            <span class="text-primary font-semibold ml-1">价格升序</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="filter-btn" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-custom flex items-center">
+              <i class="fa fa-filter mr-2"></i> 筛选
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商品列表 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-container">
+      <!-- 商品卡片将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 空状态提示 -->
+    <div id="empty-state" class="hidden text-center py-12">
+      <i class="fa fa-search text-5xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-medium text-gray-700 mb-2">未找到匹配的商品</h3>
+      <p class="text-gray-500 max-w-md mx-auto">请尝试更改搜索关键词或筛选条件</p>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="text-center text-gray-500 text-sm py-6 mt-12">
+      <p>© 2025 商品数据展示平台 | 点击按钮可复制商品下单链接</p>
+    </footer>
+  </div>
+
+  <script>
+    // 商品数据
+    const products =[
+  {
+    "店铺名称": "甜甜嘟嘟的小店的小店",
+    "商品标题": "天然木浆海绵刷碗布洗碗擦抹布去油污厨房清洁百洁布加厚刷锅工具",
+    "商品链接": "https://item.taobao.com/item.htm?id=657111405838",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=657111405838_1_4913440474651",
+    "价格": 0,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 杭州"
+  },
+  {
+    "店铺名称": "楠楠的果蔬汁",
+    "商品标题": "冰淇淋口味贴纸不干胶标签贴蛋糕甜品奶茶布丁贴烘焙包装封口贴",
+    "商品链接": "https://item.taobao.com/item.htm?id=862480523038",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=862480523038_1_5682965292750",
+    "价格": 0.01,
+    "销量": 1,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "网诺旗舰店",
+    "商品标题": "加厚透明自封袋小号食品密封袋PE分装样品大号塑料袋封口包装袋子",
+    "商品链接": "https://item.taobao.com/item.htm?id=573509331754",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=573509331754_1_4305501560145",
+    "价格": 0.03,
+    "销量": 500000,
+    "包邮": "是",
+    "发货地": "浙江 台州"
+  },
+  {
+    "店铺名称": "金丽莎包装",
+    "商品标题": "服装吊牌，箱包吊牌，箱包封腰，酒类吊牌，日用百货、小家电吊牌",
+    "商品链接": "https://item.taobao.com/item.htm?id=896483828723",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=896483828723_1_0",
+    "价格": 0.04,
+    "销量": 700,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "金丽莎包装2",
+    "商品标题": "吊牌、服装吊牌、箱包吊牌、封腰、酒类吊牌、小百货小家电吊牌",
+    "商品链接": "https://item.taobao.com/item.htm?id=912199634975",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=912199634975_1_5942741334729",
+    "价格": 0.04,
+    "销量": 100,
+    "包邮": "是",
+    "发货地": "浙江 温州"
+  },
+  {
+    "店铺名称": "晟玥医疗耗材商城",
+    "商品标题": "一次性大便杯/采集器/盒/标本瓶医学检验用20/30/40/60ml带盖刻度",
+    "商品链接": "https://item.taobao.com/item.htm?id=628612157911",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=628612157911_1_4639144563867",
+    "价格": 0.05,
+    "销量": 3,
+    "包邮": "是",
+    "发货地": "江苏 泰州"
+  },
+  {
+    "店铺名称": "阿宇五金店",
+    "商品标题": "带盖款三合一连接件 极简枪黑12mm偏心轮橱柜二合一快装连接杆",
+    "商品链接": "https://item.taobao.com/item.htm?id=925000097028",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=925000097028_1_5971469051851",
+    "价格": 0.06,
+    "销量": 400,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "铭奥光电",
+    "商品标题": "新年喜庆红色地垫入户门进门垫兔年地毯玄关家用卧室门口防滑脚垫",
+    "商品链接": "https://item.taobao.com/item.htm?id=932843472735",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=932843472735_1_5985073142946",
+    "价格": 0.09,
+    "销量": 21,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "鸿新家具材料五金",
+    "商品标题": "304不锈钢挂钩单钩双钩实心衣钩家庭酒店浴室挂件衣勾衣柜钩门钩",
+    "商品链接": "https://item.taobao.com/item.htm?id=773935136043",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=773935136043_1_5464534750328",
+    "价格": 0.1,
+    "销量": 3000,
+    "包邮": "是",
+    "发货地": "广东 广州"
+  },
+  {
+    "店铺名称": "联享优选购",
+    "商品标题": "厕所清洁工具马桶刷套装家用日式长柄厕所刷塑料软毛无死角",
+    "商品链接": "https://item.taobao.com/item.htm?id=899671497681",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=899671497681_1_5980207739826",
+    "价格": 0.1,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "铜陵方正塑业科技",
+    "商品标题": "一次性杯盖子14盎司奶茶咖啡豆浆打包盖子39004只",
+    "商品链接": "https://item.taobao.com/item.htm?id=779130510478",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=779130510478_1_0",
+    "价格": 0.11,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "安徽 铜陵"
+  },
+  {
+    "店铺名称": "猪猪的杂货店",
+    "商品标题": "满30发一包裹洗衣机槽海绵百洁布厨房双面去污清洁刷锅神器海绵块",
+    "商品链接": "https://item.taobao.com/item.htm?id=894464497349",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=894464497349_1_5912003011808",
+    "价格": 0.13,
+    "销量": 100,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "深圳市诺亚芯电子",
+    "商品标题": "全新原装 屹晶微 EG358 双低功率运算放大器芯片IC SOP-8贴片",
+    "商品链接": "https://item.taobao.com/item.htm?id=676955733563",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=676955733563_1_4860305732530",
+    "价格": 0.18,
+    "销量": 7,
+    "包邮": "是",
+    "发货地": "广东 深圳"
+  },
+  {
+    "店铺名称": "讲礼貌文创屋",
+    "商品标题": "2025和生财生菜会平安如意亚克力冰箱贴文创冰箱贴旅游纪念品礼物",
+    "商品链接": "https://item.taobao.com/item.htm?id=935625791715",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=935625791715_1_5995874547768",
+    "价格": 0.2,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "皆跋的百货店的小店",
+    "商品标题": "DN25-2000橡胶垫片 法兰胶垫 胶垫片 密封胶垫",
+    "商品链接": "https://item.taobao.com/item.htm?id=636134027912",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=636134027912_1_4720874646624",
+    "价格": 0.25,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "广东 佛山"
+  },
+  {
+    "店铺名称": "畔之城百货店的小店",
+    "商品标题": "毛巾家用特价酒店宾馆足疗洗非纯棉一次性纤维浴白色毛巾方巾",
+    "商品链接": "https://item.taobao.com/item.htm?id=660075412634",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=660075412634_1_4762425024120",
+    "价格": 0.3,
+    "销量": 29,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "雨顺五金",
+    "商品标题": "304不锈钢钢丝绳保险绳吊码锁扣吊线器广告牌挂钩锁扣连接吊钩",
+    "商品链接": "https://item.taobao.com/item.htm?id=930123021369",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=930123021369_1_5980444750693",
+    "价格": 0.3,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "广东 东莞"
+  },
+  {
+    "店铺名称": "拉瓦婷",
+    "商品标题": "厂家直销支化妆刷新款眼影刷初学者便携款美容化妆刷子唇刷",
+    "商品链接": "https://item.taobao.com/item.htm?id=929904473924",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=929904473924_1_5981179211902",
+    "价格": 0.32,
+    "销量": 100,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "悦鑫自动化",
+    "商品标题": "不锈钢柜门磁吸衣柜门吸强力吸合器门碰尼龙强磁碰珠塑料柜吸锁扣",
+    "商品链接": "https://item.taobao.com/item.htm?id=930408505376",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=930408505376_1_5815866537380",
+    "价格": 0.38,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "无锡鸿安阀门管件",
+    "商品标题": "金属缠绕垫片石墨缠绕垫密封垫蒸汽高温垫片DN15 20 25 32 40 50",
+    "商品链接": "https://item.taobao.com/item.htm?id=656050605191",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=656050605191_1_4732427092695",
+    "价格": 0.4,
+    "销量": 15,
+    "包邮": "是",
+    "发货地": "江苏 无锡"
+  },
+  {
+    "店铺名称": "纸巾小袋子",
+    "商品标题": "卷装标签贴纸口取纸不干胶便签贴防水记号贴自粘姓名办公用口曲贴",
+    "商品链接": "https://item.taobao.com/item.htm?id=901899392456",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=901899392456_1_5925432927310",
+    "价格": 0.4,
+    "销量": 4,
+    "包邮": "是",
+    "发货地": "广东 揭阳"
+  },
+  {
+    "店铺名称": "普芮特洁净工厂店",
+    "商品标题": "超细纤维毛巾无尘车间专用GMP洁净区实验室食品级吸水不掉毛抹布",
+    "商品链接": "https://item.taobao.com/item.htm?id=849891229616",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=849891229616_1_5807253150505",
+    "价格": 0.44,
+    "销量": 700,
+    "包邮": "是",
+    "发货地": "江苏 宿迁"
+  },
+  {
+    "店铺名称": "江苏上特阀门管件厂家直销",
+    "商品标题": "金属缠绕垫片 高温垫片法兰垫片DN15 20 25 32 40 50 65 80 100",
+    "商品链接": "https://item.taobao.com/item.htm?id=562286499724",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=562286499724_1_3528259916186",
+    "价格": 0.44,
+    "销量": 95,
+    "包邮": "是",
+    "发货地": "江苏 无锡"
+  },
+  {
+    "店铺名称": "温州百游塑业有限公司",
+    "商品标题": "户外防水接线盒F型ABS塑料防水盒室外监控电源盒端子盒密封带耳",
+    "商品链接": "https://item.taobao.com/item.htm?id=673571749917",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=673571749917_1_5914844714172",
+    "价格": 0.45,
+    "销量": 20000,
+    "包邮": "是",
+    "发货地": "浙江 温州"
+  },
+  {
+    "店铺名称": "惊鸿五金杂货铺",
+    "商品标题": "不易沾油洗锅刷子塑料小刷子清洁刷锅神器弯柄洗锅刷日用百货",
+    "商品链接": "https://item.taobao.com/item.htm?id=935874971851",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=935874971851_1_5995308654878",
+    "价格": 0.46,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "苏州固之峰五金",
+    "商品标题": "C型钢吊卡丝杆挂钩吊钩螺丝通风管道扣码槽卡架C型钢挂钩M8M10M12",
+    "商品链接": "https://item.taobao.com/item.htm?id=698549476409",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=698549476409_1_4945357341058",
+    "价格": 0.5,
+    "销量": 16,
+    "包邮": "是",
+    "发货地": "江苏 苏州"
+  },
+  {
+    "店铺名称": "文乐百货",
+    "商品标题": "美妆工具30ml喷瓶喷雾瓶化妆瓶透明侧喷小喷壶液体喷瓶塑料喷水瓶",
+    "商品链接": "https://item.taobao.com/item.htm?id=569313996464",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=569313996464_1_3930807507032",
+    "价格": 0.6,
+    "销量": 8,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "温州田野阀门有限公司企业店",
+    "商品标题": "四氟快装密封垫圈快装专用 Tri Clamp Ferrule  Gasket Seal PTFE",
+    "商品链接": "https://item.taobao.com/item.htm?id=547499892774",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=547499892774_1_3480755590028",
+    "价格": 0.6,
+    "销量": 2,
+    "包邮": "是",
+    "发货地": "浙江 温州"
+  },
+  {
+    "店铺名称": "故渊茶坊",
+    "商品标题": "茶巾加厚吸水高档功夫茶毛巾专用茶桌茶具抹布茶几禅意茶道配件",
+    "商品链接": "https://item.taobao.com/item.htm?id=727233688387",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=727233688387_1_5048679413296",
+    "价格": 0.61,
+    "销量": 300,
+    "包邮": "是",
+    "发货地": "福建 泉州"
+  },
+  {
+    "店铺名称": "祝老板发大财",
+    "商品标题": "竹木王子小竹牙线一次性家庭装剔牙线棒随身便携牙签牙线50支盒装",
+    "商品链接": "https://item.taobao.com/item.htm?id=934613329915",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=934613329915_1_5991215495337",
+    "价格": 0.66,
+    "销量": 1,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "河北电力线缆",
+    "商品标题": "通信电缆挂钩钢绞线挂线吊钩架空光纤线塑托铝托挂钩通讯光缆挂钩",
+    "商品链接": "https://item.taobao.com/item.htm?id=915755833553",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=915755833553_1_5949864727647",
+    "价格": 0.67,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "河北 沧州"
+  },
+  {
+    "店铺名称": "梦程跨境贸易",
+    "商品标题": "高品质透明美甲盒手工甲展示盒穿戴甲装盒加厚美甲收纳盒子",
+    "商品链接": "https://item.taobao.com/item.htm?id=932478768750",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=932478768750_1_5819161569886",
+    "价格": 0.68,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "北京"
+  },
+  {
+    "店铺名称": "明度支架 茶叶包装 茶具",
+    "商品标题": "瓷盘画展示支架 陶瓷挂盘支架 圆盘托架 茶叶饼支架普洱茶架 盘架",
+    "商品链接": "https://item.taobao.com/item.htm?id=580967054704",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=580967054704_1_4043353898941",
+    "价格": 0.69,
+    "销量": 23,
+    "包邮": "是",
+    "发货地": "广东 佛山"
+  },
+  {
+    "店铺名称": "新乡管夹制造厂",
+    "商品标题": "乐业铁钉木工钉小钉子手工钉家用圆钉小洋钉6分8 1 2 3 4 5 6寸",
+    "商品链接": "https://item.taobao.com/item.htm?id=817791091652",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=817791091652_1_5687284642793",
+    "价格": 0.65,
+    "销量": 1,
+    "包邮": "是",
+    "发货地": "河南 新乡"
+  },
+  {
+    "店铺名称": "正诚气动",
+    "商品标题": "微型快拧接头 气动迷你小型直通弯头 锁管 4-M3/4-M5/6-M5 铜镀镍",
+    "商品链接": "https://item.taobao.com/item.htm?id=550934537149",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=550934537149_1_4053966270161",
+    "价格": 0.65,
+    "销量": 3000,
+    "包邮": "是",
+    "发货地": "广东 东莞"
+  },
+  {
+    "店铺名称": "英伟瑞包装",
+    "商品标题": "4寸芯片盒防静电格子华夫盒带盖子芯粒晶粒裸片储存盒IC Tray托盘",
+    "商品链接": "https://item.taobao.com/item.htm?id=751902075059",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=751902075059_1_5181527256193",
+    "价格": 0.65,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "广东 东莞"
+  },
+  {
+    "店铺名称": "西瓜农机配件商行",
+    "商品标题": "各种型号三缸柱塞泵阀座阀门芯活门组三缸柱塞泵零配件高压泵垫片",
+    "商品链接": "https://item.taobao.com/item.htm?id=934854306058",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=934854306058_1_5826695865158",
+    "价格": 0.65,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 台州"
+  },
+  {
+    "店铺名称": "逢相喜",
+    "商品标题": "削皮刀家用瓜果刨具厨房土豆刨子北欧色去皮器水果刀削皮器瓜刨",
+    "商品链接": "https://item.taobao.com/item.htm?id=936512225961",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=936512225961_1_5829327521516",
+    "价格": 0.65,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "朗诚五金",
+    "商品标题": "重型碳钢脚杯防滑胶垫黑色橙色地脚橡胶垫脚垫",
+    "商品链接": "https://item.taobao.com/item.htm?id=922808715357",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=922808715357_1_5969012463668",
+    "价格": 0.7,
+    "销量": 23,
+    "包邮": "是",
+    "发货地": "江苏 无锡"
+  },
+  {
+    "店铺名称": "栎乐妈旺铺",
+    "商品标题": "油烟机美缝不锈钢铲刀厨房油污家电清洗家政工具清洁用小铲子神器",
+    "商品链接": "https://item.taobao.com/item.htm?id=669827641171",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=669827641171_1_4818471684441",
+    "价格": 0.7,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 杭州"
+  },
+  {
+    "店铺名称": "欣阳五金",
+    "商品标题": "门栓式快速夹具钩子勾子拉扣搭扣锁扣式扣子",
+    "商品链接": "https://item.taobao.com/item.htm?id=707996907466",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=707996907466_1_5141335118987",
+    "价格": 0.7,
+    "销量": 1,
+    "包邮": "是",
+    "发货地": "江苏 常州"
+  },
+  {
+    "店铺名称": "河北橡塑制品工厂店",
+    "商品标题": "脚手架橡胶保护套48钢管护帽反光防撞承重地垫厂家发货",
+    "商品链接": "https://item.taobao.com/item.htm?id=926637865927",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=926637865927_1_5974636547870",
+    "价格": 0.7,
+    "销量": 1,
+    "包邮": "是",
+    "发货地": "河北 衡水"
+  },
+  {
+    "店铺名称": "浙江华典电力",
+    "商品标题": "CCT-10/16/20/C型铜线夹并线分线对接紫铜卡扣电缆分支器接线端子",
+    "商品链接": "https://item.taobao.com/item.htm?id=819290168824",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=819290168824_1_5692241655972",
+    "价格": 0.7,
+    "销量": 14,
+    "包邮": "是",
+    "发货地": "浙江 温州"
+  },
+  {
+    "店铺名称": "绝缘材料套管批发中心",
+    "商品标题": "沃尔双壁管内壁涂胶阻燃热缩管SBRS-3X4X防水密封带胶防腐热缩管",
+    "商品链接": "https://item.taobao.com/item.htm?id=577677753239",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=577677753239_1_3819687653872",
+    "价格": 0.7,
+    "销量": 13,
+    "包邮": "是",
+    "发货地": "广东 东莞"
+  },
+  {
+    "店铺名称": "跃勇医疗",
+    "商品标题": "义齿矫治器盒假牙牙套盒子保持器盒彩色透明盒 收纳盒透气储牙盒",
+    "商品链接": "https://item.taobao.com/item.htm?id=916589564428",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=916589564428_1_5949218638816",
+    "价格": 0.7,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "河南 安阳"
+  },
+  {
+    "店铺名称": "进口工控自动化001",
+    "商品标题": "新款针规塑料胶盒实木盒子量规量棒量针收纳盒放置盒",
+    "商品链接": "https://item.taobao.com/item.htm?id=916774029763",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=916774029763_1_5785153737912",
+    "价格": 0.7,
+    "销量": 1,
+    "包邮": "是",
+    "发货地": "江苏 无锡"
+  },
+  {
+    "店铺名称": "王大脸生活号",
+    "商品标题": "网红纳米胶高粘度无痕贴魔力超强力粘胶墙布透明防水固定双面胶带",
+    "商品链接": "https://item.taobao.com/item.htm?id=845335047654",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=845335047654_1_5627089849753",
+    "价格": 0.7,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "浙江 金华"
+  },
+  {
+    "店铺名称": "皓动橡塑制品",
+    "商品标题": "运动木地板专用减震垫 羽毛球篮球馆龙骨找平隔音减震弹性橡胶垫",
+    "商品链接": "https://item.taobao.com/item.htm?id=791566822974",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=791566822974_1_5402346160295",
+    "价格": 0.7,
+    "销量": 0,
+    "包邮": "是",
+    "发货地": "河北 沧州"
+  },
+  {
+    "店铺名称": "鸿鼎吸塑包装",
+    "商品标题": "厂家直销食品托塑料包装盒PP材料年糕圆形月饼托盘 03",
+    "商品链接": "https://item.taobao.com/item.htm?id=529716520865",
+    "下单链接": "https://h5.m.taobao.com/cart/order.html?buyNow=false&buyParam=529716520865_1_0",
+    "价格": 0.7,
+    "销量": 11,
+    "包邮": "是",
+    "发货地": "广西 南宁"
+  }
+];
+    // DOM元素
+    const productsContainer = document.getElementById('products-container');
+    const emptyState = document.getElementById('empty-state');
+    const searchInput = document.getElementById('search-input');
+
+    // 按价格升序排序商品
+    const sortedProducts = [...products].sort((a, b) => a.price - b.price);
+
+    // 渲染商品列表
+    function renderProducts(productsToRender) {
+      productsContainer.innerHTML = '';
+      
+      if (productsToRender.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      
+      emptyState.classList.add('hidden');
+      
+      productsToRender.forEach(product => {
+        const productCard = createProductCard(product);
+        productsContainer.appendChild(productCard);
+      });
+    }
+
+    // 创建商品卡片
+    function createProductCard(product) {
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-xl overflow-hidden card-shadow card-hover';
+      
+      card.innerHTML = `
+        <div class="p-5">
+          <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2">${product.商品标题}</h3>
+          <div class="space-y-3">
+            <div class="flex items-center text-sm text-gray-600">
+              <i class="fa fa-shopping-store mr-2 text-primary"></i>
+              <span>${product.店铺名称}</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-600">
+              <i class="fa fa-map-marker mr-2 text-primary"></i>
+              <span>${product.发货地}</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-600">
+              <i class="fa fa-yen mr-2 text-primary"></i>
+              <span>¥${product.价格.toFixed(2)}</span>
+              <span class="ml-3"><i class="fa fa-bolt mr-1 text-primary"></i>${product.包邮 === '是' ? '包邮' : '不包邮'}</span>
+            </div>
+            <div class="flex items-center text-sm text-gray-600">
+              <i class="fa fa-bullhorn mr-2 text-primary"></i>
+              <span>销量: ${product.销量}</span>
+            </div>
+          </div>
+          <button 
+            class="mt-4 w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-custom copy-btn"
+            data-link="${product.下单链接}"
+            data-name="${product.店铺名称}-${product.发货地}-¥${product.价格.toFixed(2)}-销量: ${product.销量}"
+          >
+            <i class="fa fa-copy mr-2"></i>${product.店铺名称}-${product.发货地}-¥${product.价格.toFixed(2)}-销量: ${product.销量}
+          </button>
+        </div>
+      `;
+      
+      // 添加复制事件监听
+      const copyBtn = card.querySelector('.copy-btn');
+      copyBtn.addEventListener('click', handleCopy);
+      
+      return card;
+    }
+
+    // 处理复制事件
+    function handleCopy(e) {
+      const btn = e.target;
+      const link = btn.getAttribute('data-link');
+      const btnName = btn.getAttribute('data-name');
+      
+      // 创建临时文本框
+      const textarea = document.createElement('textarea');
+      textarea.value = link;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      
+      try {
+        // 选择文本并复制
+        textarea.select();
+        textarea.setSelectionRange(0, textarea.value.length);
+        const successful = document.execCommand('copy');
+        
+        if (successful) {
+          // 显示复制成功反馈
+          btn.classList.add('copy-animation', 'bg-success');
+          btn.innerHTML = '<i class="fa fa-check mr-2"></i>复制成功';
+          
+          setTimeout(() => {
+            btn.classList.remove('copy-animation', 'bg-success');
+            btn.innerHTML = `<i class="fa fa-copy mr-2"></i>${btnName}`;
+          }, 2000);
+        } else {
+          throw new Error('复制命令执行失败');
+        }
+      } catch (error) {
+        console.error('复制失败:', error);
+        alert('复制失败，请手动复制链接');
+      } finally {
+        // 移除临时文本框
+        document.body.removeChild(textarea);
+      }
+    }
+
+    // 搜索功能
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const filteredProducts = sortedProducts.filter(product => 
+        product.店铺名称.toLowerCase().includes(searchTerm) || 
+        product.商品标题.toLowerCase().includes(searchTerm) ||
+        product.发货地.toLowerCase().includes(searchTerm)
+      );
+      renderProducts(filteredProducts);
+    });
+
+    // 初始化渲染
+    renderProducts(sortedProducts);
+  </script>
+</body>
+</html>

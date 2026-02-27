@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>liu</title>
+	<script src="js/gzby_jd.js"></script>
+    <script src="js/ty.js"></script>
+	<script src="js/ss.js"></script>
+    <style>
+        body {
+            background-image: url('img/2.jpg');  /* 替换为您喜欢的背景图片链接 */
+            background-size: cover;  /* 使背景图片覆盖整个页面 */
+            background-repeat: no-repeat;  /* 防止背景图片重复 */
+            background-attachment: fixed;  /* 固定背景，滚动页面时背景不动 */
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+
+
+        /* 基本样式：背景色、字体颜色、边框、圆角 */
+        input[type="submit"] {
+            padding: 2px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* 鼠标悬停时的样式：颜色变化、阴影效果 */
+        input[type="submit"]:hover {
+            background-color: #388e3c;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 按下时的样式 */
+        input[type="submit"]:active {
+            transform: scale(0.95);
+        }
+
+        /*  button {
+              padding: 15px 30px;
+              background-color: #4CAF50;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              box-shadow: 0 3px 0 #388e3c;
+              transition: all 0.3s ease;
+          }
+
+         button {
+              padding: 15px 30px;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              box-shadow: 0 0 10px 0 rgba(0, 123, 255, 0.5);
+              transition: all 0.3s ease;
+          }
+
+          button:hover {
+              box-shadow: 0 0 20px 0 rgba(0, 123, 255, 0.8);
+          }
+
+          button:hover {
+              box-shadow: 0 0 0 #388e3c;
+              transform: translateY(3px);
+          }
+
+  */
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        input[type="submit"], button {
+            padding: 10px 20px;
+        }
+
+        button {
+            white-space: nowrap;
+            padding: 8px 18px;
+            background: linear-gradient(to right, #007bff, #6610f2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        table {
+            width: 100%; /* 限制表格宽度为页面的 90%，两边留出距离 */
+            margin: 0 auto; /* 水平居中 */
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* 隐藏超出部分 */
+            white-space: nowrap; /* 内容不换行 */
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        th,
+        td {
+            width: auto;
+            max-width: 200px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th:nth-child(1) {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            color: #333333;
+            width: 10%;
+        }
+
+        th:nth-child(2) {
+            width: 40%;
+        }
+
+        th:nth-child(3) {
+            width: 40%;
+        }
+
+        th:nth-child(4) {
+            width: 10%;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .selected-row {
+            animation: backgroundChange 2s ease-in-out infinite;
+        }
+
+        @keyframes backgroundChange {
+            0% {
+                background-color: lightblue;
+            }
+            50% {
+                background-color: lightgreen;
+            }
+            100% {
+                background-color: lightpink;
+            }
+        }
+
+        .edit-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .edit-popup-content {
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 300px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-popup-content input {
+            width: 100%;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+            gap: 15px;
+        }
+    </style>
+</head>
+
+
+<div>
+    <input placeholder="自定义输入" type="text" value="" id="a">
+    <input placeholder="尾号码" type="text" value="" id="b">
+    <input type="submit" value="绑定" onclick="insertServlet()">
+</div>
+<div>
+    <input placeholder="ID" type="text" value="" id="c">
+    <input placeholder="删除码" type="text" value="" id="d">
+    <input type="submit" value="删除" onclick="delByIdFzServlet()">
+</div>
+<div>
+    <input type="text" placeholder="3-1.8" value="" id="id2">
+    <button onclick="f()">查询</button>&nbsp&nbsp
+
+</div>
+<div id="message" class="message"></div>
+<div id="editPopup" class="edit-popup">
+    <div class="edit-popup-content">
+        <h3>修改内容</h3>
+        <input type="text" id="editId" placeholder="Id">
+        <input type="text" id="editName" placeholder="名字">
+        <input type="text" id="editLianjie" placeholder="鏈接">
+        <input type="text" id="editFalt" placeholder="设置0删除">
+
+
+        <input type="hidden" id="oldId">
+        <div class="button-container">
+            <button onclick="saveEdit()">修改</button>
+            <button onclick="closeEditPopup()">取消</button>
+        </div>
+    </div>
+</div>
+<table>
+    <!-- 表格内容将在此动态添加 -->
+</table>
+
+<script>
+const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+		ty_init(SUPABASE_URL, SUPABASE_KEY);
+
+    window.onload = async function () {
+       /* fetch('/aaaa/FindDzServlet')
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));*/
+			
+				const data=await ty_get("dz",{ select: '*', order: 'id', ascending: false });
+			
+			showData(data);
+         
+    }
+
+
+
+    /*function insertServlet() {
+        var username = document.getElementById("a").value;
+        var lianjie = document.getElementById("b").value;
+        fetch(`/aaaa/insertServletdz?username=${username}&lianjie=${lianjie}`)
+            .then(response => response.json())
+            .then(data => {
+
+                showMessage(data.message);
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));
+    }*/
+	
+	
+	
+		
+/**
+ * 验证 lianjie 格式
+ * 规则：左边纯数字，右边4位或11位纯数字，中间用-连接，多组用/分开
+ * 示例：12-1253/23-12345678911
+ */
+
+
+async function insertServlet() {
+   
+    var username = document.getElementById("a").value.trim();
+    var lianjie = document.getElementById("b").value.trim(); 
+
+    // 2. 基础非空校验
+    if (!username) {
+        showMessage("用户自定义生成码不能为空");
+        return;
+    }
+    if (!lianjie) {
+        showMessage("地址尾号信息不能为空");
+        return;
+    }
+
+    // 3. 【新增】严格格式校验
+    if (!validateLianjieFormat(lianjie)) {
+        showMessage("格式错误！请输入如：12-1253/23-12345678911\n(左边纯数字-右边4位或11位数字，多组用/分开)");
+        return;
+    }
+    
+    // 4. 长度校验 (保留你原有的逻辑，如果不需要可删除)
+    if (lianjie.length < 8) {
+        showMessage("绑定失败：内容过短");
+        return;
+    }
+
+    // 5. 原有业务逻辑校验 (checkArray)
+    var arr1 = convertString(lianjie);
+    // 注意：convertString 需要能处理新的格式，确保它提取出的尾号部分能被 arrlist 匹配
+    var falt = checkArray(arr1[2], arrlist);
+
+    if (!falt.isAllIncluded) {
+        showMessage("数据 " + falt.nonIncludedElements + " 不存在");
+        return;
+    }
+
+    // 6. 开始数据库操作 (Try-Catch 包裹)
+    try {
+        // --- 第一步：查询是否存在相同 username 且 falt="1" 的数据 ---
+        const { data: existingData, error: queryError } = await ty_supabase
+            .from('dz')
+            .select('id, lianjie')
+            .eq('name', username)
+            .eq('falt', '1')
+            .order('id', { ascending: false }); // 按 ID 降序，确保拿到最新的
+
+        if (queryError) throw queryError;
+
+        if (!existingData || existingData.length === 0) {
+            // --- 情况 A: 没有数据，直接添加 ---
+            await performInsert(username,lianjie);
+			showMessage(`绑定成功:`+username);
+            
+        } else {
+            // --- 情况 B: 有数据，判断子字符串关系 ---
+            const oldRecord = existingData[0]; // 取最新的一条
+            const oldLianjie = oldRecord.lianjie || "";
+            const oldId = oldRecord.id;
+
+            // 判断：旧数据 是否 包含 新数据？
+            if (lianjie.includes(oldLianjie)) {
+                // 是：先删除旧的
+                const { error: deleteError } = await ty_supabase
+                    .from('dz')
+                    .delete()
+                    .eq('id', oldId);
+                
+                if (deleteError) throw deleteError;
+
+                // 再添加新的
+                await performInsert(username,lianjie);
+				showMessage(`成功修改:`+username);
+				return;
+                
+            } else {
+                // 否：报错，拒绝添加
+                throw new Error("提交失败：该用户已存在不兼容的数据记录，无法覆盖。");
+            }
+        }
+
+    } catch (error) {
+        console.error("提交出错:", error);
+        showMessage(error.message || "网络错误，请稍后重试");
+    }
+}
+
+// 辅助函数：执行插入
+async function performInsert(username, lianjie) {
+    const newRow = {
+        name: username,
+        lianjie: lianjie
+        // 如果需要自动设置 falt，可以在这里加：falt: "1"
+    };
+
+    const data = await ty_add("dz", newRow);
+
+    if (data && data.length > 0) {
+        showMessage("提交成功！");
+        // 成功后刷新页面或列表
+        if (typeof window.onload === 'function') {
+            window.onload();
+        }
+    } else {
+        // 兼容 RLS 导致返回空的情况
+        showMessage("提交成功！");
+        if (typeof window.onload === 'function') {
+            window.onload();
+        }
+    }
+}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+    /*function delByIdFzServlet() {
+        var id = document.getElementById("c").value;
+        var password = document.getElementById("d").value;
+        fetch(`/aaaa/delByIdDzServlet?id=${id}&password=${password}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                window.onload();
+            })
+            .catch(error => console.error('Error:', error));
+    }*/
+	
+	
+	async function delByIdFzServlet() {
+    // 1. 获取输入值
+    var id = document.getElementById("c").value.trim();
+    var password = document.getElementById("d").value.trim(); // 暂时获取，用于本地简单校验或后续扩展
+
+    // 2. 基础校验
+    if (!id) {
+        showMessage("请输入要删除的记录 ID");
+        return;
+    }
+
+    // ⚠️ 注意：这里无法像 Servlet 那样直接验证密码并决定是否删除
+    // 建议：如果这是管理功能，请依靠登录状态 (RLS) 来控制权限。
+    // 如果必须验证密码，请参考下方的 "进阶方案"。
+    
+    // 简单的前端提示（可选）
+    if (password!=123698745) {
+        showMessage("为了安全，请输入确认密码（当前版本仅做提示，实际权限由系统控制）");
+        // 如果你希望强制必须有密码才能点，可以 return，但这不能替代后端验证
+        return; 
+    }
+
+    try {
+        // 3. 确认操作 (防止误删)
+        if (!confirm(`确定要删除 ID 为 ${id} 的数据吗？此操作不可恢复！`)) {
+            return;
+        }
+
+        // 4. 执行删除
+        // 假设表名是 'dz'，请根据实际情况修改
+        await ty_delete('dz', id);
+
+        // 5. 成功处理
+        showMessage("删除成功！");
+        
+        // 清空输入框
+        document.getElementById("c").value = "";
+        document.getElementById("d").value = "";
+
+        // 刷新列表
+        if (typeof window.onload === 'function') {
+            window.onload();
+        }
+
+    } catch (error) {
+        console.error('删除失败:', error);
+        
+        let msg = "删除失败，请稍后重试";
+        
+        // 错误详情处理
+        if (error.message) {
+            msg = error.message;
+        }
+        // 权限错误 (403)
+        if (error.code === 'PGRST301' || error.status === 403) {
+            msg = "权限不足：您没有权限删除此数据（请检查登录状态或 RLS 策略）";
+        }
+        // 未找到数据 (虽然 delete 通常不报错，但以防万一)
+        if (error.status === 404) {
+            msg = "未找到该 ID 的数据";
+        }
+
+        showMessage(msg);
+    }
+}
+
+
+
+    function showData(data) {
+        let existingTable = document.querySelector('table');
+        if (existingTable) {
+            existingTable.remove();
+        }
+
+        let table = document.createElement('table');
+
+        let thead = table.createTHead();
+        let row = thead.insertRow();
+        let headers = Object.keys(data[0]);
+
+        let tbody = table.createTBody();
+        for (let item of data) {
+            let row = tbody.insertRow();
+            row.dataset.id = item.id;
+            let x = '';
+            for (let header of headers) {
+                x = header;
+                let cell = row.insertCell();
+                cell.innerHTML = item[header];
+                cell.classList.add('long-cell');
+            }
+            let cell = row.insertCell();
+            cell.innerHTML = `<button onmousedown="startLongPress(this, ${item.id})" onmouseup="endLongPress()" onmouseout="endLongPress()" ontouchstart="startLongPress(this, ${item.id})" ontouchend="endLongPress()" ontouchmove="endLongPress()" onclick="copyToClipboard('${item[x]}')">复制</button>`;
+
+
+        }
+
+        document.body.appendChild(table);
+
+        // 为表格行添加鼠标悬停事件处理程序
+        tbody.addEventListener('mouseover', function(event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                let rows = tbody.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].classList.remove('selected-row');
+                }
+                target.classList.add('selected-row');
+            }
+        });
+
+        tbody.addEventListener('mouseout', function(event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                target.classList.remove('selected-row');
+            }
+        });
+    }
+
+    async function f() {
+
+        var elementById = document.getElementById("id2").value;
+
+       await g(elementById);
+    }
+
+   async function g(guanjianzhi) {
+        /*fetch(`/aaaa/MohuchaxunDzServlet?tiaojian=${guanjianzhi}`)
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));*/
+			
+
+			const { data, error } = await ty_supabase
+			  .from('dz') 
+			  .select('*')   // 选择所有列，或指定需要的列 ['id', 'name', 'dz', ...]
+			  .ilike('name', `%${guanjianzhi}%`).order('id', { ascending: true }); // 使用 ilike 进行模糊查询
+
+			if (error) {
+			  console.error('查询失败:', error);
+			} else {
+			 showData(data)
+			}
+			
+			
+    }
+
+    function copyToClipboard(text) {
+        let tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showMessage(text);
+    }
+
+    function showMessage(s) {
+        var messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = s;
+        messageDiv.style.position = 'fixed';
+        messageDiv.style.top = '50%';
+        messageDiv.style.left = '50%';
+        messageDiv.style.transform = 'translate(-50%, -50%)';
+        messageDiv.style.display = 'block';
+
+        setTimeout(function () {
+            messageDiv.style.display = 'none';
+        }, 1000);
+    }
+
+
+    let longPressTimer;
+
+    function startLongPress(button, id) {
+        longPressTimer = setTimeout(() => {
+            openEditPopup(id);
+        }, 1000);
+    }
+
+    function endLongPress() {
+        clearTimeout(longPressTimer);
+    }
+
+    function openEditPopup(id) {
+        document.getElementById('editId').value = id;
+        document.getElementById('oldId').value = id;
+        let row = document.querySelector(`tr[data-id="${id}"]`);
+        let name = row.cells[1].textContent;
+        let lianjie = row.cells[2].textContent;
+ let falt=row.cells[3].textContent;
+        document.getElementById('editName').value = name;
+        document.getElementById('editLianjie').value = lianjie;
+
+document.getElementById('editFalt').value=falt;
+        document.getElementById('editPopup').style.display = 'flex';
+    }
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
+   async function saveEdit() {
+        let id = document.getElementById('editId').value;
+        let name = document.getElementById('editName').value;
+        let lianjie = document.getElementById('editLianjie').value;
+        let falt = document.getElementById('editFalt').value;
+
+        let oldId = document.getElementById('oldId').value;
+        const params = {
+            id:id,
+            falt:falt,
+            name:name,
+            lianjie:lianjie
+           
+        };
+
+
+        fetch(`/aaaa/UpdateDzServlet?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));
+			
+			try {
+       
+            const data = await ty_update("dz", oldId, params);    
+				if (data) {
+				showMessage("修改成功！");
+				closeEditPopup();
+					if (typeof window.onload === 'function') {
+						window.onload(); 
+					}             
+				} 
+			else {
+					showMessage("修改失败：未找到该记录");
+			     }
+	    } catch (error) {
+				console.error("更新出错:", error);
+				showMessage("发生错误：" + error.message);
+			}
+			
+			
+    }
+
+</script>
+</body>
+
+</html>

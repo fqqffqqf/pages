@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>增强版二维码生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</head>
+
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+<div class="bg-white p-8 rounded shadow-md w-96">
+    <h1 class="text-2xl font-bold mb-4">二维码生成</h1>
+    <div class="mb-4">
+        <label for="qr-text" class="block text-sm font-medium text-gray-700">输入要编码的文本:</label>
+        <input type="text" id="qr-text" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+    </div>
+    <div class="mb-4">
+        <label for="qr-size" class="block text-sm font-medium text-gray-700">二维码大小 (px):</label>
+        <input type="number" id="qr-size" value="100" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+    </div>
+    <button id="generate-btn" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">生成二维码</button>
+    <button id="save-btn" disabled class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mt-2">保存二维码</button>
+    <div id="qr-code" class="mt-8"></div>
+    <div class="mt-4">
+        <input type="file" id="qr-file-input" accept="image/*">
+        <button id="decode-btn" disabled class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 mt-2">识别二维码</button>
+        <input type="text" id="decoded-url" placeholder="识别出的链接" readonly class="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+        <button id="copy-btn" disabled class="bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 mt-2">复制链接</button>
+    </div>
+</div>
+
+<script>
+    // 生成随机地址的函数
+    function generateRandomAddress() {
+        const MIN = 0;
+        const MAX = 2;
+        const r = Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
+        return String.fromCharCode(65 + r) + Math.floor(Math.random() * 20 + 1) + '栋' + Math.floor(Math.random() * 100 + 1) + '室';
+    }
+
+    // 生成二维码
+    const generateBtn = document.getElementById('generate-btn');
+    const qrText = document.getElementById('qr-text');
+    const qrSize = document.getElementById('qr-size');
+    const qrCodeDiv = document.getElementById('qr-code');
+    const saveBtn = document.getElementById('save-btn');
+
+    generateBtn.addEventListener('click', () => {
+        const text = qrText.value || generateRandomAddress();
+        const size = parseInt(qrSize.value, 10);
+
+        const qr = qrcode(0, 'L');
+        qr.addData(text);
+        qr.make();
+
+        // 正确设置二维码大小
+        const qrImage = qr.createImgTag(size, 0);
+        qrCodeDiv.innerHTML = qrImage;
+
+        saveBtn.disabled = false;
+    });
+
+    // 保存二维码
+    saveBtn.addEventListener('click', () => {
+        const qrImage = qrCodeDiv.querySelector('img');
+        const link = document.createElement('a');
+        link.href = qrImage.src;
+        link.download = 'qrcode.png';
+        link.click();
+    });
+
+    // 识别二维码
+    const qrFileInput = document.getElementById('qr-file-input');
+    const decodeBtn = document.getElementById('decode-btn');
+    const decodedUrl = document.getElementById('decoded-url');
+    const copyBtn = document.getElementById('copy-btn');
+
+    qrFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            decodeBtn.disabled = false;
+        } else {
+            decodeBtn.disabled = true;
+        }
+    });
+
+    decodeBtn.addEventListener('click', () => {
+        const file = qrFileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    if (code) {
+                        decodedUrl.value = code.data;
+                        copyBtn.disabled = false;
+                    } else {
+                        decodedUrl.value = '未识别到二维码';
+                        copyBtn.disabled = true;
+                    }
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 复制链接
+    copyBtn.addEventListener('click', () => {
+        decodedUrl.select();
+        document.execCommand('copy');
+        alert('链接已复制到剪贴板');
+    });
+</script>
+</body>
+
+</html>

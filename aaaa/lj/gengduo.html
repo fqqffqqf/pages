@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+	
+    <title>zyljliu</title>
+	
+	<script src="../js/ty.js"></script>
+	  <script src="../js/gzby_jd.js"></script>
+    
+	<script src="../js/ss.js"></script>
+    <style>
+        body {
+            background-image: url('../img/2.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        input[type="submit"] {
+            padding: 2px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #388e3c;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="submit"]:active {
+            transform: scale(0.95);
+        }
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        input[type="submit"],
+        button {
+            padding: 5px 10px;
+        }
+
+        button {
+            white-space: nowrap;
+            padding: 5px 10px;
+            background: linear-gradient(to right, #007bff, #6610f2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        table {
+            width: 100%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            overflow: auto;
+            white-space: nowrap;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 5px;
+        }
+
+        th {
+            padding: 5px;
+        }
+
+        th,
+        td {
+            width: auto;
+            max-width: 200px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th:nth-child(1) {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            color: #333333;
+            width: 10%;
+        }
+
+        th:nth-child(2) {
+            width: 40%;
+        }
+
+        th:nth-child(3) {
+            width: 40%;
+        }
+
+        th:nth-child(4) {
+            width: 10%;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .selected-row {
+            animation: backgroundChange 2s ease-in-out infinite;
+        }
+
+        @keyframes backgroundChange {
+            0% {
+                background-color: lightblue;
+            }
+            50% {
+                background-color: lightgreen;
+            }
+            100% {
+                background-color: lightpink;
+            }
+        }
+
+        .edit-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .edit-popup-content {
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 300px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-popup-content input {
+            width: 100%;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+            gap: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <input placeholder="name" type="text" value="" id="a">
+    <input placeholder="lianjie" type="text" value="" id="b">
+    <input type="submit" value="添加" onclick="insertServlet()">
+</div>
+<div>
+    <input placeholder="ID" type="text" value="" id="c">
+    <input placeholder="删除码" type="text" value="" id="d">
+    <input type="submit" value="删除" onclick="delByIdFzServlet()">
+</div>
+<div>
+    <input type="text" placeholder="3 - 1.8" value="" id="id2">
+    <button onclick="f()">查询</button>&nbsp;&nbsp;
+</div>
+<div id="message" class="message"></div>
+<div id="editPopup" class="edit-popup">
+    <div class="edit-popup-content">
+        <h3>修改内容</h3>
+        <input type="text" id="editId" placeholder="Id">
+        <input type="text" id="editName" placeholder="修改名称">
+        <input type="text" id="editLianjie" placeholder="修改链接">
+        <input type="text" id="editFalt" placeholder="状态">
+        <input type="hidden" id="oldId">
+        <div class="button-container">
+            <button onclick="saveEdit()">修改</button>
+            <button onclick="closeEditPopup()">取消</button>
+            <button onclick="de(this.id)" id="de">删除</button>
+        </div>
+    </div>
+</div>
+
+<table>
+    <!-- 表格内容将在此动态添加 -->
+</table>
+
+<script>
+const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+		ty_init(SUPABASE_URL, SUPABASE_KEY);
+  window.onload = async function () {
+        /*fetch('/aaaa/FindLjServlet')
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));*/
+			
+			let data=await ty_get("lj",{ select: '*', order: 'id', ascending:false })
+			
+	   showData(data);
+    }
+
+   async function insertServlet() {
+        var username = document.getElementById("a").value;
+        var lianjie = document.getElementById("b").value;
+		
+
+        
+
+        /*fetch(`/aaaa/insertLjServlet?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));*/
+			
+			try {
+       
+            const data = await ty_add("lj",{name:username,lianjie:lianjie});    
+				if (data) {
+				showMessage(" 添加成功！");
+				closeEditPopup();
+					if (typeof window.onload === 'function') {
+						window.onload(); 
+					}             
+				} 
+			else {
+					showMessage("添加失敗");
+			     }
+	    } catch (error) {
+				console.error("出错:", error);
+				showMessage("发生错误：" + error.message);
+			}
+    }
+
+    async function delByIdFzServlet() {
+        var id = document.getElementById("c").value;
+        var password = document.getElementById("d").value;
+
+       /* fetch(`/aaaa/delByIdLjServlet?id=${id}&password=${password}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));*/
+
+			if(password!=123698745){
+			showMessage("删除失败");
+			return;
+			}
+			
+				
+			try{
+			
+			await ty_delete("lj", id) 
+			showMessage("删除成功");
+		
+                closeEditPopup();
+                window.onload();
+			}catch(e){
+			showMessage("删除失败");
+			}
+
+
+    }
+
+
+    function de(id) {
+        var id = document.getElementById("de").dataset.id;
+
+        var password = document.getElementById("d").value;
+
+        fetch(`/aaaa/delByIdLjServlet?id=${id}&password=${password}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));
+
+    }
+    function showData(data) {
+        let existingTable = document.querySelector('table');
+        if (existingTable) {
+            existingTable.remove();
+        }
+
+        let table = document.createElement('table');
+
+        let thead = table.createTHead();
+        let row = thead.insertRow();
+        let headers = Object.keys(data[0]);
+
+        let tbody = table.createTBody();
+        for (let item of data) {
+            let row = tbody.insertRow();
+            row.dataset.id = item.id;
+            let x = '';
+            for (let header of headers) {
+                x = header;
+                let cell = row.insertCell();
+                cell.innerHTML = item[header];
+                cell.classList.add('long-cell');
+            }
+            let cell = row.insertCell();
+            cell.innerHTML = `<button onmousedown="startLongPress(this, ${item.id})" onmouseup="endLongPress()" onmouseout="endLongPress()" ontouchstart="startLongPress(this, ${item.id})" ontouchend="endLongPress()" ontouchmove="endLongPress()" onclick="copyToClipboard('${item.lianjie}')">复制</button>`;
+        }
+
+        document.body.appendChild(table);
+
+        // 为表格行添加鼠标悬停事件处理程序
+        tbody.addEventListener('mouseover', function (event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                let rows = tbody.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].classList.remove('selected-row');
+                }
+                target.classList.add('selected-row');
+            }
+        });
+
+        tbody.addEventListener('mouseout', function (event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                target.classList.remove('selected-row');
+            }
+        });
+    }
+
+   async function f() {
+        var elementById = document.getElementById("id2").value;
+       await g(elementById);
+    }
+
+   async function g(guanjianzhi) {
+        /*fetch(`/aaaa/MohuchaxunLjServlet?tiaojian=${guanjianzhi}`)
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));*/
+			
+			const { data, error } = await ty_supabase
+			  .from('lj') 
+			  .select('*')   // 选择所有列，或指定需要的列 ['id', 'name', 'dz', ...]
+			  .ilike('name', `%${guanjianzhi}%`).order('id', { ascending: true }); // 使用 ilike 进行模糊查询
+
+			if (error) {
+			  console.error('查询失败:', error);
+			} else {
+			 showData(data)
+			}
+			
+    }
+
+    function copyToClipboard(text) {
+        let tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showMessage(text);
+    }
+
+    function showMessage(s) {
+        var messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = s;
+        messageDiv.style.display = 'block';
+
+        setTimeout(function () {
+            messageDiv.style.display = 'none';
+        }, 1000);
+    }
+
+    let longPressTimer;
+    function startLongPress(button, id) {
+        longPressTimer = setTimeout(() => {
+            openEditPopup(button,id);
+        }, 1000);
+    }
+
+    function endLongPress() {
+        clearTimeout(longPressTimer);
+    }
+
+    function openEditPopup(button,id) {
+        document.getElementById('editId').value = id;
+        document.getElementById('oldId').value = id;
+        let row = document.querySelector(`tr[data-id="${id}"]`);
+        let name = row.cells[1].textContent;
+        let link = row.cells[2].textContent;
+        let falt = row.cells[3].textContent;
+        document.getElementById('editName').value = name;
+        document.getElementById('editLianjie').value = link;
+        document.getElementById('editFalt').value = falt;
+        document.getElementById('de').dataset.id=  document.getElementById('editId').value ;
+        document.getElementById('editPopup').style.display = 'flex';
+    }
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
+   async function saveEdit() {
+        let id = document.getElementById('editId').value;
+        let name = document.getElementById('editName').value;
+        let lianjie = document.getElementById('editLianjie').value;
+        let falt = document.getElementById('editFalt').value;
+        let oldId = document.getElementById('oldId').value;
+		
+        const params = {
+            id:id ,
+            falt:falt ,
+            name:name ,
+            lianjie:lianjie 
+        };
+        /*fetch(`/aaaa/UpdateLjServlet?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));*/
+			
+			try {
+       
+            const data = await ty_update("lj", oldId, params);    
+				if (data) {
+				showMessage("修改成功！");
+				closeEditPopup();
+					if (typeof window.onload === 'function') {
+						window.onload(); 
+					}             
+				} 
+				else {
+						showMessage("修改失败：未找到该记录");
+					 }
+				} catch (error) {
+				closeEditPopup();
+						console.error("更新出错:", error);
+						showMessage("发生错误：" + error.message);
+			}
+			
+			
+    }
+</script>
+</body>
+
+</html>

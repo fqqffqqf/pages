@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+     
+</head>
+<body>
+<style>
+	.message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+  </style>
+
+<input type="text" placeholder="短号" value="" id="id1" >
+
+</br>
+<div>
+<button onclick="f(1)"> 生成</button>&nbsp;&nbsp
+
+&nbsp;&nbsp;
+
+
+</div>
+</br>
+
+
+
+
+<div id="message" class="message"></div>
+
+</br>
+<font color="yellow" size="5"> <p id="idpp" ></p></font>
+
+<p id="idp" ></p>
+
+
+</body>
+
+
+<script>
+
+	//地址数组
+	let deliverAddresses=[
+		"所在地区：广东省东莞市石龙镇黄家山",
+		
+		
+		
+		"地址：浙江省杭州市拱墅区上塘街道湖州东路80号",
+		
+		
+		"所在地区：福建泉州市安溪县城厢镇详细地址：过溪明珠茶叶城共派仓库脸脸路",
+		
+		"地址: 杭州市西湖区双浦镇三杭路"
+		];
+		
+	let duanhao=[7699,5214,8715,4648];
+	// 常见的小区修饰词
+	const modifiers = ["阳光", "花园", "锦绣", "温馨", "幸福", "和谐", "风尚", "绿洲", "雅园", "翠景"];
+	// 常见的小区名词
+	const nouns = ["小区", "家园", "社区", "庭苑", "里弄", "公寓"];
+	// 常见的百家姓
+	const surnames = ["赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许"];
+	// 常见的名字汉字
+	const givenNames = ["伟", "芳", "娜", "敏", "强", "静", "磊", "涛", "丽", "华", "勇", "杰", "军", "玲", "辉", "鹏", "燕", "明", "宇", "超"]
+	//杭州小区
+	let hangZhouXiaoQu=["佳域小区","希望小区","佳金茂小区"];
+	//号段
+	let prefixoptions = ['165'];
+	
+	//名字后缀
+	let namehouzhui=["","","",""];
+	//
+	let color=["green","feba07","red",'feab70'];
+
+	let  value='' ;    //输入框类容  
+	let  a;			// 收件人
+    let  b;         //手机号
+	let  c;         //详细地址 
+	let  array=[];
+	let duanHao=[];
+	let prefixOptions =[]; 
+	let nameHuizhui=[];
+	
+	window.onload=function(){
+	
+
+	}
+	
+	
+	
+	
+	function gg(){g(4);}
+	
+
+
+	function g(x){
+	inputData();
+		for(var j=0;j<x;j++){
+			for(var i=0;i<2;i++){
+		 
+			 //随机名字
+			a=generateRandomChineseName();
+			//手机号跟地址
+			getAddressAndPhone(j+1);
+			var f ="<font color='"+color[j]+"' size='2'>"+"收件人："+a+"</br>"+"手机号："+b+deliverAddresses[j]+"</br>"+c+"</br>"+"<button onclick="+"copyToClipboard("+array.length+")"+"> 复制到剪贴板</button>"+"</br>"+"</font>";
+				
+				
+			document.getElementById("idp").innerHTML+=f;
+			
+			array.push("收件人："+a+"手机号："+b+deliverAddresses[j]+c);
+			}
+		
+		}
+	}
+	
+
+
+  function f(x){
+
+  
+  
+	inputData()
+	
+	
+ 
+   for(var i=0;i<5;i++){
+   getAddressAndPhone(x);
+
+   	a=generateRandomChineseName();
+	 
+       
+		var f = "<font color='"+color[x-1]+"'+size='3'>"+"</br>"+"收件人："+a+"</br>"+"手机号："+b+deliverAddresses[x-1]+"</br>"+c+"</br>"+"<button onclick="+"copyToClipboard("+array.length+")"+"> 复制到剪贴板</button>"+"</br>"+"</font>";
+		
+		
+		 document.getElementById("idp").innerHTML+=f;
+		 array.push("收件人："+a+"手机号："+b+deliverAddresses[x-1]+c);
+		 }
+		
+    }
+	
+	
+	
+//处理数据
+
+	function inputData(){
+	
+	//清空粘贴数组
+    array=[];
+    //处理输入数据
+	
+	document.getElementById("idp").innerHTML="";
+	
+	
+	value1 = document.getElementById("id1").value;
+	duanHao=replaceValuesInArray(value1,duanhao);
+	
+
+	
+	}
+//获取手机号详细地址
+function getAddressAndPhone(x){
+//根据短号随机生成手机号
+	b=generateMobileNumber(duanHao[x-1],x);
+	
+	//详细地址
+	c=getAddress(x);
+
+}	
+	
+	
+//根据不同地区获取不同详细地址
+	/*北京:帧泊小区35栋78单元368房
+	杭州:襄沿小区51楼88单元A8825
+	福建:xxx单元x号*/
+function getAddress(m){
+	var add="";
+
+	switch (m) {
+		case 1:
+			add=generateRandomCommunityName()+"58496";
+			break;
+		case 2:
+			add=add=generateRandomCommunityName()+Math.floor(Math.random() *100)+"楼"+generateRandomString(1)+"房"
+			break;
+		case 3:
+			add=generateRandomCommunityName()+getFirstAndLastThreeToArray(duanHao[2])[0]+"单元"+getFirstAndLastThreeToArray(duanHao[2])[1]+"号";
+			break;
+		case 4:
+			add=hangZhouXiaoQu[Math.floor(Math.random() * hangZhouXiaoQu.length)]+Math.floor(Math.random() *100)+"栋"+Math.floor(Math.random() *100)+"单元"+Math.floor(Math.random() *900+101)+"房";
+			break;
+		default:
+			console.log("详细地址")
+	}
+
+return add;
+}
+
+//复制1
+function copyToClipboard(i) {
+var text=array[i];
+console.log(text);
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+ 
+  showMessage("复制成功");
+  
+}
+
+
+//复制2
+function copyToClipboard1(i) {
+var text="";
+switch(i){
+	case 1:
+		text="0$ITJM3FcGecG$:// MU5183";
+		
+		break;
+	case 2:
+		text="67￥ MF1643 JD0U3HGOfwG￥ https://m.tb.cn/h.TcTghXi  快抢最高666元红包！";
+		break;
+	case 3:
+		text="❗️速度 农场虹包 嘿嘿8￥ CZ0001 4￥Fiaf37UR11y￥/ CZ00 http://e.Tb.cn/h.gJ6pku9x6pmTG2g￥://";
+		break;
+	case 4:
+		text="79 MF1643  2:/TXD43ux9FwA₤三28617875个红包待领取，快来！";
+		break;	
+	case 5:
+		text="¥https://s.click.taobao.com/KHxgwWt?disableNav=YES";
+		break;
+	case 6:
+		text="https://s.click.taobao.com/XPMU6Ut?disableNav=YES";
+	case 7:
+		text="07 HU9046  2:/₴H4nB3uxPnwQ三爱淘宝-U选好价";
+		break;	
+	default:	
+	text='';
+}
+
+console.log(text);
+  var dummy = document.createElement("textarea");
+  document.body.appendChild(dummy);
+  dummy.value = text;
+  dummy.select();
+  document.execCommand("copy");
+  document.body.removeChild(dummy);
+ 
+  showMessage(text);
+  
+}
+
+
+
+
+
+function generateRandomCommunityName() {
+  let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+  let noun = nouns[Math.floor(Math.random() * nouns.length)];
+  return modifier + noun;
+}
+//生成名字
+
+function generateRandomChineseName() {
+  let surname = surnames[Math.floor(Math.random() * surnames.length)];
+  let nameLength = Math.random() < 0.5? 2 : 3;  // 50% 的概率生成 2 个字的名字，50% 的概率生成 3 个字的名字
+
+  let givenName = '';
+  for(let i = 0; i < nameLength - 1; i++) {
+    givenName += givenNames[Math.floor(Math.random() * givenNames.length)];
+  }
+
+  return surname + givenName;
+}
+
+
+
+//生成手机号
+  function generateMobileNumber(a,b) {
+  let prefix='';
+  switch(b){
+	case 1:
+		prefix = "1";
+		break;
+	case 2:
+		prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+		break;
+	case 3:
+		prefix = 165;
+		break;
+	case 4:
+		prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+		break;
+	
+	default:	
+	prefix='';
+  
+	}
+  
+  
+  let middle = '';
+  for(let i = 0; i < 6; i++) {
+    middle += Math.floor(Math.random() * 10);
+  }
+  let suffix = a ;
+  return prefix + middle + suffix;
+}
+
+
+
+//福建根据短号获取详细地址
+function getFirstAndLastThreeToArray(str) {
+	str=str +'';
+  if (str.length < 4) {
+    return "字符串长度不足 4 位";
+  }
+  let firstChar = str.charAt(0);
+  let lastThree = str.slice(-3);
+  return [firstChar, lastThree];
+  }
+  
+  
+  
+
+ //复制成功显示
+    function showMessage(s) {
+      var messageDiv = document.getElementById('message');
+      messageDiv.innerHTML = s;
+      messageDiv.style.display = 'block';
+
+      setTimeout(function() {
+        messageDiv.style.display = 'none';
+      }, 1000);
+    }
+ 
+   
+//随机生成一个字符串  4123a
+function generateRandomString(m) {
+  let numPart = '';
+  
+  let letterPart="";
+  for(let i = 0; i < 4; i++) {
+    numPart += Math.floor(Math.random() * 10);
+  }
+	switch(m){
+		case 1:
+			letterPart="A";
+		break;
+		
+	default:
+		letterPart= String.fromCharCode(Math.floor(Math.random() * 26) + 65);  // 生成小写字母 a 到 z
+	}
+   
+
+  return numPart + letterPart;
+}
+
+function replaceValuesInArray(str, duanhao1) {
+let copyStr=duanhao1.slice();
+
+    let startIndex, endIndex;
+	
+	
+	
+
+    startIndex = str.indexOf('B');
+    if (startIndex!== -1) {
+        endIndex = str.indexOf('B', startIndex + 1);
+        if (endIndex!== -1) {
+            const wrappedPart = str.slice(startIndex + 1, endIndex);
+            if (isFourDigits(wrappedPart)) {
+                copyStr[0] = wrappedPart;
+            }
+        }
+    }
+
+    startIndex = str.indexOf('H');
+    if (startIndex!== -1) {
+        endIndex = str.indexOf('H', startIndex + 1);
+        if (endIndex!== -1) {
+            const wrappedPart = str.slice(startIndex + 1, endIndex);
+            if (isFourDigits(wrappedPart)) {
+                copyStr[1] = wrappedPart;
+            }
+        }
+    }
+
+    startIndex = str.indexOf('F');
+    if (startIndex!== -1) {
+        endIndex = str.indexOf('F', startIndex + 1);
+        if (endIndex!== -1) {
+            const wrappedPart = str.slice(startIndex + 1, endIndex);
+            if (isFourDigits(wrappedPart)) {
+                copyStr[2] = wrappedPart;
+            }
+        }
+    }
+	
+	startIndex = str.indexOf('h');
+    if (startIndex!== -1) {
+        endIndex = str.indexOf('h', startIndex + 1);
+        if (endIndex!== -1) {
+            const wrappedPart = str.slice(startIndex + 1, endIndex);
+            if (isFourDigits(wrappedPart)) {
+                copyStr[3] = wrappedPart;
+            }
+        }
+    }
+
+    return copyStr;
+}
+
+function processStringAndArray(str, arr) {
+    let copyStr=arr.slice();
+    let newArr = [];
+    for (let i = 0; i < str.length; i += 3) {
+        if (i + 3 <= str.length) {
+            newArr.push(str.substring(i, i + 3));
+        }
+    }
+    return newArr.length > 0? newArr : copyStr;
+}
+
+
+function splitStringToCharArray(str,arr) {
+    let newArr=arr.slice();
+    
+	for (let i = 0; i < str.length; i++) {
+        newArr[i]=str[i];
+    }
+    return newArr;
+}
+
+
+function isFourDigits(str) {
+    let digitCount = 0;
+    for (let char of str) {
+        if (char >= '0' && char <= '9') {
+            digitCount++;
+        }
+    }
+    return digitCount === 4;
+}
+
+</script>
+</html>

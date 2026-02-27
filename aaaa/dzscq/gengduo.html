@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>liu</title>
+	<script src="../js/ty.js"></script>
+	  <script src="../js/gzby_jd.js"></script>
+    
+	<script src="../js/ss.js"></script>
+    <style>
+        body {
+            background-image: url('../img/1.jpg');  /* 替换为您喜欢的背景图片链接 */
+            background-size: cover;  /* 使背景图片覆盖整个页面 */
+            background-repeat: no-repeat;  /* 防止背景图片重复 */
+            background-attachment: fixed;  /* 固定背景，滚动页面时背景不动 */
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+
+
+        /* 基本样式：背景色、字体颜色、边框、圆角 */
+        input[type="submit"] {
+            padding: 2px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* 鼠标悬停时的样式：颜色变化、阴影效果 */
+        input[type="submit"]:hover {
+            background-color: #388e3c;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 按下时的样式 */
+        input[type="submit"]:active {
+            transform: scale(0.95);
+        }
+
+        /*  button {
+              padding: 15px 30px;
+              background-color: #4CAF50;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              box-shadow: 0 3px 0 #388e3c;
+              transition: all 0.3s ease;
+          }
+
+         button {
+              padding: 15px 30px;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              box-shadow: 0 0 10px 0 rgba(0, 123, 255, 0.5);
+              transition: all 0.3s ease;
+          }
+
+          button:hover {
+              box-shadow: 0 0 20px 0 rgba(0, 123, 255, 0.8);
+          }
+
+          button:hover {
+              box-shadow: 0 0 0 #388e3c;
+              transform: translateY(3px);
+          }
+
+  */
+
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        input[type="submit"], button {
+            padding: 10px 20px;
+        }
+
+        button {
+            white-space: nowrap;
+            padding: 8px 18px;
+            background: linear-gradient(to right, #007bff, #6610f2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        table {
+            width: 100%; /* 限制表格宽度为页面的 90%，两边留出距离 */
+            margin: 0 auto; /* 水平居中 */
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* 隐藏超出部分 */
+            white-space: nowrap; /* 内容不换行 */
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        th,
+        td {
+            width: auto;
+            max-width: 200px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th:nth-child(1) {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            color: #333333;
+            width: 10%;
+        }
+
+        th:nth-child(2) {
+            width: 40%;
+        }
+
+        th:nth-child(3) {
+            width: 40%;
+        }
+
+        th:nth-child(4) {
+            width: 10%;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .selected-row {
+            animation: backgroundChange 2s ease-in-out infinite;
+        }
+
+        @keyframes backgroundChange {
+            0% {
+                background-color: lightblue;
+            }
+            50% {
+                background-color: lightgreen;
+            }
+            100% {
+                background-color: lightpink;
+            }
+        }
+
+        .edit-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .edit-popup-content {
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 300px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-popup-content input {
+            width: 100%;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+            gap: 15px;
+        }
+    </style>
+</head>
+
+
+<div>
+    <input placeholder="id" type="text" value="" id="a" >
+    <input placeholder="名字" type="text" value="" id="na">
+    <input placeholder="地址" type="text" value="" id="b">
+    <input placeholder="代码" type="text" value="" id="c1">
+    <input placeholder="yc" type="text" value="1" id="d1" style="display: none;">
+    <input placeholder="falt" type="text" value="1" id="e" style="display: none;">
+    <input placeholder="sx" type="text" value="1" id="f" style="display: none;">
+
+    <input type="submit" value="提交" onclick="insertServlet()">
+</div>
+<div>
+    <input placeholder="ID" type="text" value="" id="c">
+    <input placeholder="删除码" type="text" value="" id="d">
+    <input type="submit" value="删除" onclick="delByIdFzServlet()">
+</div>
+<!--<div>
+    <input type="text" placeholder="3-1.8" value="" id="id2">
+    <button onclick="f()">查询</button>&nbsp&nbsp
+    <button onclick="g('秒杀')">秒杀</button>&nbsp&nbsp
+    <button onclick="g('农场')">农场</button>&nbsp&nbsp
+    <button onclick="g('溜了')">溜了</button>&nbsp&nbsp
+    <button onclick="g('百亿')">百亿</button>
+</div>-->
+<div id="message" class="message"></div>
+<div id="editPopup" class="edit-popup">
+    <div class="edit-popup-content">
+        <h3>修改内容</h3>
+        <input type="text" id="editId" placeholder="Id">
+        <input type="text" id="editName" placeholder="名字">
+        <input type="text" id="editDz" placeholder="地址">
+        <input type="text" id="editDm" placeholder="代碼">
+        <input type="text" id="editYc" placeholder="显示">
+        <input type="text" id="editFalt" placeholder="绑定">
+        <input type="text" id="editSx" placeholder="失效">
+
+        <input type="hidden" id="oldId">
+        <div class="button-container">
+            <button onclick="saveEdit()">修改</button>
+            <button onclick="closeEditPopup()">取消</button>
+        </div>
+    </div>
+</div>
+
+<table>
+    <!-- 表格内容将在此动态添加 -->
+</table>
+
+<script>
+
+let da;
+    window.onload =async function () {
+	    const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+		ty_init(SUPABASE_URL, SUPABASE_KEY);
+	
+        /*fetch('/aaaa/FindDzscqServlet')
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));
+			*/
+				let dzscqdata=await ty_get("dzscq",{ select: '*', order: 'id', ascending: false })
+	   showData(dzscqdata);
+	   
+			da=dzscqdata;
+    }
+
+
+
+   async function insertServlet() {
+        var id = document.getElementById("a").value;
+        var name = document.getElementById("na").value;
+        var dz = document.getElementById("b").value;
+        var dm = document.getElementById("c1").value;
+        var yc = document.getElementById("d1").value;
+        var falt = document.getElementById("e").value;
+        var sx = document.getElementById("f").value;
+		if(id<200||id>299){
+		id="";
+		}
+
+		if(id==""){
+			for (let num = 200; num <300; num++) {
+				let exists = false;
+				
+			  
+				for (let i = 0; i < da.length; i++) {
+					if (da[i].id === num) {
+						exists = true;
+						break; // 找到匹配的id，退出内层循环
+					}
+				}
+				
+				
+				if (!exists) {
+				   id=num;
+				   break;
+				}
+			}
+		}else{
+		 for (let i = 0; i < da.length; i++) {
+					if ((da[i].id +'')=== id) {
+					alert ("ID重复")
+						
+						return ; // 找到匹配的id，退出内层循环
+					}
+				}
+
+		}
+		 
+		if(name==""){
+		name= dz.slice(0, 2);
+		}
+
+
+		if(dm==""||dm=="1"){
+
+		dm="return A();"
+		}else if(dm=="2"){
+		dm="return B();"
+		}else if(dm=="3"){
+		dm="return C();"
+		}
+
+        // 创建一个 URLSearchParams 对象来处理参数
+        const params = {
+            id:id,
+            dz:dz,
+            dm:dm,
+            yc:yc,
+            falt:falt,
+            sx:sx,
+            name:name
+        };
+
+       /* fetch(`/aaaa/InsertDzscqServlet?&${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                window.onload();
+            })
+            .catch(error => console.error('Error:', error));*/
+			
+			try {
+       
+            const data = await ty_add("dzscq",params);    
+				if (data) {
+				showMessage(" 添加成功！");
+				closeEditPopup();
+					if (typeof window.onload === 'function') {
+						window.onload(); 
+					}             
+				} 
+			else {
+					showMessage("添加失敗");
+			     }
+	    } catch (error) {
+				console.error("出错:", error);
+				showMessage("发生错误：" + error.message);
+			}
+			
+			
+    }
+
+   async function delByIdFzServlet() {
+        var id = document.getElementById("c").value;
+        var password = document.getElementById("d").value;
+        /*fetch(`/aaaa/delByIdDzscqServlet?id=${id}&password=${password}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                window.onload();
+            })
+            .catch(error => console.error('Error:', error));
+			*/
+			if(password!=123698745){
+			showMessage("删除失败");
+			return;
+			}
+			
+				
+			try{
+			
+			await ty_delete("dzscq", id) 
+			showMessage("删除成功");
+		
+                closeEditPopup();
+                window.onload();
+			}catch(e){
+			showMessage("删除失败");
+			}
+
+			
+			
+    }
+
+    function showData(data) {
+        let existingTable = document.querySelector('table');
+        if (existingTable) {
+            existingTable.remove();
+        }
+
+        let table = document.createElement('table');
+
+        let thead = table.createTHead();
+        let row = thead.insertRow();
+        let headers = Object.keys(data[0]);
+
+        let tbody = table.createTBody();
+        for (let item of data) {
+            let row = tbody.insertRow();
+            row.dataset.id = item.id;
+            let x = '';
+            for (let header of headers) {
+                x = header;
+                let cell = row.insertCell();
+                cell.innerHTML = item[header];
+                cell.classList.add('long-cell');
+            }
+            let cell = row.insertCell();
+
+            cell.innerHTML = `<button onmousedown="startLongPress(this, ${item.id})" onmouseup="endLongPress()" onmouseout="endLongPress()" ontouchstart="startLongPress(this, ${item.id})" ontouchend="endLongPress()" ontouchmove="endLongPress()" onclick="copyToClipboard('${item['dz']+item['dm']}')">复制</button>`;
+        }
+
+        document.body.appendChild(table);
+
+        // 为表格行添加鼠标悬停事件处理程序
+        tbody.addEventListener('mouseover', function(event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                let rows = tbody.getElementsByTagName('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    rows[i].classList.remove('selected-row');
+                }
+                target.classList.add('selected-row');
+            }
+        });
+
+        tbody.addEventListener('mouseout', function(event) {
+            let target = event.target;
+            while (target && target.tagName!== 'TR') {
+                target = target.parentNode;
+            }
+            if (target) {
+                target.classList.remove('selected-row');
+            }
+        });
+    }
+
+    function f() {
+        var elementById = document.getElementById("id2").value;
+        g(elementById);
+    }
+
+    function g(guanjianzhi) {
+        fetch(`/aaaa/MohuchaxunServlet?tiaojian=${guanjianzhi}`)
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function copyToClipboard(text) {
+        let tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        alert(text)
+        showMessage(text);
+    }
+
+    function showMessage(s) {
+        var messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = s;
+        messageDiv.style.position = 'fixed';
+        messageDiv.style.top = '50%';
+        messageDiv.style.left = '50%';
+        messageDiv.style.transform = 'translate(-50%, -50%)';
+        messageDiv.style.display = 'block';
+
+        setTimeout(function () {
+            messageDiv.style.display = 'none';
+        }, 1000);
+    }
+
+    let longPressTimer;
+
+    function startLongPress(button, id) {
+        longPressTimer = setTimeout(() => {
+            openEditPopup(id);
+        }, 1000);
+    }
+
+    function endLongPress() {
+        clearTimeout(longPressTimer);
+    }
+
+    function openEditPopup(id) {
+        document.getElementById('editId').value = id;
+        document.getElementById('oldId').value = id;
+        let row = document.querySelector(`tr[data-id="${id}"]`);
+        let name = row.cells[1].textContent;
+        let dz = row.cells[2].textContent;
+        let dm = row.cells[3].textContent;
+        let yc = row.cells[4].textContent;
+        let falt = row.cells[5].textContent;
+        let sx = row.cells[6].textContent;
+        document.getElementById('editName').value = name;
+        document.getElementById('editDz').value = dz;
+        document.getElementById('editDm').value = dm;
+        document.getElementById('editYc').value = yc;
+        document.getElementById('editFalt').value = falt;
+        document.getElementById('editSx').value = sx;
+
+        document.getElementById('editPopup').style.display = 'flex';
+    }
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
+   async function saveEdit() {
+        let id = document.getElementById('editId').value;
+        let name = document.getElementById('editName').value;
+        let dz = document.getElementById('editDz').value;
+        let dm = document.getElementById('editDm').value;
+        let yc = document.getElementById('editYc').value;
+        let falt = document.getElementById('editFalt').value;
+        let sx = document.getElementById('editSx').value;
+        let oldId = document.getElementById('oldId').value;
+
+         const params = {
+            id:id,
+            dz:dz,
+            dm:dm,
+            yc:yc,
+            falt:falt,
+            sx:sx,
+            name:name
+        };
+
+
+        /*fetch(`/aaaa/UpdateDzscqServlet?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));*/
+					try {
+       
+            const data = await ty_update("dzscq", oldId, params);    
+				if (data) {
+				showMessage("修改成功！");
+				closeEditPopup();
+					if (typeof window.onload === 'function') {
+						window.onload(); 
+					}             
+				} 
+			else {
+					showMessage("修改失败：未找到该记录");
+			     }
+	    } catch (error) {
+		closeEditPopup();
+				console.error("更新出错:", error);
+				showMessage("发生错误：" + error.message);
+			}
+			
+			
+    }
+
+
+</script>
+</body>
+
+</html>

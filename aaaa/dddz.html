@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地址绑定</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引用 Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="js/gzby_jd.js"></script>
+    <script src="js/ty.js"></script>
+	<script src="js/ss.js"></script>
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        danger: '#EF4444',
+                        neutral: '#64748B',
+                        dark: '#1E293B',
+                        light: '#F8FAFC'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .form-input-focus {
+                @apply focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none;
+            }
+            .custom-input {
+                @apply border-primary/70 bg-primary/5 placeholder-primary/50;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-4 py-2 rounded-lg transition-all duration-300 hover:bg-primary/90 active:bg-primary/80 focus:ring-2 focus:ring-primary/50 focus:outline-none;
+            }
+            .btn-secondary {
+                @apply bg-white text-primary border border-primary px-4 py-2 rounded-lg transition-all duration-300 hover:bg-primary/10 active:bg-primary/20 focus:ring-2 focus:ring-primary/50 focus:outline-none;
+            }
+            .help-img-container {
+                @apply max-h-[70vh] overflow-auto rounded-lg border border-gray-200;
+            }
+            /* 输入错误提示样式 */
+            .input-error {
+                @apply border-danger focus:ring-danger/50 focus:border-danger;
+            }
+            .error-text {
+                @apply mt-1 text-xs text-danger flex items-center hidden; /* 强制默认隐藏 */
+            }
+            .error-visible {
+                @apply block !important; /* 强制显示错误提示 */
+            }
+            /* 输入框提示文本滚动样式 */
+            .scrollable-placeholder::-webkit-input-placeholder {
+                animation: scroll-placeholder 10s linear infinite;
+            }
+            @keyframes scroll-placeholder {
+                0% {
+                    text-indent: 100%;
+                }
+                100% {
+                    text-indent: -100%;
+                }
+            }
+            /* 长文本输入框支持水平滚动 */
+            .scrollable-input {
+                white-space: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch; /* 平滑滚动 */
+            }
+            .scrollable-input::-webkit-scrollbar {
+                height: 4px;
+            }
+            .scrollable-input::-webkit-scrollbar-thumb {
+                background-color: rgba(59, 130, 246, 0.3);
+                border-radius: 2px;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 text-dark min-h-screen flex flex-col">
+    <!-- 顶部导航 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="header">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-wpforms text-primary text-2xl"></i>
+                <h1 class="text-xl font-bold text-dark">地址绑定系统</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- 帮助按钮 -->
+                <button id="help-btn" class="text-neutral hover:text-primary transition-colors duration-300 flex items-center">
+                    <i class="fa fa-question-circle text-lg"></i>
+                    <span class="hidden sm:inline ml-1">帮助</span>
+                </button>
+                <!-- 用户按钮 -->
+                <button class="text-neutral hover:text-primary transition-colors duration-300 flex items-center">
+                    <i class="fa fa-user-circle text-lg"></i>
+                    <span class="hidden sm:inline ml-1">用户</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        <!-- 页面标题 -->
+        <div class="mb-8 text-center">
+            <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-2">地址绑定 </h2>
+            <p class="text-neutral max-w-2xl mx-auto">根据系统获取的地址数据，填写必要信息后提交</p>
+        </div>
+
+        <!-- 加载状态 -->
+        <div id="loading" class="flex justify-center items-center py-16">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <p class="ml-4 text-neutral">正在加载数据...</p>
+        </div>
+
+        <!-- 错误状态 -->
+        <div id="error" class="hidden bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg mb-8">
+            <div class="flex items-center">
+                <i class="fa fa-exclamation-circle text-xl mr-3"></i>
+                <p>加载数据失败，请稍后重试</p>
+            </div>
+        </div>
+
+        <!-- 空状态 -->
+        <div id="empty-state" class="hidden max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-8 text-center">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa fa-inbox text-2xl text-neutral"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">没有需要填写的项目</h3>
+            <p class="text-neutral mb-6">当前没有需要您填写的信息项</p>
+        </div>
+
+        <!-- 表单容器 -->
+        <div id="form-container" class="hidden max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-6 md:p-8 card-hover">
+            <form id="dynamic-form" class="space-y-6">
+                <!-- 自定义信息输入框（id="a"）- 差异化样式 + 错误提示容器 -->
+                <div class="form-group p-5 border-2 border-primary/20 rounded-xl hover:border-primary/40 transition-all duration-300 bg-primary/5 relative" id="custom-input-group">
+                    <div class="absolute -top-3 left-4 bg-primary text-white text-xs px-2 py-1 rounded-full">
+                        必填
+                    </div>
+                    <label for="a" class="block text-sm font-medium text-primary mb-2 flex items-center">
+                        <i class="fa fa-key text-primary mr-2"></i>用户自定义生成码
+                    </label>
+                    <input type="text" id="a" name="custom-info" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg form-input-focus transition-all duration-300 custom-input scrollable-input scrollable-placeholder"
+                           placeholder="支持字母/数字，不能是4位或11位纯数字（6-12位）"
+                           maxlength="12" minlength="6">
+                    <!-- 错误提示文本 -->
+                    <p id="custom-input-error" class="error-text">
+                        <i class="fa fa-exclamation-circle mr-1"></i>不能是4位或11位纯数字，请重新输入
+                    </p>
+                    <p class="mt-1 text-xs text-primary/80 flex items-center">
+                        <i class="fa fa-info-circle mr-1"></i>此生成码用于地址匹配，请勿重复输入
+                    </p>
+                </div>
+                
+                <!-- 动态生成的表单内容将在这里插入 -->
+            </form>
+
+            <!-- 提交按钮区域 -->
+            <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <button type="button" id="reset-btn" class="btn-secondary flex items-center justify-center">
+                    <i class="fa fa-refresh mr-2"></i>重置
+                </button>
+                <button type="button" id="submit-btn" class="btn-primary flex items-center justify-center">
+                    <i class="fa fa-paper-plane mr-2"></i>提交
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>&copy; 2025 地址绑定系统. 保留所有权利.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">
+                        <i class="fa fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">
+                        <i class="fa fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">
+                        <i class="fa fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 帮助弹窗 -->
+    <div id="help-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-3xl w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="help-modal-content">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-bold text-dark flex items-center">
+                    <i class="fa fa-book text-primary mr-2"></i>使用说明
+                </h3>
+                <button id="close-help-modal" class="text-neutral hover:text-danger transition-colors">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="help-img-container mb-4">
+                <img src="img/6.jpg" alt="地址绑定系统使用说明" class="w-full h-auto">
+            </div>
+            <p class="text-sm text-neutral text-center">
+                若图片显示不清晰，可右键保存图片查看原图
+            </p>
+        </div>
+    </div>
+
+    <!-- 提交结果弹窗 -->
+    <div id="result-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="result-modal-content">
+            <div class="text-center">
+                <div id="result-icon-container" class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i id="result-icon" class="fa fa-check text-2xl text-secondary"></i>
+                </div>
+                <h3 id="result-title" class="text-xl font-bold mb-2 text-secondary">提交成功</h3>
+                <p id="result-message" class="text-neutral mb-6">您的数据已成功提交到系统</p>
+                <button id="close-result-modal" class="btn-primary w-full">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+	
+	const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+		ty_init(SUPABASE_URL, SUPABASE_KEY);
+	
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+			
+			const data=await ty_get("dzscq"); 	
+			
+                // 调用同步请求函数
+                //const data = getJsonDataSync('/aaaa/FindDzscqServlet');
+                dzscq(data);
+                // 隐藏加载状态
+                document.getElementById('loading').classList.add('hidden');
+                
+                // 筛选同时满足 yc=="1" 和 sx=="1" 的数据项
+                const visibleItems = data.filter(item => item.sx >0);
+                
+                // 根据是否有可见项显示不同内容
+                if (visibleItems.length === 0) {
+                    document.getElementById('empty-state').classList.remove('hidden');
+                } else {
+                    document.getElementById('form-container').classList.remove('hidden');
+                    generateForm(visibleItems);
+                    
+                    // 绑定提交按钮事件
+                    document.getElementById('submit-btn').addEventListener('click', () => {
+                        submitForm(visibleItems);
+                    });
+                    
+                    // 绑定重置按钮事件（重置时清除错误状态）
+                    document.getElementById('reset-btn').addEventListener('click', () => {
+                        document.getElementById('dynamic-form').reset();
+                        clearAllInputErrors(); // 重置错误样式
+                    });
+                }
+
+                // 帮助弹窗事件绑定
+                const helpModal = document.getElementById('help-modal');
+                const helpModalContent = document.getElementById('help-modal-content');
+                const helpBtn = document.getElementById('help-btn');
+                const closeHelpModal = document.getElementById('close-help-modal');
+
+                // 打开帮助弹窗
+                helpBtn.addEventListener('click', () => {
+                    helpModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        helpModalContent.classList.remove('scale-95', 'opacity-0');
+                        helpModalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                });
+
+                // 关闭帮助弹窗
+                closeHelpModal.addEventListener('click', () => {
+                    helpModalContent.classList.remove('scale-100', 'opacity-100');
+                    helpModalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        helpModal.classList.add('hidden');
+                    }, 300);
+                });
+
+                // 点击弹窗外部关闭
+                helpModal.addEventListener('click', (e) => {
+                    if (e.target === helpModal) {
+                        closeHelpModal.click();
+                    }
+                });
+
+                // 提交结果弹窗事件绑定
+                const resultModal = document.getElementById('result-modal');
+                const resultModalContent = document.getElementById('result-modal-content');
+                const closeResultModal = document.getElementById('close-result-modal');
+
+                // 关闭结果弹窗
+                closeResultModal.addEventListener('click', () => {
+                    resultModalContent.classList.remove('scale-100', 'opacity-100');
+                    resultModalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        resultModal.classList.add('hidden');
+                        // 成功后刷新页面
+                        if (document.getElementById('result-title').classList.contains('text-secondary')) {
+                            window.location.reload();
+                        }
+                    }, 300);
+                });
+
+                // 点击弹窗外部关闭
+                resultModal.addEventListener('click', (e) => {
+                    if (e.target === resultModal) {
+                        closeResultModal.click();
+                    }
+                });
+                
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').classList.remove('hidden');
+            }
+            
+            // 滚动时改变导航栏样式
+            window.addEventListener('scroll', () => {
+                const header = document.getElementById('header');
+                if (window.scrollY > 10) {
+                    header.classList.add('py-2', 'shadow');
+                    header.classList.remove('py-3', 'shadow-sm');
+                } else {
+                    header.classList.add('py-3', 'shadow-sm');
+                    header.classList.remove('py-2', 'shadow');
+                }
+            });
+        });
+    
+        // 生成表单 - 同时满足 yc=="1" 和 sx=="1" 的项，添加动态输入框及验证
+        function generateForm(data) {
+            const form = document.getElementById('dynamic-form');
+            
+            data.forEach((item, index) => {
+                if ( item.sx>0) {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group p-4 border border-gray-100 rounded-lg hover:border-primary/30 transition-colors duration-300';
+                    formGroup.setAttribute('data-input-group', 'dynamic');
+                    
+                    // 生成标签
+                    const label = document.createElement('label');
+                    label.className = 'block text-sm font-medium text-gray-700 mb-1';
+                    label.innerHTML = `<span class="inline-block w-6 h-6 bg-primary/10 text-primary rounded-full text-center text-xs leading-6 mr-2">${item.id + 1}</span>${item.name}`;
+                    formGroup.appendChild(label);
+                    
+                    // 生成输入框 - 添加滚动相关类
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = `field-${item.id + 1}`;
+                    input.dataset.id = item.id + 1;
+                    input.className = 'w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus transition-all duration-300 scrollable-input scrollable-placeholder';
+                    input.placeholder = `请输入${item.name}的尾号（4位或11位数字）`;
+                    
+                    // 为动态输入框添加错误提示容器
+                    const errorText = document.createElement('p');
+                    errorText.className = 'error-text'; // 默认隐藏
+                    errorText.innerHTML = '<i class="fa fa-exclamation-circle mr-1"></i>请输入4位或11位数字';
+                    errorText.dataset.for = input.name;
+                    
+                    formGroup.appendChild(input);
+                    formGroup.appendChild(errorText);
+                    form.appendChild(formGroup);
+                }
+            });
+        }
+        
+        // 验证自定义输入框（id=a）：不能是4位或11位纯数字
+        function validateCustomInput(input) {
+            const errorElement = document.getElementById('custom-input-error');
+            const value = input.value.trim();
+            
+            // 未输入内容时不显示错误
+            if (value === '') {
+                input.classList.remove('input-error');
+                errorElement.classList.remove('error-visible');
+                return false; // 空值单独在提交逻辑中处理
+            }
+            
+            // 正则：纯数字且长度为4或11
+            const invalidPattern = /^\d{4}$|^\d{11}$/;
+            
+            if (invalidPattern.test(value)) {
+                input.classList.add('input-error');
+                errorElement.classList.add('error-visible'); // 显示错误提示
+                return false;
+            } else {
+                input.classList.remove('input-error');
+                errorElement.classList.remove('error-visible');
+                return true;
+            }
+        }
+        
+        // 验证动态输入框：必须是4位或11位纯数字
+        function validateDynamicInput(input) {
+            const errorElement = input.nextElementSibling;
+            const value = input.value.trim();
+            
+            // 未输入内容时不显示错误
+            if (value === '') {
+                input.classList.remove('input-error');
+                errorElement.classList.remove('error-visible');
+                return true; // 动态输入框可以为空
+            }
+            
+            // 正则：纯数字且长度为4或11
+            const validPattern = /^\d{4}$|^\d{11}$/;
+            
+            if (!validPattern.test(value)) {
+                input.classList.add('input-error');
+                errorElement.classList.add('error-visible'); // 显示错误提示
+                return false;
+            } else {
+                input.classList.remove('input-error');
+                errorElement.classList.remove('error-visible');
+                return true;
+            }
+        }
+        
+        // 清除所有输入框的错误状态
+        function clearAllInputErrors() {
+            // 清除自定义输入框错误
+            const customInput = document.getElementById('a');
+            customInput.classList.remove('input-error');
+            document.getElementById('custom-input-error').classList.remove('error-visible');
+            
+            // 清除动态输入框错误
+            document.querySelectorAll('[data-input-group="dynamic"] input').forEach(input => {
+                input.classList.remove('input-error');
+                const errorElement = input.nextElementSibling;
+                if (errorElement && errorElement.classList.contains('error-text')) {
+                    errorElement.classList.remove('error-visible');
+                }
+            });
+        }
+        
+        // 提交表单时的全量验证
+        function submitForm(data) {
+            // 先清除所有错误状态
+            clearAllInputErrors();
+            
+            const form = document.getElementById('dynamic-form');
+            const customInput = document.getElementById('a');
+            const dynamicInputs = form.querySelectorAll('[data-input-group="dynamic"] input');
+            const values = [];
+            let isFormValid = true;
+            
+            // 验证自定义输入框
+            if (!validateCustomInput(customInput)) {
+                isFormValid = false;
+            }
+            
+            // 验证自定义输入框不为空
+            if (customInput.value.trim() === '') {
+                showResultModal(false, '提交失败', '自定义生成码不能为空');
+                return;
+            }
+            
+            // 验证动态输入框
+            dynamicInputs.forEach(input => {
+                if (input.value.trim() !== '' && !validateDynamicInput(input)) {
+                    isFormValid = false;
+                } else if (input.value.trim() !== '') {
+                    values.push(`${input.dataset.id}-${input.value.trim()}`);
+                }
+            });
+            
+            // 如果表单验证不通过，不提交，只显示错误提示
+            if (!isFormValid) {
+                showResultModal(false, '提交失败', '请注意输入规则');
+                return;
+            }
+            
+            // 验证是否有输入值
+            if (values.length === 0) {
+                showResultModal(false, '提交失败', '请至少填写一个地址的尾号');
+                return;
+            }
+            
+            // 按照要求的格式拼接
+            const result = values.join('/');
+
+           if(result .length<10){
+showResultModal(false, '提交失败');
+retutn;
+}
+            
+            // 调用处理函数
+            insertServlet(result, customInput.value.trim());
+        }
+        
+        // 处理提交的函数
+     /*   function insertServlet(lianjie, username) {
+            var arr1 = convertString(lianjie)
+            var falt = checkArray(arr1[2], arrlist)
+            
+            if (falt.isAllIncluded) {
+                fetch(`/aaaa/insertServletdz?username=${username}&lianjie=${lianjie}`)
+                    .then(response => {
+                        // 先处理响应文本，避免JSON解析错误
+                        return response.text().then(text => {
+                            try {
+                                return JSON.parse(text);
+                            } catch (e) {
+                                throw new Error('服务器返回格式错误');
+                            }
+                        });
+                    })
+                    .then(data => {
+                        if (data.message !== "操作失败") {
+                            showResultModal(true, '提交成功', data.message || '您的数据已成功提交到系统');
+                        } else {
+                            showResultModal(false, '提交失败', data.message || '提交过程中出现错误');
+                        }
+                    })
+                    .catch(error => {
+                        showResultModal(false, '提交失败', '网络错误，请稍后重试');
+                        console.error('提交错误:', error);
+                    });
+            } else {
+                showResultModal(false, '提交失败', `数据${falt.nonIncludedElements}不存在`);
+            }
+        }*/
+		
+		
+		
+		async function insertServlet(lianjie, username) {
+    // 0. 前置校验 (保留你原有的逻辑)
+    var arr1 = convertString(lianjie);
+    var falt = checkArray(arr1[2], arrlist);
+
+    if (!falt.isAllIncluded) {
+        showResultModal(false, '提交失败', `数据 ${falt.nonIncludedElements} 不存在`);
+        return;
+    }
+
+    try {
+        // 1. 【关键步骤】先查询是否存在相同 username 且 falt="1" 的数据
+        // 假设数据库中 falt 列存的是字符串 "1"，如果是布尔值 true 请改为 true
+       const { data: existingData, error: queryError } = await ty_supabase
+    .from('dz')
+    .select('id, lianjie')
+    .eq('name', username)
+    .eq('falt', '1')
+    .order('id', { ascending: false }); 
+
+        if (queryError) throw queryError;
+
+        // 2. 根据查询结果分支处理
+        if (!existingData || existingData.length === 0) {
+            // --- 情况 A: 没有数据，直接添加 ---
+            console.log("未找到冲突数据，直接添加");
+			await ty_add("dz", {name:username,lianjie:lianjie});
+			showResultModal(true, '成功提交', `绑定成功:`+username);
+        
+			//showResultModal(true, '', '数据已存在，请勿重复提交');
+            
+            
+        } else {
+            // --- 情况 B: 找到了数据，需要进一步判断 ---
+            // 假设只取第一条匹配的数据 (如果逻辑上 username+falt=1 应该唯一)
+            const oldRecord = existingData[0];
+            const oldLianjie = oldRecord.lianjie || "";
+            const oldId = oldRecord.id;
+
+            // 判断：旧数据 是否 包含 新数据？ (新的是旧的子串)
+            if (lianjie.includes(oldLianjie)) {
+                console.log("发现旧数据包含新数据，执行替换操作 (先删后加)");
+                
+                // 步骤 B1: 删除旧数据
+                const { error: deleteError } = await ty_supabase
+                    .from('dz')
+                    .delete()
+                    .eq('id', oldId);
+                
+                if (deleteError) throw deleteError;
+
+                // 步骤 B2: 添加新数据
+                await ty_add("dz", {name:username,lianjie:lianjie});
+				showResultModal(true, '成功提交', `成功修改:`+username);
+        return;
+                
+            } else {
+                // 步骤 B3: 旧数据不包含新数据 -> 冲突，拒绝添加
+                console.log("数据冲突：已有数据不包含新数据，且用户名相同");
+                throw new Error(`提交失败：用户 ${username} 已存在不兼容的数据记录，无法覆盖。`);
+            }
+        }
+
+    } catch (error) {
+        console.error('提交过程出错:', error);
+        let msg = error.message || '网络错误，请稍后重试';
+        
+        // 针对特定错误的友好提示
+        if (msg.includes("不兼容")) {
+             showResultModal(false, '提交失败', msg);
+        } else if (error.code === '23505') {
+             showResultModal(false, '提交失败', '数据已存在，请勿重复提交');
+        } else {
+             showResultModal(false, '提交失败', msg);
+        }
+    }
+}
+
+		
+        
+        // 显示结果弹窗
+        function showResultModal(isSuccess, title, message) {
+            const resultModal = document.getElementById('result-modal');
+            const resultModalContent = document.getElementById('result-modal-content');
+            const iconContainer = document.getElementById('result-icon-container');
+            const icon = document.getElementById('result-icon');
+            const titleElement = document.getElementById('result-title');
+            const messageElement = document.getElementById('result-message');
+            
+            // 设置弹窗内容
+            if (isSuccess) {
+                // 成功状态
+                iconContainer.className = 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4';
+                icon.className = 'fa fa-check text-2xl text-secondary';
+                titleElement.className = 'text-xl font-bold mb-2 text-secondary';
+            } else {
+                // 失败状态
+                iconContainer.className = 'w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4';
+                icon.className = 'fa fa-times text-2xl text-danger';
+                titleElement.className = 'text-xl font-bold mb-2 text-danger';
+            }
+            
+            titleElement.textContent = title;
+            messageElement.textContent = message;
+            
+            // 显示弹窗
+            resultModal.classList.remove('hidden');
+            setTimeout(() => {
+                resultModalContent.classList.remove('scale-95', 'opacity-0');
+                resultModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+		
+		
+		   function dzscq(dzscqdata) {
+        for (let i = 0; i < dzscqdata.length; i++) {
+
+            if(dzscqdata[i].falt==="0") {
+                 arrlist[dzscqdata[i].id]="";
+            }else{
+	arrlist[dzscqdata[i].id] = (dzscqdata[i].id + 1) + "";
+               
+            }
+        }
+
+
+    }
+    </script>
+</body>
+</html>
+    

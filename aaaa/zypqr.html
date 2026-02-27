@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+</head>
+<body onload="myFunction()">
+
+<style>
+
+    .message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: none;
+    }
+
+    ul {
+        list-style-type: none; /* 去除默认的项目符号 */
+        padding: 0; /* 去除默认的内边距 */
+        margin: 0; /* 去除默认的外边距 */
+    }
+
+    li {
+        padding: 10px; /* 内边距，增加元素内部的空间 */
+        background-color: #f8f9fa; /* 背景颜色 */
+        border-bottom: 1px solid #dee2e6; /* 底部边框，增加分隔效果 */
+        font-size: 16px; /* 字体大小 */
+        color: #343a40; /* 字体颜色 */
+
+    }
+
+    li:hover {
+        background-color: #e9ecef; /* 鼠标悬停时的背景颜色变化，提供交互反馈 */
+        cursor: pointer; /* 鼠标悬停时变为指针形状，表示可点击 */
+    }
+
+    .button-container {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 11px;
+    }
+
+    .button-container1 {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 1px;
+    }
+
+    .button-container2 {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 11px;
+    }
+
+
+    button {
+        white-space: nowrap;
+        padding: 6px 13px;
+        background: linear-gradient(to right, #007bff, #6610f2);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    .edit-popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+    .edit-popup-content {
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 90%;
+        width: 300px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edit-popup-content input {
+        width: 100%;
+        margin-bottom: 5px;
+        box-sizing: border-box;
+    }
+
+    .button-container3 {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+        gap: 15px;
+    }
+
+
+</style>
+
+<input type="text" placeholder="短号:B5698B" value="" id="id1">
+<input type="text" placeholder="号段:165160140" value="" id="id2">
+<input type="text" placeholder="后缀:a" value="" id="id3">
+</br>
+<div class="button-container" id="button-container">
+    <button onclick="f(1)" style="display: none;"> 广州</button>
+    <button onclick="f(2)"> 上塘</button>
+
+    <button onclick="f(4)" style="display: none;"> 低派杭</button>
+    <button onclick="f(5)" style="display: none;"> 新北动物园</button>
+    <button onclick="f(6)" style="display: none;"> 京白云</button>
+    <button onclick="f(7)"> 海定</button>
+
+
+    <button onclick="f(10)" style="display: none;"> 上海</button>
+    <button onclick="f(11)" id="dz11" style="display: none;"> 朝阳</button>
+    <button onclick="f(12)" id="dz12" style="display: none;"> 短上海</button>
+    <button onclick="f(13)" id="dz13" style="display: none;">上海(邮)</button>
+
+
+    <button onclick="f(9)"> 丰台</button>
+    <button onclick="f(14)" style="display: none;"> 大兴</button>
+    <button onclick="f(3)" style="display: none;"> 海定邮政(好)</button>
+    <button onclick="f(15)" style="display: none;"> 上海</button>
+    <button onclick="f(8)"> 杭州</button>
+
+
+</div>
+
+
+<br>
+<div class="button-container1" id="button-container1">
+    <button onclick="copyToClipboard1(1)"> 1.5-1</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(2)">0.15无门槛</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button onclick="copyToClipboard1(3)"> 超级红包</button>&nbsp;&nbsp;
+
+    <button onclick="copyToClipboard1(11)" style="display: none;"> 红包3</button>&nbsp;&nbsp;&nbsp;&nbsp
+
+    <!--<button onclick="copyToClipboard1(12)"> 红包5</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(3)"> 超级红包</button>&nbsp;&nbsp;
+    -->
+    <button onclick="copyToClipboard1(4)" style="display: none;"> 喜从天降</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button onclick="copyToClipboard1(5)" style="display: none;"> U选红包</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button onclick="copyToClipboard1(6)"> 3个0.02红包</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button onclick="copyToClipboard1(31)"> 农场红包</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button onclick="copyToClipboard1(20)"> 签到</button>&nbsp;&nbsp;
+
+
+</div>
+
+<br>
+
+<div>
+    <button onclick="dz()">绑定</button>&nbsp;&nbsp;&nbsp;&nbsp
+    <button onclick="newdzzy()">地址</button>
+    <button onclick="newzy()">ZY</button>
+    <button onclick="newlj()">链接</button>
+    <button onclick="gengduo()">更多</button>
+    <button onclick="newtp()">图片上传</button>
+    <button onclick="ewm()">二维码</button>
+    <button onclick="sx()">刷新</button>
+</div>
+
+<div id="message" class="message"></div>
+<div id="editPopup" class="edit-popup">
+    <div class="edit-popup-content">
+        <h3>修改内容</h3>
+        <input type="text" id="editId" placeholder="Id">
+        <input type="text" id="editName" placeholder="名字">
+        <input type="text" id="editLianjie" placeholder="鏈接">
+        <input type="text" id="editFalt" placeholder="设置0-删除">
+
+        <input type="hidden" id="oldId">
+        <div class="button-container3">
+            <button onclick="saveEdit()">修改</button>
+            <button onclick="closeEditPopup()">取消</button>
+            <button onclick="fe(this.id)" id="de">删除</button>
+        </div>
+    </div>
+</div>
+
+</br>
+<font color="yellow" size="5"><p id="idpp"></p></font>
+
+<p id="idp"></p>
+
+<p id="k"></p>
+</body>
+
+
+<script src="js/gzby_jd.js"></script>
+<script src="js/ty.js"></script>
+
+
+<script>
+
+
+    function dianji() {
+
+        window.location.href = "ts.html"
+
+    }
+
+    function indxe_01() {
+
+        window.location.href = "index01.html"
+
+    }
+
+    function indxe_02() {
+
+        window.location.href = "index02.html"
+
+    }
+
+    function dizhi() {
+
+        window.location.href = "dizhi.html"
+
+    }
+
+    function dz() {
+
+        window.location.href = "dz.html"
+
+    }
+
+    function gengduo() {
+
+        window.location.href = "gengduo.html"
+
+
+
+ }
+
+    window.onload = function () {
+        if (getCookie("duanHao")) {
+
+            document.getElementById("id1").value = getCookie("duanHao");
+        }
+        fetch(`/aaaa/FindZyDzscqServlet`)
+            .then(response => response.json())
+            .then(data => dzscq(data))
+            .catch(error => console.error('Error:', error));
+
+        fetch(`/aaaa/FindLjServlet`)
+            .then(response => response.json())
+            .then(data => lj(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function dzscq(dzscqdata) {
+        for (let i = 0; i < dzscqdata.length; i++) {
+            //加載地址
+            deliverAddresses[dzscqdata[i].id] = dzscqdata[i].dz;
+            arradd[dzscqdata[i].id] = dzscqdata[i].dm;
+            duanhao[dzscqdata[i].id] = dzscqdata[i].weihao
+
+            let newbut;
+            let falt = document.getElementById("dz" + (dzscqdata[i].id + 1));
+            //是否存在了
+            if (falt) {
+                newbut = falt;
+            } else {
+                //不存在
+                //獲取所有按鈕
+                var children = document.getElementById("button-container").children;
+                //最后一个按钮
+                var oribut = children[children.length - 1]
+                newbut = document.createElement('button');
+
+
+                newbut.addEventListener('click', function () {
+
+                    f(dzscqdata[i].id + 1);
+                })
+                newbut.id = "dz" + (dzscqdata[i].id + 1);
+                oribut.parentNode.insertBefore(newbut, oribut.nextSibling);
+            }
+
+
+            newbut.innerHTML = dzscqdata[i].id + 1 + '.' + dzscqdata[i].name;
+
+        }
+
+
+    }
+
+
+    function fe(id) {
+
+        var id = document.getElementById("de").dataset.id;
+
+        var password = "123698745";
+
+        fetch(`/aaaa/delByIdLjServlet?id=${id}&password=${password}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));
+
+    }
+
+    function lj(ljdata) {
+        if (ljdata) {
+            let byid = document.getElementById("button-container1");
+            byid.innerHTML = "";
+            for (let i = 0; i < ljdata.length; i++) {
+                if (ljdata[i].falt === "1") {
+
+                    newbut = document.createElement('button');
+                    newbut.innerHTML = ljdata[i].name;
+
+                    newbut.dataset.id = JSON.stringify(ljdata[i]);
+
+                    newbut.dataset.link = ljdata[i].lianjie;
+                    newbut.addEventListener('mousedown', function () {
+                        startLongPress(this,ljdata[i].id);
+                    });
+                    newbut.addEventListener('mouseup', endLongPress);
+                    newbut.addEventListener('mouseout', endLongPress);
+                    newbut.addEventListener('touchstart', function () {
+                        startLongPress(this,ljdata[i].id);
+                    });
+                    newbut.addEventListener('touchend', endLongPress);
+                    newbut.addEventListener('touchmove', endLongPress);
+                    newbut.addEventListener('click', function () {
+                        copyToClipboardt(this.dataset.link);
+                    });
+
+
+                    byid.appendChild(newbut);
+                }
+
+            }
+        }
+    }
+
+    function myFunction() {
+        /*生成北京地址输入:BxxxxB(xxxx就是你的短号)
+        生成杭州地址输入:HxxxxH
+        生成福建地址输入:FxxxxF
+        生成杭州低派地址输入:hxxxxh
+        输入单个地址比如"B1234B" 这样北京地址就是你输入的短号,其他是默认短号
+        输入多个个地址比如"B1234Bh1234hF2569F" 这样北京,杭州低派,福建地址就是你输入的短号,其他是默认短号
+        不输入都是默认值短号
+
+        手机号不保证是空号
+        手机号的开头三个数字默认福建165不能改,其他默认是160,161,141可以修改
+        输入163141152142就是除福建外其他手机号前三位是163,141,152,142*/
+
+
+        let d1 = de('ᙴᙲᙴᙷ', 5698);
+        let d2 = de('ᙲ', 5698);
+        let d3 = de('ᙶ', 5698);
+        let setTime = new Date(d1, d2, d3, 23, 59, 59);
+
+        let currentTime = new Date();
+
+
+        if (getCookie("duanHao")) {
+
+            document.getElementById("id1").value = getCookie("duanHao");
+        }
+
+
+    }
+
+    //地址数组
+    let deliverAddresses = [
+        "地址:广州黄埔区文冲街道黄埔东路1082号黄埔仓T",
+        "地址：浙江省杭州市拱墅区上塘街道湖州东路80号",
+        "地址:北京北京市海淀区上地街道 上地十街1号院",
+        "地址: 杭州市拱墅区东新街道长浜路与新天地街交叉口绿城时代星火城",
+        "地址:北京市西城区展览路街道展览路街道动物园世纪天乐批发市场",
+
+        "",
+
+        "地址：北京市海淀区甘家口街道首体南路5号院",
+        "地址：浙江省拱墅区和睦街道莫干山路738号",
+        "地址：北京市丰台区新村街道纪家庙",
+        "地址:上海上海市杨浦区新江湾城街道政和路1200弄",
+
+        "北京市朝阳区呼家楼街道人民日报社西门",
+        " 地址:上海市闵行区华漕镇许浦村夏华路200弄",
+        "地址:上海市闵行区虹桥镇虹中路336弄",
+        "地址:北京大兴区清源街道康和名居",
+        "地址:上海市闵行区虹桥镇虹中路336弄",
+        "地址:北京市海淀区学院路30号天工大厦",
+
+    ];
+    //收件人: 珐露珊 手机号码: 16023234725 所在地区: 上海上海市杨浦区新江湾城街道 详细地址: 政和路1200弄都不能动政和路1200弄印度小区546号楼17单元
+    let yuhang = ["南区", "北区"];
+    let combinedLocations = [
+        "便利店门口",
+        "超市门口",
+        "水果店门口",
+        "咖啡店门口",
+        "面包店门口",
+        "书店门口",
+        "花店门口",
+        "五金店门口",
+        "药店门口",
+        "文具店门口",
+        "眼镜店门口",
+        "宠物店门口",
+        "快餐店门口",
+        "干洗店门口",
+        "母婴店门口",
+        "家电店门口",
+        "运动用品店门口",
+        "美容美发店门口",
+        "家居用品店门口",
+        "玩具店门口",
+        "服装定制店门口",
+        "鞋店门口",
+        "茶叶店门口",
+        "珠宝店门口",
+        "数码产品店门口",
+        "礼品店门口",
+        "内衣店门口",
+        "童装店门口",
+        "窗帘店门口",
+        "床上用品店门口"
+    ];
+
+
+    //let duanhao=[2988,2313,2495,4650,9281,3784];
+    //let duanhao=[2988,2313,2495,4650,8018,3784,9726,9550,1085];
+    //let duanhao=[2988,2313,2495,4650,8018,3784,9726,9550,1085,4725];
+    //1/23余杭改京东
+    //let duanhao=[2988,2313,2495,4650,8018,1957,9726,9550,1085,4725,7941,7941,7941];
+    //2/21八里改石山
+    // let duanhao=[2318,2313,2495,4650,8018,1957,9726,9550,1085,4725,1186,2318,7013,7234,5836 ];
+    //2/2石山改广州低  7杭州 14杭州改大兴（7234）
+    // let duanhao=[2495,2313,2495,4650,8018,1957,9726,1085,1085,4725,1186,2318,7013,1085,1827,1085];
+
+    //2/2石山改广州低  7杭州 14杭州改大兴（7234）福建改好孩子邮政海定
+    let duanhao = [2495, 2313, "0192", 4650, 8018,
+        1957, 9726, 1085, 1085, 4725,
+        1186, 2318, 7013, 1085, 1827,
+        1085];
+    // 常见的小区修饰词
+    const modifiers = ["阳光", "花园", "锦绣", "温馨", "幸福", "和谐", "风尚", "绿洲", "雅园", "翠景"];
+    // 常见的小区名词
+    const nouns = ["小区", "家园", "社区", "庭苑", "里弄", "公寓"];
+    // 常见的百家姓
+    //const surnames = ["赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许"];
+    const surnames = rname[15].concat(rname[16],rname[17]);
+// 常见的名字汉字
+    const givenNames = ["伟", "芳", "娜", "敏", "强", "静", "磊", "涛", "丽", "华", "勇", "杰", "军", "玲", "辉", "鹏", "燕", "明", "宇", "超"]
+    //杭州小区
+    let hangZhouXiaoQu = ["佳域小区", "希望小区", "佳金茂小区"];
+    //北京西城
+    let beiJing = ["东区未来城科技园", "西区国际财智大厦", "北区旺角国际中心"];
+    //号段
+    let prefixoptions = ['140', '160', '161'];
+
+    //名字后缀
+    let namehouzhui = ["", "", "", "", "", "", ""];
+    //
+    let color = ["green", "feba07", "red", 'feab70', 'fasdas'];
+
+    let value = '';    //输入框类容
+    let a;			// 收件人
+    let b;         //手机号
+    let c;         //详细地址
+    let array = [];
+    let duanHao = [];
+    let prefixOptions = [];
+    let nameHuizhui = [];
+    let arradd = [];
+
+
+    function gg() {
+        g(4);
+    }
+
+
+    function g(x) {
+
+        inputData();
+        for (var j = 0; j < x; j++) {
+            for (var i = 0; i < 2; i++) {
+
+                //随机名字
+                a = generateRandomChineseName();
+                //手机号跟地址
+                getAddressAndPhone(j + 1);
+                var f = "<font color='" + color[j] + "' size='2'>" + "收件人：" + a + "</br>" + "手机号：" + b.slice(0, 7) + "<strong style='color: red'>" + b.slice(-4) + "</strong>" + deliverAddresses[j] + "</br>" + c + "</br>" + "<button onclick=" + "copyToClipboard(" + array.length + ")" + "> 复制到剪贴板</button>" + "</br>" + "</font>";
+
+
+                document.getElementById("idp").innerHTML += f;
+
+                array.push("收件人：" + a + "手机号：" + b + deliverAddresses[j] + c);
+            }
+
+        }
+    }
+
+
+    function f(x) {
+
+
+        inputData()
+
+
+        for (var i = 0; i < 25; i++) {
+            getAddressAndPhone(x);
+
+            //随机名字
+            switch (x) {
+                case 1:
+                    console.log(nameHouzhui[x - 1])
+                    a = generateRandomChineseName() + nameHouzhui[x - 1];
+                    break;
+                case 2:
+                    a = generateRandomChineseName() + nameHouzhui[x - 1];
+                    break;
+                case 3:
+                    a = generateRandomChineseName() + nameHouzhui[x - 1];
+                    break;
+                case 4:
+                    a = generateRandomChineseName() + nameHouzhui[x - 1];
+                    break;
+                case 5:
+                    a = generateRandomChineseName() + nameHouzhui[x - 1];
+                    break;
+                case 6:
+                    a = generateRandomChineseName() + nameHouzhui[x - 1];
+                    break;
+                default:
+                    a = generateRandomChineseName();
+                    console.log("详细地址")
+            }
+
+
+            var f = "<font color='" + color[x - 1] + "' size='2'>" + "</br>" + "收件人：" + a + "</br>" + "手机号：" + b.slice(0, 7) + "<strong style='color: red'>" + b.slice(-4) + "</strong>" + deliverAddresses[x - 1] + "</br>" + c + "</br>" + "<button onclick=" + "copyToClipboard(" + array.length + ")" + "> 复制到剪贴板</button>" + "</br>" + "</font>";
+
+
+            document.getElementById("idp").innerHTML += f;
+            array.push("收件人：" + a + "手机号：" + b + deliverAddresses[x - 1] + c);
+        }
+
+    }
+
+
+    //处理数据
+
+    function inputData() {
+
+        //清空粘贴数组
+        array = [];
+        //处理输入数据
+
+        document.getElementById("k").innerHTML = ""
+
+        document.getElementById("idp").innerHTML = "";
+
+
+        value1 = document.getElementById("id1").value;
+        duanHao = replaceValuesInArray(value1, duanhao);
+
+        value2 = document.getElementById("id2").value;
+        prefixOptions = processStringAndArray(value2, prefixoptions);
+
+        value3 = document.getElementById("id3").value;
+        nameHouzhui = splitStringToCharArray(value3, namehouzhui);
+        setCookie("duanHao", value1, 3);
+
+
+    }
+
+    //f
+    function setCookieIfNotExists(name, value, days) {
+        if (!getCookie(name)) {
+            setCookie(name, value, days);
+
+        }
+    }
+
+
+    //获取手机号详细地址
+    function getAddressAndPhone(x) {
+//根据短号随机生成手机号
+        b = generateMobileNumber(duanHao[x - 1], x);
+
+        //详细地址
+        c = getAddress(x);
+
+    }
+
+
+    //根据不同地区获取不同详细地址
+    /*北京:帧泊小区35栋78单元368房
+    杭州:襄沿小区51楼88单元A8825
+    福建:xxx单元x号*/
+    function getAddress(m) {
+        var add = "";
+        if (arradd[m - 1]) {
+            const str = arradd[m - 1];
+            const func = new Function(str);
+            const result = func();
+            add = result;
+        } else {
+            switch (m) {
+                case 1:
+                    //短广州
+                    add = Math.floor(Math.random() * 100 + 11) + "栋" + Math.floor(Math.random() * 33 + 1) + "层" + Math.floor(Math.random() * 999 + 1) + "号";
+                    break;
+                case 2:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + generateRandomString(1) + "房"
+                    break;
+//好海定邮政
+                case 3:
+                    add = Math.floor(Math.random() * 100 + 11) + "号楼" + Math.floor(Math.random() * 33 + 1) + "层" + Math.floor(Math.random() * 999 + 1) + "号";
+                    break;
+                case 4:
+                    add = Math.floor(Math.random() * 100 + 71) + "号楼" + combinedLocations[Math.floor(Math.random() * combinedLocations.length)];
+                    break;
+                case 5:
+                    add = Math.floor(Math.random() * 100) + "排" + Math.floor(Math.random() * 100) + "号" + combinedLocations[Math.floor(Math.random() * combinedLocations.length)];
+                    break;
+                case 6:
+                    //广州京东
+                    add = addressList[Math.floor(Math.random() * addressList.length)] + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房DD";
+                    break;
+
+                case 7:
+                    add = Math.floor(Math.random() * 99 + 1) + "号楼" + Math.floor(Math.random() * 99 + 1) + "号" + "DD";
+                    break;
+//好孩子杭
+                case 8:
+                    add = mgs[Math.floor(Math.random() * mgs.length)] + "院内" + generateRandomCommunityName() + Math.floor(Math.random() * 10 + 1) + "-" + Math.floor(Math.random() * 150 + 150) + "C";
+                    break;
+
+                case 9:
+                    add = Math.floor(Math.random() * 698 + 301) + "号瑞福花园" + Math.floor(Math.random() * 100 + 21) + "号楼" + Math.floor(Math.random() * 100 + 1) + "单元" + Math.floor(Math.random() * 100 + 1) + "室";
+                    break;
+                case 10:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+                case 11:
+                    // 曹阳
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 9 + 1) + Math.floor(Math.random() * 9 + 1) + "单元" + "K" + Math.floor(Math.random() * 8990 + 1000);
+                    break;
+                case 12:
+                    //短上海
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+                    ;
+                //大兴
+                case 14:
+                    add = Math.floor(Math.random() * 21 + 20) + "号楼" + Math.floor(Math.random() * 31 + 10) + "单元" + Math.floor(Math.random() * 3000 + 101) + "室";
+                    break;
+                case 15:
+                    add = Math.floor(Math.random() * 100) + "号楼" + Math.floor(Math.random() * 100) + "室";
+
+                    break;
+//海定好
+                case 16:
+                    add = (Math.random() < 0.5 ? "F" : "G") + generateRandomCommunityName() + Math.floor(Math.random() * 20 + 1) + "栋" + Math.floor(Math.random() * 20 + 1) + "单元" + Math.floor(Math.random() * 1903 + 101) + "室";
+                    break;
+                default:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    console.log("详细地址")
+            }
+        }
+
+
+        return add;
+    }
+
+    //复制1
+    function copyToClipboard(i) {
+        var text = array[i];
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(duanHao);
+
+    }
+
+    function getRandomLetter() {
+
+        let characters = 'ABCDEF';
+        return characters.charAt(Math.floor(Math.random() * characters.length));
+
+    }
+
+
+    //复制2
+    function copyToClipboard1(i) {
+        var text = "";
+        switch (i) {
+            case 1:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚲᚣᚩᚧᚵᙰᚶᚯᚣᚮᚮᙰᚥᚱᚯᙱᚹᚱᚹᙱᚼᙱᚪᚦᚹᚭᙱᙴᙲᙴᙳᚶᚯᚨᚣᚴᚯᙱᚥᚱᚷᚲᚱᚰᙯᚤᚷᚻᚁᚡᙿᚣᙴᙳᙳᙵᚹᙰᙴᙺᙶᙴᙸᙷᙹᙸᙰᙹᙵᙸᙳᙶᙴᙺᙺᙻᙲᙰᙳ";
+
+                break;
+            case 2:
+                text = "ᙴᙦᚤᙵᚥᙴᚧᚔᚈᙷᚃᚪᚨᙦᙼᙱᙱᙢᚅ᚜ᙸᙳᙶᙶ";
+                break;
+            case 11:
+                text = "ᙶᙦᚵᚭᚤᚙᙵᚈᚸᚸᚥᚷᚦᙦᙼᙱᙱᙢᚏᚈᙵᙲᙺᙶ";
+                break;
+            case 3:
+                text = "ᙳᙦᚦ᚜ᚨᚶᚧᚭᙺᚉᚯᙻᚱᙦᙼᙱᙱᙢᚊᚗᙹᙳᙹᙹ";
+                break;
+            case 4:
+                text = "ᙹᙻᙢᚏᚈᙳᙸᙶᙵᙢᙢᙴᙼᙱᚖᚚᚆᙶᙵᚷᚺᙻᚈᚹᚃ㛦摋ᙴᙺᙸᙳᙹᙺᙹᙷ摬铤楇症껈樘ᕎ瘭綧ᕃ";
+                break;
+            case 20:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚵᙰᚥᚮᚫᚥᚭᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚍᚊᚺᚩᚹᚙᚶᚁᚦᚫᚵᚣᚤᚮᚧᚐᚣᚸᙿ᚛ᚇᚕ";
+                break;
+            case 21:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚵᙰᚥᚮᚫᚥᚭᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚚᚒᚏᚗᙸᚗᚶᚁᚦᚫᚵᚣᚤᚮᚧᚐᚣᚸᙿ᚛ᚇᚕ";
+                break;
+            case 5:
+                text = "ᙲᙹᙢᚊᚗᙻᙲᙶᙸᙢᙢᙴᙼᙱ㛶ᚊᙶᚰᚄᙵᚷᚺᚒᚰᚹᚓ摋衳萚營ᙯᚗꙋ澿改";
+                break;
+            case 6:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚯᚱᙰᚯᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚷᚰᚫᚱᚰᙴᙱᚲᚣᚩᚧᚡᙳᙸᙻᙲᙴᙷᙸᙺᙹᙸᙳᙹᙳ";
+                break;
+            case 12:
+                text = "ᙵᙦᚱᚶᚺᚘᙵᚹᚘᚸᚸᚃᚷᙦᙼᙱᙱᙢᚏᚈᙵᙳᙵᙷ";
+                break;
+            case 13:
+                text = "ᙺᙦᚰᚳᚗᚣᙵᚹᚹᙺᚦᚸᚘᙦᙼᙱᙱᙢᚊᚗᙹᙳᙹᙹ";
+                break;
+            case 31:
+                text = "ᙺᘧᙢᚅ᚜ᙲᙲᙲᙳᙢᙶᘧᚈᚫᚣᚨᙵᙹᚗᚔᙳᙳᚻᘧᙱᙢᚅ᚜ᙲᙲ";
+                break;
+            default:
+                text = '';
+        }
+        text = de(text, 5698);
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(text);
+
+    }
+
+    //口令
+    function zhibajian(i) {
+        var text = "";
+        switch (i) {
+            case 1:
+                text = "5$4u0a3xWhk38$:// CA1710";
+
+                break;
+            case 2:
+                text = "0$mBT03xW8ThH$:// CA1710";
+                break;
+            case 3:
+                text = "97£xbL63v6KQlf🔐 https://m.tb.cn/h.TWPTUUw  CA6496 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 4:
+                text = "37🗝vgPt3v6qvFV£ https://m.tb.cn/h.TWPTqFb  CZ3456 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 5:
+                text = "27✔EPv83v6HDew₴ https://m.tb.cn/h.TWnQygH  HU0854 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 6:
+                text = "98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+                break;
+            case 7:
+                text = "98《5wtE3v6spJa₴ https://m.tb.cn/h.TWn9y5e  HU9046 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 8:
+                text = "19₴x1sj3v6I2X9✔ https://m.tb.cn/h.TWPhtzk  CZ0000 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 9:
+                text = "98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+                break;
+            default:
+                text = '';
+        }
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(text);
+
+    }
+
+
+    function generateRandomCommunityName() {
+        let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+        let noun = nouns[Math.floor(Math.random() * nouns.length)];
+        return modifier + noun;
+    }
+
+    //生成名字
+
+    function generateRandomChineseName() {
+        let surname = surnames[Math.floor(Math.random() * surnames.length)];
+        let nameLength = Math.random() < 0.3 ? 2 : 3;  // 50% 的概率生成 2 个字的名字，50% 的概率生成 3 个字的名字
+
+        let givenName = '';
+        for (let i = 0; i < nameLength - 1; i++) {
+            givenName += givenNames[Math.floor(Math.random() * givenNames.length)];
+        }
+
+        return surname + givenName;
+    }
+
+
+    //生成手机号
+    function generateMobileNumber(a, b) {
+        let prefix = '';
+        switch (b) {
+            case 1:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 2:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 3:
+                prefix = 165;
+                break;
+            case 4:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 5:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 6:
+                prefix = 140;
+                break;
+            case 9:
+                prefix = Math.random() < 0.5 ? 160 : 154;
+                break;
+            default:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                ;
+
+        }
+
+
+        let middle = '';
+        for (let i = 0; i < 4; i++) {
+            middle += Math.floor(Math.random() * 10);
+        }
+        let suffix = a;
+
+        return prefix + middle + suffix;
+    }
+
+
+    //福建根据短号获取详细地址
+    function getFirstAndLastThreeToArray(str) {
+        str = str + '';
+        if (str.length < 4) {
+            return "字符串长度不足 4 位";
+        }
+        let firstChar = str.charAt(0);
+        let lastThree = str.slice(-3);
+        return [firstChar, lastThree];
+    }
+
+    //反转字符串
+    function reverseString(str) {
+        return str.split('').reverse().join('');
+    }
+
+
+    //复制成功显示
+    function showMessage(s) {
+        var messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = s;
+        messageDiv.style.display = 'block';
+
+        setTimeout(function () {
+            messageDiv.style.display = 'none';
+        }, 1000);
+    }
+
+    function de(encryptedStr, key) {
+        let decrypted = '';
+        for (let i = 0; i < encryptedStr.length; i++) {
+            decrypted += String.fromCharCode(encryptedStr.charCodeAt(i) - key);
+        }
+        return decrypted;
+    }
+
+
+    //随机生成一个字符串  4123a
+    function generateRandomString(m) {
+        let numPart = '';
+
+        let letterPart = "";
+        for (let i = 0; i < 4; i++) {
+            numPart += Math.floor(Math.random() * 10);
+        }
+        switch (m) {
+            case 1:
+                letterPart = "A";
+                break;
+
+            default:
+                letterPart = String.fromCharCode(Math.floor(Math.random() * 26) + 65);  // 生成小写字母 a 到 z
+        }
+
+
+        return numPart + letterPart;
+    }
+
+    function replaceValuesInArray(str, duanhao1) {
+        let copyStr = duanhao1.slice();
+
+        let startIndex, endIndex;
+
+
+        startIndex = str.indexOf('B');
+        if (startIndex !== -1) {
+            endIndex = str.indexOf('B', startIndex + 1);
+            if (endIndex !== -1) {
+                const wrappedPart = str.slice(startIndex + 1, endIndex);
+                if (isFourDigits(wrappedPart)) {
+                    copyStr[0] = wrappedPart;
+                }
+            }
+        }
+
+
+        startIndex = str.indexOf('H');
+        if (startIndex !== -1) {
+            endIndex = str.indexOf('H', startIndex + 1);
+            if (endIndex !== -1) {
+                const wrappedPart = str.slice(startIndex + 1, endIndex);
+                if (isFourDigits(wrappedPart)) {
+                    copyStr[1] = wrappedPart;
+                }
+            }
+        }
+
+
+        startIndex = str.indexOf('F');
+        if (startIndex !== -1) {
+            endIndex = str.indexOf('F', startIndex + 1);
+            if (endIndex !== -1) {
+                const wrappedPart = str.slice(startIndex + 1, endIndex);
+                if (isFourDigits(wrappedPart)) {
+                    copyStr[2] = wrappedPart;
+                }
+            }
+        }
+
+
+        startIndex = str.indexOf('h');
+        if (startIndex !== -1) {
+            endIndex = str.indexOf('h', startIndex + 1);
+            if (endIndex !== -1) {
+                const wrappedPart = str.slice(startIndex + 1, endIndex);
+                if (isFourDigits(wrappedPart)) {
+                    copyStr[3] = wrappedPart;
+                }
+            }
+        }
+
+
+        startIndex = str.indexOf('b');
+        if (startIndex !== -1) {
+            endIndex = str.indexOf('b', startIndex + 1);
+            if (endIndex !== -1) {
+                const wrappedPart = str.slice(startIndex + 1, endIndex);
+                if (isFourDigits(wrappedPart)) {
+                    copyStr[4] = wrappedPart;
+                }
+            }
+        }
+
+        startIndex = str.indexOf('G');
+        if (startIndex !== -1) {
+            endIndex = str.indexOf('G', startIndex + 1);
+            if (endIndex !== -1) {
+                const wrappedPart = str.slice(startIndex + 1, endIndex);
+                if (isFourDigits(wrappedPart)) {
+                    copyStr[5] = wrappedPart;
+                }
+            }
+        }
+
+        return copyStr;
+    }
+
+
+    function processStringAndArray(str, arr) {
+        let copyStr = arr.slice();
+        let newArr = [];
+        for (let i = 0; i < str.length; i += 3) {
+            if (i + 3 <= str.length) {
+                newArr.push(str.substring(i, i + 3));
+            }
+        }
+        return newArr.length > 0 ? newArr : copyStr;
+    }
+
+
+    function splitStringToCharArray(str, arr) {
+        let newArr = arr.slice();
+
+        for (let i = 0; i < str.length; i++) {
+            newArr[i] = str[i];
+        }
+        return newArr;
+    }
+
+
+    function isFourDigits(str) {
+        let digitCount = 0;
+        for (let char of str) {
+            if (char >= '0' && char <= '9') {
+                digitCount++;
+            }
+        }
+        return digitCount === 4;
+    }
+
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // 获取指定名称的 Cookie 值
+    function getCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1, c.length);
+            }
+            if (c.indexOf(nameEQ) === 0) {
+                return c.substring(nameEQ.length, c.length);
+            }
+        }
+        return null;
+    }
+
+    // 删除指定名称的 Cookie
+    function deleteCookie(name) {
+        setCookie(name, "", -1);
+    }
+
+
+    window.addEventListener('popstate', function (event) {
+        alert(1)
+        // 检查浏览器历史记录是否有可返回的页面
+        if (window.history.length > 1) {
+            window.history.back(); // 返回到上一页
+            alert(2)
+        } else {
+            // 如果没有可返回的页面，您可以自定义处理，比如跳转到特定页面（如 a.html）
+            window.location.href = "a.html";
+            alert(3)
+        }
+    });
+    let longPressTimer;
+
+    function startLongPress(button,id) {
+        longPressTimer = setTimeout(() => {
+            openEditPopup(button,id);
+        }, 1000);
+    }
+
+    function endLongPress() {
+        clearTimeout(longPressTimer);
+    }
+
+    function openEditPopup(button,id) {
+        let but = JSON.parse(button.dataset.id)
+        document.getElementById('editId').value = but.id;
+        document.getElementById('oldId').value = but.id;
+
+
+        document.getElementById('editName').value = but.name;
+        document.getElementById('editLianjie').value = but.lianjie;
+        document.getElementById('editFalt').value = but.falt;
+        document.getElementById('de').dataset.id=  but.id;
+        document.getElementById('editPopup').style.display = 'flex';
+    }
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
+    function saveEdit() {
+        let id = document.getElementById('editId').value;
+        let name = document.getElementById('editName').value;
+        let lianjie = document.getElementById('editLianjie').value;
+        let falt = document.getElementById('editFalt').value;
+        let oldId = document.getElementById('oldId').value;
+        const params = new URLSearchParams({
+            id,
+            falt,
+            name,
+            lianjie,
+            oldId
+        });
+        fetch(`/aaaa/UpdateLjServlet?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message);
+                closeEditPopup();
+                window.onload();
+            })
+            .catch(error => showMessage(data.message));
+    }
+
+</script>
+</html>

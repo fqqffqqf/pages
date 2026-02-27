@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="Pragma">
+    <meta content="0" http-equiv="Expires">
+
+
+</head>
+<body onload="myFunction()">
+
+<style>
+
+    .message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: none;
+    }
+
+    ul {
+        list-style-type: none; /* 去除默认的项目符号 */
+        padding: 0; /* 去除默认的内边距 */
+        margin: 0; /* 去除默认的外边距 */
+    }
+
+    li {
+        padding: 10px; /* 内边距，增加元素内部的空间 */
+        background-color: #f8f9fa; /* 背景颜色 */
+        border-bottom: 1px solid #dee2e6; /* 底部边框，增加分隔效果 */
+        font-size: 16px; /* 字体大小 */
+        color: #343a40; /* 字体颜色 */
+
+    }
+
+    li:hover {
+        background-color: #e9ecef; /* 鼠标悬停时的背景颜色变化，提供交互反馈 */
+        cursor: pointer; /* 鼠标悬停时变为指针形状，表示可点击 */
+    }
+
+    .button-container {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 6px;
+    }
+
+    .button-container1 {
+        /* 使用 flexbox 布局 */
+        display: flex;
+        /* 换行*/
+        flex-wrap: wrap;
+        /* 设置按钮之间的间隔为 20px */
+        gap: 2px;
+    }
+
+    button {
+        white-space: nowrap;
+        padding: 4px 10px;
+        background: linear-gradient(to right, #007bff, #6610f2);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+</style>
+<div>
+    <input id="id1" placeholder="短号:1234" type="text" value="">
+    <input id="id2" placeholder="号段:165160140" type="text" value="">
+    <input id="id3" placeholder="后缀:a" style="display: none;" type="text" value="">
+</div>
+</br>
+<div class="button-container" id="button-container">
+    <button id="dz1" onclick="f(1)">1.青岛</button>
+    <button id="dz2" onclick="f(2)" style="display: none;">2. 上塘</button>
+    <button id="dz3" onclick="f(3)"> 3.低派福</button>
+    <button id="dz4" onclick="f(4)"> 4.低派杭</button>
+    <button id="dz5" onclick="f(5)"> 5.车公庄</button>
+    <button id="dz6" onclick="f(6)"> 6.朝阳</button>
+    <button id="dz7" onclick="f(7)"> 7.莫干山(杭)</button>
+    <button id="dz8" onclick="f(8)" >8.动物园</button>
+
+    <button id="dz9" onclick="f(9)"> 9.看丹K</button>
+    <button id="dz10" onclick="f(10)" style="display: none;">10.上海</button>
+    <button id="dz11" onclick="f(11)" style="display: none;"> 11.广州低</button>
+    <button id="dz12" onclick="f(12)" style="display: none;"> 12.京广白</button>
+    <button id="dz13" onclick="f(13)" style="display: none;"> 13.上海(邮1)</button>
+    <button id="dz14" onclick="f(14)" >14. 广州</button>
+    <button id="dz15" onclick="f(15)" style="display: none;"> 15.好大兴</button>
+    <button id="dz16" onclick="f(16)" style="display: none;"> 16.好丰台</button>
+    <button id="dz17" onclick="f(17)" style="display: none;">17.上海(好)</button>
+    <button id="dz18" onclick="f(18)" style="display: none;">18.高地</button>
+    <button id="dz19" onclick="f(19)" "display: none;">19.短短上海</button>
+    <button id="dz20" onclick="f(20)" style="display: none;">20.上海(邮2)</button>
+    <button id="dz21" onclick="f(21)" style="display: none;">21.上海(邮3)</button>
+    <button id="dz22" onclick="f(22)" style="display: none;">22.上海(邮4)</button>
+    <button id="dz23" onclick="f(23)" >23.大兴</button>
+    <button id="dz24" onclick="f(24)">24.德胜</button>
+    <button id="dz25" onclick="f(25)" style="display: none;" >25.海定(好)</button>
+    <button id="dz26" onclick="f(26)" >26.王马路(杭)</button>
+    <button id="dz27" onclick="f(27)" style="display: none;" >27.海定邮政(好)</button>
+    <button id="dz28" onclick="f(28)" style="display: none;" >28.杭州莫干山(好)</button>
+    <button id="dz29" onclick="f(29)" style="display: none;" >29.上塘(杭)</button>
+    <button id="dz30" onclick="f(30)" style="display: none;" >30.大兴(狼垡)</button>
+    <button id="dz31" onclick="f(31)" style="display: none;" >31.天津</button>
+
+
+    <button id="g" onclick="g(26)" style="display: none;"> 一键生成</button>
+
+</div>
+
+<!--d
+
+
+<button onclick="indxe_02()">其他1</button>
+<button onclick="g(6)"> 一键生成</button>
+-->
+<br>
+<div class="button-container1">
+
+    <button onclick="copyToClipboard1(1)"> 1.5-1</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(2)"> 0.15无门槛</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(11)" style="display: none;"> 红包3</button>
+    <button onclick="copyToClipboard1(3)" style="display: none;"> 超级红包</button>&nbsp;&nbsp;
+
+    <!--<button onclick="copyToClipboard1(12)"> 红包5</button>&nbsp;&nbsp;-->
+
+    <button onclick="copyToClipboard1(4)" style="display: none;"> 喜从天降</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(5)" style="display: none;"> U选红包</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(6)"> 3个0.2红包</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(31)"> 农场红包</button>&nbsp;&nbsp;
+    <button onclick="copyToClipboard1(20)"  > 签到</button>&nbsp;&nbsp;
+
+    <!--<button onclick="copyToClipboard1(21)"> 秒杀商品0.01</button>-->
+
+    <!--<button onclick="copyToClipboard1(13)"> 1分凑单</button>&nbsp;&nbsp;
+    <button onclick="dianji()"> 联盟互相点击</button>
+    <button onclick="copyToClipboard1(3)"> 超级红包</button>&nbsp;&nbsp;
+    <button onclick="zhibajian(1)"> 0.5农场商品</button>&nbsp;&nbsp;
+    <button onclick="zhibajian(2)"> 自封袋</button>&nbsp;&nbsp;-->
+
+    <button onclick="goudong()" style="display: none;">京东</button>&nbsp;&nbsp;
+    <button onclick="dzz()">尾号绑定</button>
+    <button onclick="di()">低</button>
+    <button onclick="newdz()">地址</button>
+    <button onclick="gengduo()">更多</button>
+    <button onclick="dianji()" style="display: none;">投诉单</button>
+</div>
+
+<div class="message" id="message"></div>
+
+</br>
+<font color="yellow" size="5"><p id="idpp"></p></font>
+
+<p id="idp"></p>
+
+<p id="k"></p>
+</body>
+
+<script src="js/gzby_jd.js"></script>
+<script src="js/ty.js"></script>
+
+<!---->
+<script>
+
+
+    function dianji() {
+
+        window.location.href = "ts.html"
+
+    }
+
+    function dzz() {
+
+        window.location.href = "ddz.html"
+
+    }
+
+    function indxe_02() {
+
+        window.location.href = "index02.html"
+
+    }
+
+    function dizhi() {
+
+        window.location.href = "dizhi.html"
+
+    }
+
+    function goudong() {
+
+        window.location.href = "https://y-03.cn/1ftPEd"
+
+    }
+
+    function gengduo() {
+
+        window.location.href = "gengduo.html"
+
+    }
+    function di() {
+
+        window.location.href = "di.html"
+
+    }
+
+
+
+    window.onload = function () {
+        fetch(`/aaaa/FindDzscqServlet`)
+            .then(response => response.json())
+            .then(data => dzscq(data))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function dzscq(dzscqdata) {
+        for (let i = 0; i < dzscqdata.length; i++) {
+            //加載地址
+            deliverAddresses[dzscqdata[i].id] = dzscqdata[i].dz;
+            arradd[dzscqdata[i].id] = dzscqdata[i].dm;
+            let newbut;
+            let falt = document.getElementById("dz" + (dzscqdata[i].id + 1));
+            //是否存在了
+            if (falt) {
+                newbut = falt;
+            } else {
+                //不存在
+                //獲取所有按鈕
+                var children = document.getElementById("button-container").children;
+                //最后一个按钮
+                var oribut = children[children.length - 1]
+                newbut = document.createElement('button');
+
+
+                newbut.addEventListener('click', function () {
+
+                    f(dzscqdata[i].id + 1);
+                })
+                newbut.id = "dz" + (dzscqdata[i].id + 1);
+                oribut.parentNode.insertBefore(newbut, oribut.nextSibling);
+            }
+
+            if(dzscqdata[i].yc==="0"){
+
+                newbut.style="display: none;";
+            }
+            newbut.innerHTML = dzscqdata[i].name;
+            if(dzscqdata[i].sx==="0"){
+
+                newbut.remove();
+            }
+        }
+
+
+    }
+
+    function myFunction() {
+
+
+        let d1 = de('ᙴᙲᙴᙷ', 5698);
+        let d2 = de('ᙲ', 5698);
+        let d3 = de('ᙶ', 5698);
+
+        let setTime = new Date(2025, 03, 21, 23, 59, 59);
+
+        let currentTime = new Date();
+
+        if (currentTime > setTime || isNaN(setTime.getTime())) {
+
+
+            if (getCookie("duanHao")) {
+
+
+                document.getElementById("id1").value = getCookie("duanHao");
+            }
+
+        } else {
+
+//showMessage("新西城德胜:24")
+            if (getCookie("duanHao")) {
+
+                document.getElementById("id1").value = getCookie("duanHao");
+            }
+
+
+
+        }
+
+
+    }
+    /*
+    let s='上海邮政地址停了\n新增地址:杭州莫干山(7),大兴(23)\n3月18'
+    let agree=confirm(s)
+    if(agree){
+
+    }else{
+    window.close();
+        }*/
+
+    //地址数组
+    let deliverAddresses = [
+        "山东省青岛市市南区八大湖街道山东路38号粨桉居8层",
+        "地址：浙江省杭州市拱墅区上塘街道湖州东路80号",
+        "所在地区：福建泉州市安溪县城厢镇详细地址：过溪明珠茶叶城共派仓库脸脸路",
+        "地址: 杭州市拱墅区东新街道长浜路与新天地街交叉口绿城时代星火城",
+        "地址:北京市西城区展览路街道车公庄大街北里61号",
+
+        "北京市朝阳区呼家楼街道人民日报社西门",
+        "地址：浙江省拱墅区和睦街道莫干山路738号",
+        "地址:北京市西城区展览路街道展览路街道动物园世纪天乐批发市场",
+        "地址:北京市丰台区看丹街道丰葆路",
+        "地址:上海上海市杨浦区新江湾城街道政和路1200弄",
+
+        "所在地区：广东省广州市番禺区钟村锦绣生态园",
+        "",
+        "地址:上海市闵行区虹桥镇虹中路336弄",
+        "地址:广州黄埔区文冲街道黄埔东路1082号黄埔仓T",
+        "地址:北京大兴区清源街道康和名居",
+
+        "地址：北京市丰台区新村街道纪家庙",
+        "地址:上海上海市杨浦区新江湾城街道政和路1200弄",
+        " 地址:北京市丰台区东高地街道警备东路寇龄酒店旁 ",
+        " 地址:上海市闵行区华漕镇许浦村夏华路200弄",
+        " 地址:上海市闵行区七宝镇星中路889弄",
+
+        " 地址:上海市闵行区七宝镇航东路773弄 ",
+        " 地址:上海市闵行区七宝镇沪青平公路541弄",
+        "地址:北京大兴区清源街道康和名居",
+        " 地址:北京市西城区德胜街道黄寺大街14号",
+        "地址:北京市海淀区学院路30号天工大厦",
+
+        "地址:杭州市拱墅区东新街道王马路35号",
+        "地址:北京北京市海淀区上地街道 上地十街1号院",
+        "地址：浙江省拱墅区和睦街道莫干山路738号",
+        "浙江省杭州市拱墅区上塘街道湖州东路300 号",
+        "地址:北京市大兴区黄村镇狼垡中置化学家园",
+
+        "地址:天津市和平区劝业场街道花园路一号",
+    ];
+
+    //上海市闵行区七宝镇星中路889弄 后面随便编辑  上海市闵行区七宝镇航东路773弄 后面随便编辑  上海市闵行区七宝镇沪青平公路541弄 后面随便编辑
+    let yuhang = ["南区", "北区"];
+    let combinedLocations = [
+        "便利店门口",
+        "超市门口",
+        "水果店门口",
+        "咖啡店门口",
+        "面包店门口",
+        "书店门口",
+        "花店门口",
+        "五金店门口",
+        "药店门口",
+        "文具店门口",
+        "眼镜店门口",
+        "宠物店门口",
+        "快餐店门口",
+        "干洗店门口",
+        "母婴店门口",
+        "家电店门口",
+        "运动用品店门口",
+        "美容美发店门口",
+        "家居用品店门口",
+        "玩具店门口",
+        "服装定制店门口",
+        "鞋店门口",
+        "茶叶店门口",
+        "珠宝店门口",
+        "数码产品店门口",
+        "礼品店门口",
+        "内衣店门口",
+        "童装店门口",
+        "窗帘店门口",
+        "床上用品店门口"
+    ];
+
+    let arradd = [];
+    let duanhao = [2988, 2313, 2495, 4650, 9281, 3784, 2318, 8018, 1111, 1111, 2222, 2222, 3333, 4444, 5555, 6668];
+    // 常见的小区修饰词
+    const modifiers = ["阳光", "花园", "锦绣", "温馨", "幸福", "和谐", "风尚", "绿洲", "雅园", "翠景"];
+    // 常见的小区名词
+    const nouns = ["小区", "家园", "社区", "庭苑", "里弄", "公寓"];
+    // 常见的百家姓
+    const surnames = ["赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许", "马"];
+    // 常见的名字汉字
+    const givenNames = ["伟", "芳", "娜", "敏", "强", "静", "磊", "涛", "丽", "华", "勇", "杰", "军", "玲", "辉", "鹏", "燕", "明", "宇", "超"]
+    //杭州小区
+    let hangZhouXiaoQu = ["佳域小区", "希望小区", "佳金茂小区"];
+    //北京西城
+    let beiJing = ["东区未来城科技园", "西区国际财智大厦", "北区旺角国际中心"];
+    //号段
+    let prefixoptions = ['140', '160', '161'];
+
+    //名字后缀
+    let namehouzhui = ["", "", "", "", "", "", ""];
+    //
+
+    let color=["green","feba07","red",'feab70','fasdas','abef11','125847','5874as','aef584','ff5632','ca8213','25dda2','52ae52','11c258','ac25ef','25ae32','259645','542787'];
+
+
+
+    let value = '';    //输入框类容
+    let a;			// 收件人
+    let b;         //手机号
+    let c;         //详细地址
+    let array = [];
+    let duanHao = [];
+    let prefixOptions = [];
+    let nameHuizhui = [];
+
+
+    //  function gg(){g(4);}
+
+
+    function g(x) {
+
+
+        inputData();
+        for (var j = 0; j < x; j++) {
+            for (var i = 0; i < 2; i++) {
+
+                //随机名字
+                a = generateRandomChineseName();
+                //手机号跟地址
+                getAddressAndPhone(j + 1);
+                var f = "<font color='" + color[j] + "' size='2'>" + "收件人：" + a + "</br>" + "手机号：" + b.slice(0, 7) + "<strong style='color: red'>" + b.slice(-4) + "</strong>" + deliverAddresses[j] + "</br>" + c + "</br>" + "<button onclick=" + "copyToClipboard(" + array.length + ")" + "> 复制到剪贴板</button>" + "</br>" + "</font>";
+
+
+                document.getElementById("idp").innerHTML += f;
+
+                array.push("收件人：" + a + "手机号：" + b + deliverAddresses[j] + c);
+            }
+
+        }
+
+        //xs("dz1","dz2","dz3","dz4","dz5","dz6","dz7","dz8","dz9");
+    }
+
+
+    function f(x) {
+
+
+        inputData()
+
+
+        for (var i = 0; i < 25; i++) {
+            getAddressAndPhone(x);
+
+            //随机名字
+            switch (x) {
+                case 1:
+
+                    a = generateRandomChineseName() + i;
+                    break;
+                case 2:
+                    a = generateRandomChineseName() + i;
+                    break;
+                case 3:
+                    a = generateRandomChineseName() + i;
+                    break;
+                case 4:
+                    a = generateRandomChineseName() + i;
+                    break;
+                case 5:
+                    a = generateRandomChineseName() + i;
+                    break;
+                case 6:
+                    a = generateRandomChineseName() + i;
+                    break;
+                default:
+                    a = generateRandomChineseName() + i;
+                    console.log("详细地址")
+            }
+
+
+            var f = "<font color='" + color[14] + "' size='2'>" + "</br>" + "收件人：" + a + "</br>" + "手机号：" + b.slice(0, 7) + "<strong style='color: red'>" + b.slice(-4) + "</strong>" + deliverAddresses[x - 1] + "</br>" + c + "</br>" + "<button onclick=" + "copyToClipboard(" + array.length + ")" + "> 复制到剪贴板</button>" + "</br>" + "</font>";
+
+
+            document.getElementById("idp").innerHTML += f;
+            array.push("收件人：" + a + "手机号：" + b + deliverAddresses[x - 1] + c);
+        }
+
+    }
+
+
+    //处理数据
+
+    function inputData() {
+
+        //清空粘贴数组
+        array = [];
+        //处理输入数据
+
+        document.getElementById("k").innerHTML = ""
+
+        document.getElementById("idp").innerHTML = "";
+
+
+        value1 = document.getElementById("id1").value;
+        duanHao = replaceValuesInArray(value1, duanhao);
+
+        value2 = document.getElementById("id2").value;
+        prefixOptions = processStringAndArray(value2, prefixoptions);
+
+        value3 = document.getElementById("id3").value;
+        nameHouzhui = splitStringToCharArray(value3, namehouzhui);
+        setCookie("duanHao", value1, 3);
+
+
+    }
+
+    //f
+    function setCookieIfNotExists(name, value, days) {
+        if (!getCookie(name)) {
+            setCookie(name, value, days);
+
+        }
+    }
+
+
+    //获取手机号详细地址
+    function getAddressAndPhone(x) {
+//根据短号随机生成手机号
+        b = generateMobileNumber(duanHao[x - 1], x);
+        b = b.slice(0, 7) + b.slice(-4)
+
+        //详细地址
+        c = getAddress(x);
+
+    }
+
+
+    //根据不同地区获取不同详细地址
+    /*北京:帧泊小区35栋78单元368房
+    杭州:襄沿小区51楼88单元A8825
+    福建:xxx单元x号*/
+    function getAddress(m) {
+        var add = "";
+        if (arradd[m - 1]) {
+            const str = arradd[m - 1];
+            const func = new Function(str);
+            const result = func();
+            add =result;
+        }else{
+            switch (m) {
+                case 1:
+                    add = Math.floor(Math.random() * 10 + 1) + "区" + Math.floor(Math.random() * 1000 + 1) + "号"
+                    break;
+                case 2:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + generateRandomString(1) + "房"
+                    break;
+                case 3:
+                    add = generateRandomCommunityName() + getFirstAndLastThreeToArray(duanHao[2])[0] + "单元" + getFirstAndLastThreeToArray(duanHao[2])[1] + "号";
+                    break;
+                case 4:
+                    add = Math.floor(Math.random() * 100 + 71) + "号楼" + combinedLocations[Math.floor(Math.random() * combinedLocations.length)];
+                    break;
+                case 5:
+                    add = beiJing[Math.floor(Math.random() * beiJing.length)] + getRandomLetter() + "栋" + Math.floor(Math.random() * 900 + 101) + "室";
+                    break;
+//朝阳
+                case 6:
+
+                    add=generateRandomCommunityName()+Math.floor(Math.random() *100)+"楼"+Math.floor(Math.random() *9+1)+Math.floor(Math.random() *9+1)+"单元"+"K"+Math.floor(Math.random() *8990+1000);
+                    break;
+//石山改莫干山
+                case 7:
+                    add =mgs[ Math.floor(Math.random() * mgs.length) ]+ Math.floor(Math.random() * 10+1) + "层" + Math.floor(Math.random() * 10 )+Math.floor(Math.random() * 10 ) +Math.floor(Math.random() * 10 )  +String.fromCharCode(Math.floor(Math.random() * (90-65+1)) + 65)
+                    break;
+                case 8:
+                    add = Math.floor(Math.random() * 100) + "排" + Math.floor(Math.random() * 100) + "号" + combinedLocations[Math.floor(Math.random() * combinedLocations.length)];
+                    break;
+                case 9:
+                    add = Math.floor(Math.random() * 1000 + 1000) + "号" + generateRandomCommunityName() + Math.floor(Math.random() * 100) + "栋" + Math.floor(Math.random() * 100) + "单元" + Math.floor(Math.random() * 900 + 101) + "室";
+                    break;
+
+                case 10:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+                case 11:
+                    add = generateRandomCommunityName() + "苑" + generateRandomString();
+                    break;
+
+                case 12:
+                    //广州京东
+                    add = addressList[Math.floor(Math.random() * addressList.length)] + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房DD";
+                    break;
+
+
+                case 14:
+                    //短广州
+                    add = Math.floor(Math.random() * 100 + 11) + "栋"+Math.floor(Math.random() * 33 + 1)+"层"+ Math.floor(Math.random() * 999 + 1)+"号";
+                    break;
+                case 15:
+                    //大兴
+                    add=Math.floor(Math.random() *21+20)+"号楼"+Math.floor(Math.random() *31+10)+"单元"+Math.floor(Math.random() *3000+101)+"室";
+                    break;
+//纪家庙
+                case 16:
+                    add = Math.floor(Math.random() * 698 + 301) + "号瑞福花园" + Math.floor(Math.random() * 100 + 21) + "号楼" + Math.floor(Math.random() * 100 + 1) + "单元" + Math.floor(Math.random() * 100 + 1) + "室";
+                    break;
+//好孩子上海
+                case 17:
+                    add = Math.floor(Math.random() * 100) + "号楼" + Math.floor(Math.random() * 100) + "室";
+                    break;
+//丰台高地
+                case 18:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+//上海
+                case 19:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+//大兴
+                case 23:
+                    add=Math.floor(Math.random() *21+20)+"号楼"+Math.floor(Math.random() *31+10)+"单元"+Math.floor(Math.random() *3000+101)+"室";
+                    break;
+//德胜
+                case 24:
+                    add= generateRandomCommunityName()+Math.floor(Math.random() *20+1)+"栋"+Math.floor(Math.random() *20+1)+"单元"+Math.floor(Math.random() *1903+101)+"室";
+                    break;
+//海定好
+                case 25:
+                    add= (Math.random()<0.5?"F":"G")+generateRandomCommunityName()+Math.floor(Math.random() *20+1)+"栋"+Math.floor(Math.random() *20+1)+"单元"+Math.floor(Math.random() *1903+101)+"室";
+                    break;
+//杭王马路
+                case 26:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" +"A" + Math.floor(Math.random() * 899 + 100);
+                    break;
+//好海定邮政
+                case 27:
+                    add=Math.floor(Math.random() * 100 + 11) + "号楼"+Math.floor(Math.random() * 33 + 1)+"层"+ Math.floor(Math.random() * 999 + 1)+"号";
+                    break;
+//好孩子杭
+                case 28:
+                    add=mgs[ Math.floor(Math.random() * mgs.length) ]+"院内"+generateRandomCommunityName()+Math.floor(Math.random() *10+1)+"-"+Math.floor(Math.random() *150+150)+"C";
+                    break;
+//大兴狼垡
+                case 30:
+                    var a=Math.floor(Math.random() *18+1)
+                    add=Math.floor(Math.random() *15+1)+"栋"+Math.floor(Math.random() *6+1)+"单元"+a+"层"+a+"0"+Math.floor(Math.random() *4+1);
+                    break;
+//天津
+                case 31:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 10+1) + "栋" + Math.floor(Math.random() * 1600+100) + "室"
+                    break;
+                default:
+                    add = generateRandomCommunityName() + Math.floor(Math.random() * 100) + "楼" + Math.floor(Math.random() * 100) + "单元" + reverseString(generateRandomString(1)) + "房"
+                    break;
+            }
+        }
+
+
+        return add;
+    }
+
+    //复制1
+    function copyToClipboard(i) {
+        var text = array[i];
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage("核对街道 短号 地址后缀");
+
+    }
+
+    function getRandomLetter() {
+        let characters = 'ABCDEF';
+        return characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+
+    //复制2
+    function copyToClipboard1(i) {
+        var text = "";
+        switch (i) {
+            case 1:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚲᚣᚩᚧᚵᙰᚶᚯᚣᚮᚮᙰᚥᚱᚯᙱᚹᚱᚹᙱᚼᙱᚪᚦᚹᚭᙱᙴᙲᙴᙳᚶᚯᚨᚣᚴᚯᙱᚥᚱᚷᚲᚱᚰᙯᚤᚷᚻᚁᚡᙿᚣᙴᙳᙳᙵᚹᙰᙴᙺᙶᙴᙸᙷᙹᙸᙰᙹᙵᙸᙳᙶᙴᙺᙺᙻᙲᙰᙳ";
+
+
+                break;
+            case 2:
+                text = Math.random() < 0.5 ? "ᙲᙦ᚜ᚻᚥᚲᚧᚔᚈᚗᚎᚗᚋᙦᙼᙱᙱᙢᚊᚗᙹᙸᙹᙻ" : "ᙵᙦᚈᙸᚳᚴᚧᙺᚒᙳᚓᚒᚍᙦᙼᙱᙱᙢᚅᚃᙳᙷᙲᙳ";
+                break;
+            case 11:
+                text = "ᙶᙦᚵᚭᚤᚙᙵᚈᚸᚸᚥᚷᚦᙦᙼᙱᙱᙢᚏᚈᙵᙲᙺᙶ";
+                break;
+            case 3:
+                text = "ᙳᙦᚦ᚜ᚨᚶᚧᚭᙺᚉᚯᙻᚱᙦᙼᙱᙱᙢᚊᚗᙹᙳᙹᙹ";
+                break;
+            case 4:
+                text = "ᙹᙻᙢᚏᚈᙳᙸᙶᙵᙢᙢᙴᙼᙱᚖᚚᚆᙶᙵᚷᚺᙻᚈᚹᚃ㛦摋ᙴᙺᙸᙳᙹᙺᙹᙷ摬铤楇症껈樘ᕎ瘭綧ᕃ";
+                break;
+            case 20:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚵᙰᚥᚮᚫᚥᚭᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚍᚊᚺᚩᚹᚙᚶᚁᚦᚫᚵᚣᚤᚮᚧᚐᚣᚸᙿ᚛ᚇᚕ";
+                break;
+            case 21:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚵᙰᚥᚮᚫᚥᚭᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚚᚒᚏᚗᙸᚗᚶᚁᚦᚫᚵᚣᚤᚮᚧᚐᚣᚸᙿ᚛ᚇᚕ";
+                break;
+            case 5:
+                text = "ᙲᙹᙢᚊᚗᙻᙲᙶᙸᙢᙢᙴᙼᙱ㛶ᚊᙶᚰᚄᙵᚷᚺᚒᚰᚹᚓ摋衳萚營ᙯᚗꙋ澿改";
+                break;
+            case 6:
+                text = "ᚪᚶᚶᚲᚵᙼᙱᙱᚯᚱᙰᚯᙰᚶᚣᚱᚤᚣᚱᙰᚥᚱᚯᙱᚷᚰᚫᚱᚰᙴᙱᚲᚣᚩᚧᚡᙳᙸᙻᙲᙴᙷᙸᙺᙹᙸᙳᙹᙳ";
+                break;
+            case 12:
+                text = "ᙵᙦᚱᚶᚺᚘᙵᚹᚘᚸᚸᚃᚷᙦᙼᙱᙱᙢᚏᚈᙵᙳᙵᙷ";
+                break;
+            case 13:
+                text = "ᙺᙦᚰᚳᚗᚣᙵᚹᚹᙺᚦᚸᚘᙦᙼᙱᙱᙢᚊᚗᙹᙳᙹᙹ";
+                break;
+            case 31:
+                text = "ᙺᘧᙢᚅ᚜ᙲᙲᙲᙳᙢᙶᘧᚈᚫᚣᚨᙵᙹᚗᚔᙳᙳᚻᘧᙱᙢᚅ᚜ᙲᙲ";
+                break;
+            default:
+                text = '';
+        }
+        text = de(text, 5698);
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(text);
+
+    }
+
+    //口令
+    function zhibajian(i) {
+        var text = "";
+        switch (i) {
+            case 1:
+                text = "5$4u0a3xWhk38$:// CA1710";
+
+                break;
+            case 2:
+                text = "0$mBT03xW8ThH$:// CA1710";
+                break;
+            case 3:
+                text = "97£xbL63v6KQlf🔐 https://m.tb.cn/h.TWPTUUw  CA6496 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 4:
+                text = "37🗝vgPt3v6qvFV£ https://m.tb.cn/h.TWPTqFb  CZ3456 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 5:
+                text = "27✔EPv83v6HDew₴ https://m.tb.cn/h.TWnQygH  HU0854 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 6:
+                text = "98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+                break;
+            case 7:
+                text = "98《5wtE3v6spJa₴ https://m.tb.cn/h.TWn9y5e  HU9046 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 8:
+                text = "19₴x1sj3v6I2X9✔ https://m.tb.cn/h.TWPhtzk  CZ0000 耳勺六件套采耳工具不锈钢挖耳勺皮包耳勺清洁器家用耳勺便携带黄";
+                break;
+            case 9:
+                text = "98₤atR53v6qSNn💲 https://m.tb.cn/h.TWC2b0n  MF6563 吸管好物分享正在发1000元最爱红包雨，快来点淘APP抢！";
+                break;
+            default:
+                text = '';
+        }
+        console.log(text);
+        var dummy = document.createElement("textarea");
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+        showMessage(text);
+
+    }
+
+
+    function generateRandomCommunityName() {
+        let modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+        let noun = nouns[Math.floor(Math.random() * nouns.length)];
+        return modifier + noun;
+    }
+
+    //生成名字
+
+    function generateRandomChineseName() {
+        let surname = surnames[Math.floor(Math.random() * surnames.length)];
+        let nameLength = Math.random() < 0.3 ? 2 : 3;  // 50% 的概率生成 2 个字的名字，50% 的概率生成 3 个字的名字
+
+        let givenName = '';
+        for (let i = 0; i < nameLength - 1; i++) {
+            givenName += givenNames[Math.floor(Math.random() * givenNames.length)];
+        }
+
+        return surname + givenName;
+    }
+
+
+    //生成手机号
+    function generateMobileNumber(a, b) {
+        let prefix = '';
+        switch (b) {
+            case 1:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 2:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 3:
+                prefix = 165;
+                break;
+            case 4:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 5:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                break;
+            case 6:
+                prefix = 140;
+                break;
+            case 16:
+                prefix = Math.random() < 0.5 ? 160 : 154;
+                break;
+            case 30:
+                prefix = Math.random() < 0.5 ? 160 : 154;
+                break;
+            default:
+                prefix = prefixOptions[Math.floor(Math.random() * prefixOptions.length)];
+                ;
+
+        }
+
+
+        let middle = '';
+        for (let i = 0; i < 4; i++) {
+            middle += Math.floor(Math.random() * 10);
+        }
+        let suffix = a;
+        return prefix + middle + suffix;
+    }
+
+
+    //福建根据短号获取详细地址
+    function getFirstAndLastThreeToArray(str) {
+        str = str + '';
+        if (str.length < 4) {
+            return "字符串长度不足 4 位";
+        }
+        let firstChar = str.charAt(0);
+        let lastThree = str.slice(-3);
+        return [firstChar, lastThree];
+    }
+
+    //反转字符串
+    function reverseString(str) {
+        return str.split('').reverse().join('');
+    }
+
+
+    //复制成功显示
+    function showMessage(s) {
+        var messageDiv = document.getElementById('message');
+        messageDiv.innerHTML = s;
+        messageDiv.style.display = 'block';
+
+        setTimeout(function () {
+            messageDiv.style.display = 'none';
+        }, 1500);
+    }
+
+    function de(encryptedStr, key) {
+        let decrypted = '';
+        for (let i = 0; i < encryptedStr.length; i++) {
+            decrypted += String.fromCharCode(encryptedStr.charCodeAt(i) - key);
+        }
+        return decrypted;
+    }
+
+
+    //随机生成一个字符串  4123a
+    function generateRandomString(m) {
+        let numPart = '';
+
+        let letterPart = "";
+        for (let i = 0; i < 4; i++) {
+            numPart += Math.floor(Math.random() * 10);
+        }
+        switch (m) {
+            case 1:
+                letterPart = "A";
+                break;
+
+            default:
+                letterPart = String.fromCharCode(Math.floor(Math.random() * 26) + 65);  // 生成小写字母 a 到 z
+        }
+
+
+        return numPart + letterPart;
+    }
+
+    function replaceValuesInArray(str, duanhao1) {
+
+
+        if (/^\d{4}$/.test(str)) {
+            let copyStr = [];
+
+            for (i = 0; i <= 30; i++) {
+                copyStr[i] = str;
+            }
+            return copyStr;
+        }
+        else {
+
+            ycc(num);
+            const data = getJsonDataSync(`/aaaa/FindDzBynameServlet?name=${str}`);
+            if (Object.keys(data).length) {
+
+                let arr = convertString(data[0].lianjie)
+                xss(arr[0])
+                return arr[1]
+            }
+            switch (str) {
+
+//return [1111,2222,3333,4444,5555,6666,7777,8888,9999];
+//           八里   杭州   福建 低杭  车工   余杭   石山  动物  看蛋
+
+                case "l666":
+                    xs("g");
+                    xss(num);
+                    return arrduanhao;
+                    break;
+//嗯
+
+                case "1":
+                    xs("dz3", "dz4", "dz7", "dz8");
+                    yc("dz1", "dz2", "dz5", "dz6", "dz9");
+
+                    return [1111, 2222, 8922, 4726, 5555, 6666, 8126, 6606, 9999];
+
+
+                case "2":
+                    xs("dz3", "dz4", "dz7", "dz8");
+                    yc("dz1", "dz2", "dz5", "dz6", "dz9");
+//椰汁
+                    return [1111, 2222, 4209, 3793, 5555, 6666, 8121, 6599, 9999];
+
+
+                case "风":
+                    xs("dz4", "dz7", "dz8", "dz6", "dz10", "dz19", "dz13");
+
+
+//微风
+                    return [1111, 2222, 3333, 4731, 5555,
+                        1151, 8115, 5750, 9999, 8279,
+                        "xxxx", "xxxx", "7001", "xxxx", "xxx5",
+                        "xxxx", "xxx7", "xxx8", "8115"]
+
+
+                case "4":
+                    xs("dz3", "dz4", "dz8", "dz9");
+
+//一览众山小
+                    return [1111, 2222, 1618, 2672, 5555, 6666, 8115, 5750, 3615];
+
+
+                case "5":
+                    yc("dz1", "dz2", "dz5", "dz6", "dz9");
+                    xs("dz3", "dz4", "dz7", "dz8");
+//刘欣雨
+                    return [1111, 2222, 5013, 2657, 5555, 6666, 8134, 6663, 9999, , , , 7940, 7940, 7940];
+
+
+                case "爆炸":
+//鬼
+                    xs("dz10", "dz11", "dz12", "dz6", "dz4", "dz7", "dz8", "dz3", "dz18", "dz19");
+                    return [1111, 4789, 7459, 4789, 5555,
+                        1070, 8100, 6577, 9999, 7174,
+                        1421, "xxxx", "xxxx", "xxxx", "xxx5",
+                        "xxxx", "xxx7", 4653, 8100]
+
+
+                case "wu":
+
+//wu
+                    yc("dz1", "dz2", "dz3", "dz4", "dz5", "dz6", "dz7", "dz8", "dz9", "dz10", "dz11", "dz12", "dz13", "dz14", "dz15", "dz16");
+                    xs("dz2", "dz3", "dz4", "dz8", "dz10", "dz16", "dz17", "dz6");
+                    return [1111, 2303, 1991, 4717, 5555,
+                        1167, 7777, 6648, 9999, 1404,
+                        "11xx", "12xx", "13xx", "14xx", "15xx",
+                        3472, 4968]
+
+                case "米":
+
+//小米粒
+                    yc("dz1", "dz2", "dz3", "dz4", "dz5", "dz6", "dz7", "dz8", "dz9", "dz10", "dz11", "dz12", "dz13", "dz14", "dz15", "dz16");
+                    xs("dz10", "dz7");
+                    return [1111, 2303, 1991, 4717, 5555, 6666, 8370, 6648, 9999, 5380, "11xx", "12xx", "13xx", "14xx", "15xx", 3472]
+
+
+                default:
+
+                    return arrduanhao;
+
+
+            }
+        }
+
+
+
+
+    }
+    function processStringAndArray(str, arr) {
+        let copyStr = arr.slice();
+        let newArr = [];
+        for (let i = 0; i < str.length; i += 3) {
+            if (i + 3 <= str.length) {
+                newArr.push(str.substring(i, i + 3));
+            }
+        }
+        return newArr.length > 0 ? newArr : copyStr;
+    }
+
+
+    function splitStringToCharArray(str, arr) {
+        let newArr = arr.slice();
+
+        for (let i = 0; i < str.length; i++) {
+            newArr[i] = str[i];
+        }
+        return newArr;
+    }
+
+
+    function isFourDigits(str) {
+        let digitCount = 0;
+        for (let char of str) {
+            if (char >= '0' && char <= '9') {
+                digitCount++;
+            }
+        }
+        return digitCount === 4;
+    }
+
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // 获取指定名称的 Cookie 值
+    function getCookie(name) {
+        let nameEQ = name + "=";
+        let ca = document.cookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1, c.length);
+            }
+            if (c.indexOf(nameEQ) === 0) {
+                return c.substring(nameEQ.length, c.length);
+            }
+        }
+        return null;
+    }
+
+    // 删除指定名称的 Cookie
+    function deleteCookie(name) {
+        setCookie(name, "", -1);
+    }
+
+
+    window.addEventListener('popstate', function (event) {
+        alert(1)
+        // 检查浏览器历史记录是否有可返回的页面
+        if (window.history.length > 1) {
+            window.history.back(); // 返回到上一页
+            alert(2)
+        } else {
+            // 如果没有可返回的页面，您可以自定义处理，比如跳转到特定页面（如 a.html）
+            window.location.href = "a.html";
+            alert(3)
+        }
+    });
+
+</script>
+<!--<iframe src="/daohang.html" width="100%" ,height="15%"> </iframe> -->
+</html>
