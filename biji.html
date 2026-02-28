@@ -189,7 +189,8 @@
             let imageUrl = null;
             if (imageFile) {
                 // --- 上传图片到 Storage ---
-                const fileName = `${Date.now()}_${imageFile.name}`;
+                const fileExtension = imageFile.name.split('.').pop().toLowerCase();
+                const fileName = `${Date.now()}.${fileExtension}`; // 例如: 1772271341554.png
 				// 获取对应的 Content-Type
             const contentType = getContentType(imageFile.name);
 			console.log(contentType)
@@ -405,4 +406,5 @@ function getContentType(fileName) {
 </body>
 
 </html>
+
 
