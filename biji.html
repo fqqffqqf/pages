@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的笔记箱</title>
+	script src="aaaa/js/ss.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], textarea, input[type="file"] {
+            width: calc(100% - 22px); /* Account for padding/border */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .note-item {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+        .note-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .note-content {
+            color: #666;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+        .note-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        .note-date {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        .copy-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .copy-btn:hover {
+            background-color: #0056b3;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 我的笔记箱</h1>
+    <form id="noteForm">
+        <div class="form-group">
+            <label for="noteTitle">标题 (可选)</label>
+            <input type="text" id="noteTitle" placeholder="输入笔记标题...">
+        </div>
+        <div class="form-group">
+            <label for="noteContent">文本内容</label>
+            <textarea id="noteContent" placeholder="输入要保存的文本..."></textarea>
+        </div>
+        <div class="form-group">
+            <label for="noteImage">图片 (可选)</label>
+            <input type="file" id="noteImage" accept="image/*">
+        </div>
+        <button type="submit">💾 保存笔记</button>
+    </form>
+
+    <div id="errorDiv" class="error" style="display:none;"></div>
+
+    <h2>📋 笔记列表</h2>
+    <div id="notesList" class="loading">加载中...</div>
+</div>
+
+
+<script>
+   
+    const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('your-project-id')) {
+        alert('请先在代码中填入你的 Supabase 项目 URL 和 Anon Key！');
+        console.error('Supabase credentials are missing or incorrect.');
+        document.getElementById('notesList').textContent = '错误：请配置 Supabase 信息。';
+        throw new Error('Supabase credentials are missing or incorrect.');
+    }
+
+    const supabase1 = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // --- 2. DOM Elements ---
+    const noteForm = document.getElementById('noteForm');
+    const noteTitleInput = document.getElementById('noteTitle');
+    const noteContentInput = document.getElementById('noteContent');
+    const noteImageInput = document.getElementById('noteImage');
+    const notesListDiv = document.getElementById('notesList');
+    const errorDiv = document.getElementById('errorDiv');
+
+    // --- 3. Form Submission Handler ---
+    noteForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // 阻止表单默认提交
+
+        const title = noteTitleInput.value.trim();
+        const content = noteContentInput.value.trim();
+        const imageFile = noteImageInput.files[0];
+
+        if (!content && !imageFile) {
+            showError('请输入文本内容或选择一张图片。');
+            return;
+        }
+
+        try {
+            let imageUrl = null;
+            if (imageFile) {
+                // --- 上传图片到 Storage ---
+                const fileName = `${Date.now()}_${imageFile.name}`;
+				// 获取对应的 Content-Type
+            const contentType = getContentType(imageFile.name);
+			console.log(contentType)
+			 //const uploadimageFile=new Blob([imageFile],{type:contentType});
+			
+                const { data: uploadData, error: uploadError } = await supabase1
+                    .storage
+                    .from('notes-images') // 存储桶名称
+                    .upload(fileName, fileName, {
+                        cacheControl: '3600',
+                        upsert: false , // 如果文件已存在则报错
+						contentType: contentType // 设置 Content-Type
+                    });
+
+                if (uploadError) {
+                    throw uploadError;
+                }
+                // 获取公开 URL
+                const { data: publicUrlData } = supabase1
+                    .storage
+                    .from('notes-images')
+                    .getPublicUrl(fileName);
+
+                imageUrl = publicUrlData.publicUrl;
+            }
+
+            // --- 插入数据到 'notes' 表 ---
+            const { error: insertError } = await supabase1
+                .from('notes')
+                .insert([
+                    { title: title || '无标题笔记', content: content, image_url: imageUrl }
+                ]);
+
+            if (insertError) {
+                throw insertError;
+            }
+
+            // 清空表单
+            noteForm.reset();
+            hideError();
+            loadNotes(); // 重新加载列表
+
+        } catch (error) {
+            console.error('保存笔记失败:', error);
+            showError(`保存失败: ${error.message}`);
+        }
+    });
+
+    // --- 4. Load Notes Function ---
+    async function loadNotes() {
+        try {
+            const { data: notes, error } = await supabase1
+                .from('notes')
+                .select('*')
+                .order('inserted_at', { ascending: false }); // 按时间倒序排列
+
+            if (error) {
+                throw error;
+            }
+
+            renderNotes(notes);
+        } catch (error) {
+            console.error('加载笔记失败:', error);
+            notesListDiv.innerHTML = `<p class="error">加载笔记失败: ${error.message}</p>`;
+        }
+    }
+
+    // --- 5. Render Notes Function ---
+    function renderNotes(notes) {
+        if (!notes || notes.length === 0) {
+            notesListDiv.innerHTML = '<p>暂无笔记。</p>';
+            return;
+        }
+
+        notesListDiv.innerHTML = notes.map(note => `
+            <div class="note-item">
+                <div class="note-title">${escapeHtml(note.title)}</div>
+                <div class="note-content">${escapeHtml(note.content || '')}</div>
+                ${note.image_url ? `<img src="${note.image_url}" alt="Note Image" class="note-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><div style="display:none;">图片加载失败</div>` : ''}
+                <div class="note-date">${new Date(note.inserted_at).toLocaleString()}</div>
+                <div class="actions">
+                    <button class="copy-btn" onclick="copyText('${escapeHtmlForJs(note.content || '')}')">📋 复制文本</button>
+                    ${note.image_url ? `<button class="copy-btn" onclick="copyText('${note.image_url}')">🔗 复制图片链接</button>` : ''}
+                    <button class="delete-btn" onclick="deleteNote(${note.id})">🗑️ 删除</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // --- 6. Copy Text Function ---
+    function copyText(text) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('已复制到剪贴板！');
+        }).catch(err => {
+            console.error('复制失败', err);
+            // Fallback for older browsers if needed
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('已复制到剪贴板！（使用备用方法）');
+        });
+    }
+
+    // --- 7. Delete Note Function ---
+    async function deleteNote(noteId) {
+        if (!confirm('确定要删除这条笔记吗？')) return;
+
+        try {
+            const noteToDelete = document.querySelector(`.note-item:has(.delete-btn[onclick="deleteNote(${noteId})"])`);
+            
+            // 如果有图片，尝试删除 Storage 中的文件
+            const imageElement = noteToDelete.querySelector('.note-image');
+            if (imageElement && imageElement.src) {
+                const publicUrl = imageElement.src;
+                // 提取文件名 (从 URL 中的最后一部分)
+                const pathParts = new URL(publicUrl).pathname.split('/');
+                const fileName = pathParts[pathParts.length - 1];
+                
+                const { error: deleteFileError } = await supabase1
+                    .storage
+                    .from('notes-images')
+                    .remove([fileName]);
+
+                if (deleteFileError) {
+                    console.warn('删除图片文件失败:', deleteFileError.message); // 非致命错误
+                }
+            }
+
+            // 删除数据库中的记录
+            const { error: deleteError } = await supabase1
+                .from('notes')
+                .delete()
+                .eq('id', noteId);
+
+            if (deleteError) {
+                throw deleteError;
+            }
+
+            // 成功后，重新加载列表
+            loadNotes();
+
+        } catch (error) {
+            console.error('删除笔记失败:', error);
+            showError(`删除失败: ${error.message}`);
+        }
+    }
+
+
+    // --- 8. Helper Functions ---
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function escapeHtmlForJs(str) {
+        return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function showError(message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+        errorDiv.style.display = 'none';
+    }
+	
+	// --- 辅助函数：根据文件名推断 Content-Type ---
+function getContentType(fileName) {
+    const extension = fileName.toLowerCase().split('.').pop();
+    const mimeTypes = {
+        // 图片
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'png': 'image/png',
+        'gif': 'image/gif',
+		'html':'text/html',
+        'webp': 'image/webp',
+        'svg': 'image/svg+xml',
+        'bmp': 'image/bmp',
+        'ico': 'image/x-icon',
+        'tiff': 'image/tiff',
+        'tif': 'image/tiff',
+        'pdf': 'application/pdf',
+        'txt': 'text/plain',
+        'json': 'application/json',
+        'zip': 'application/zip',
+        'doc': 'application/msword',
+        'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'xls': 'application/vnd.ms-excel',
+        'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+		// 其他常见类型 (按需添加)
+    };
+    return mimeTypes[extension] || 'application/octet-stream'; // 默认类型
+}
+
+    // --- 9. Initial Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        loadNotes();
+    });
+</script>
+
+</body>
+</html>
