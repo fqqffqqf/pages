@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的HTML页面导航</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f7fa;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        /* 控制管理面板显示/隐藏的按钮 */
+        #toggle-panel-btn {
+            display: block;
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin: 0 auto 20px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        #toggle-panel-btn:hover {
+            background-color: #8e44ad;
+        }
+
+        /* 导航按钮容器 */
+        .nav-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            padding: 0 5px; /* 为小屏设备添加一点内边距 */
+        }
+
+        .nav-button {
+            flex: 1 1 calc(50% - 10px); /* 默认每行两个按钮 */
+            min-width: 120px;
+            max-width: 200px;
+            padding: 15px 10px; /* 增加垂直内边距，更适合触摸 */
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .nav-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* 表单区域 - 默认隐藏 */
+        #crud-section {
+            display: none; /* 默认隐藏 */
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #34495e;
+            padding: 0 5px;
+        }
+
+        input[type="text"], input[type="url"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* 确保padding不会撑大宽度 */
+            font-size: 16px; /* 移动端友好 */
+        }
+
+        button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        .update-btn, .delete-btn {
+            background-color: #e67e22;
+        }
+
+        .update-btn:hover, .delete-btn:hover {
+            background-color: #d35400;
+        }
+
+        .del-btn {
+            background-color: #e74c3c;
+        }
+
+        .del-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column; /* 在小屏上垂直堆叠 */
+            align-items: stretch; /* 让子元素拉伸占满宽度 */
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+
+        .form-row label {
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-row input {
+            margin-bottom: 10px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        #status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+
+        /* 响应式设计 */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            .nav-button {
+                flex: 1 1 calc(25% - 15px); /* 大屏上每行四个按钮 */
+                max-width: unset;
+            }
+            .form-row {
+                flex-direction: row; /* 大屏上水平排列 */
+                align-items: center;
+            }
+            .form-row label {
+                min-width: 80px;
+                margin-bottom: 0;
+            }
+            .form-row input {
+                margin-bottom: 0;
+            }
+            .form-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>我的HTML页面导航</h1>
+    
+    <!-- 切换管理面板的按钮 -->
+    <button id="toggle-panel-btn">管理导航</button>
+
+    <!-- 动态生成的导航按钮将放在这里 -->
+    <div class="nav-container" id="links-container">
+        <!-- Buttons will be rendered here by JavaScript -->
+    </div>
+
+    <!-- CRUD管理面板 -->
+    <section id="crud-section">
+        <h2>管理导航链接 (CRUD)</h2>
+        
+        <fieldset>
+            <legend>添加新链接</legend>
+            <div class="form-row">
+                <label for="new-name">名称:</label>
+                <input type="text" id="new-name" placeholder="例如：个人博客">
+            </div>
+            <div class="form-row">
+                <label for="new-url">链接:</label>
+                <input type="url" id="new-url" placeholder="https://myblog.com">
+            </div>
+            <div class="form-row">
+                <label for="new-sort-order">排序 (数字越小越靠前):</label>
+                <input type="number" id="new-sort-order" value="999" min="0" placeholder="0, 1, 2...">
+            </div>
+            <div class="form-actions">
+                <button id="add-btn">添加</button>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>现有链接列表 (可编辑/删除)</legend>
+            <div id="links-list">
+                <!-- Existing links with edit/delete options will be rendered here -->
+            </div>
+        </fieldset>
+    </section>
+
+    <div id="status-message"></div>
+
+    <script>
+        let ty_supabase;
+        function ty_init(url, key) {
+            if (typeof supabase !== 'undefined') {
+                ty_supabase = supabase.createClient(url, key);
+                console.log("Ty Supabase client initialized.");
+            } else {
+                console.error("Supabase CDN library not loaded. Please include it before ty_init.");
+            }
+        }
+
+        const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+        ty_init(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const container = document.getElementById('links-container');
+        const listContainer = document.getElementById('links-list');
+        const addBtn = document.getElementById('add-btn');
+        const newNameInput = document.getElementById('new-name');
+        const newUrlInput = document.getElementById('new-url');
+        const newSortOrderInput = document.getElementById('new-sort-order');
+        const statusDiv = document.getElementById('status-message');
+        const togglePanelBtn = document.getElementById('toggle-panel-btn');
+        const crudSection = document.getElementById('crud-section');
+
+        // --- 管理面板显示/隐藏逻辑 ---
+        togglePanelBtn.addEventListener('click', () => {
+            const isHidden = crudSection.style.display === 'none';
+            crudSection.style.display = isHidden ? 'block' : 'none';
+            togglePanelBtn.textContent = isHidden ? '收起管理' : '管理导航';
+        });
+
+        function showMessage(message, isSuccess) {
+            statusDiv.textContent = message;
+            statusDiv.className = isSuccess ? 'success' : 'error';
+            statusDiv.style.display = 'block';
+            setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
+        }
+
+        // --- CRUD 操作 ---
+        async function addLink(name, url, sortOrder) {
+            const { error } = await ty_supabase
+                .from('html_links')
+                .insert([{ name, url, sort_order: parseInt(sortOrder) }]);
+            if (error) {
+                console.error('添加链接失败:', error);
+                showMessage(`添加失败: ${error.message}`, false);
+            } else {
+                showMessage(`${name} 已成功添加！`, true);
+                loadLinks();
+            }
+        }
+
+        async function loadLinks() {
+            const { data, error } = await ty_supabase
+                .from('html_links')
+                .select('*')
+                .order('sort_order', { ascending: true }) // 按新字段升序排列
+                .order('created_at', { ascending: false }); // 如果排序相同，则按时间倒序
+            if (error) {
+                console.error('加载链接失败:', error);
+                showMessage(`加载失败: ${error.message}`, false);
+                return;
+            }
+            renderLinks(data);
+        }
+
+        async function updateLink(id, newName, newUrl, newSortOrder) {
+            const { error } = await ty_supabase
+                .from('html_links')
+                .update({ name: newName, url: newUrl, sort_order: parseInt(newSortOrder) })
+                .eq('id', id);
+            if (error) {
+                console.error('更新链接失败:', error);
+                showMessage(`更新失败: ${error.message}`, false);
+            } else {
+                showMessage('链接已成功更新！', true);
+                loadLinks();
+            }
+        }
+
+        async function deleteLink(id) {
+            const { error } = await ty_supabase
+                .from('html_links')
+                .delete()
+                .eq('id', id);
+            if (error) {
+                console.error('删除链接失败:', error);
+                showMessage(`删除失败: ${error.message}`, false);
+            } else {
+                showMessage('链接已成功删除！', true);
+                loadLinks();
+            }
+        }
+
+        // --- 渲染函数 ---
+        function renderLinks(links) {
+            container.innerHTML = '';
+            listContainer.innerHTML = '';
+
+            links.forEach(link => {
+                // 渲染导航按钮 (点击直接跳转)
+                const button = document.createElement('button');
+                button.className = 'nav-button';
+                button.textContent = link.name;
+                button.title = link.url;
+                button.onclick = () => window.location.href = link.url; // 修改为直接跳转
+                container.appendChild(button);
+
+                // 渲染CRUD列表项
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'form-row';
+                itemDiv.innerHTML = `
+                    <div style="flex-grow: 1;">
+                        <label>名称:</label>
+                        <input type="text" value="${link.name}" id="edit-name-${link.id}">
+                        <label>链接:</label>
+                        <input type="text" value="${link.url}" id="edit-url-${link.id}">
+                        <label>排序:</label>
+                        <input type="number" value="${link.sort_order}" id="edit-sort-${link.id}" min="0">
+                    </div>
+                    <div class="form-actions">
+                        <button class="update-btn" onclick="handleUpdate(${link.id})">更新</button>
+                        <button class="del-btn" onclick="handleDelete(${link.id})">删除</button>
+                    </div>
+                `;
+                listContainer.appendChild(itemDiv);
+            });
+        }
+
+        // --- 事件处理 ---
+        window.handleUpdate = function(id) {
+            const newName = document.getElementById(`edit-name-${id}`).value.trim();
+            const newUrl = document.getElementById(`edit-url-${id}`).value.trim();
+            const newSortOrder = document.getElementById(`edit-sort-${id}`).value.trim();
+            if (!newName || !newUrl || newSortOrder === '') {
+                showMessage('请填写完整的名称、链接和排序！', false);
+                return;
+            }
+            updateLink(id, newName, newUrl, newSortOrder);
+        };
+
+        window.handleDelete = function(id) {
+            if (confirm('确定要删除这个链接吗？')) {
+                deleteLink(id);
+            }
+        };
+
+        addBtn.addEventListener('click', () => {
+            const name = newNameInput.value.trim();
+            const url = newUrlInput.value.trim();
+            const sortOrder = newSortOrderInput.value.trim();
+            if (!name || !url || sortOrder === '') {
+                showMessage('请填写完整的名称、链接和排序！', false);
+                return;
+            }
+            addLink(name, url, sortOrder);
+            newNameInput.value = '';
+            newUrlInput.value = '';
+            newSortOrderInput.value = '999';
+        });
+
+        document.addEventListener('DOMContentLoaded', loadLinks);
+    </script>
+
+</body>
+</html>
