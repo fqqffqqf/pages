@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>JSON 合并工具</title>
+    <style>
+        /* 样式保持不变（略，同上） */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; padding: 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: #1f2937; margin: 20px 0; font-size: 24px; }
+        .description { text-align: center; color: #6b7280; margin-bottom: 20px; font-size: 14px; }
+        textarea { width: 100%; min-height: 200px; padding: 14px; border: 1px solid #d1d5db; border-radius: 8px; font-family: monospace; font-size: 14px; resize: vertical; margin-bottom: 15px; background-color: #fff; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin: 15px 0; }
+        button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        #merge-btn { background-color: #3b82f6; color: white; }
+        #merge-btn:hover { background-color: #2563eb; }
+        #copy-btn { background-color: #10b981; color: white; }
+        #copy-btn:hover { background-color: #059669; }
+        #copy-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .result { margin-top: 20px; }
+        .result h2 { margin-bottom: 10px; color: #1f2937; font-size: 18px; }
+        #output { width: 100%; min-height: 150px; padding: 14px; background-color: #1e293b; color: #e2e8f0; border-radius: 8px; font-family: monospace; white-space: pre; overflow: auto; font-size: 14px; border: 1px solid #334155; }
+        .error { color: #ef4444; background-color: #fef2f2; padding: 12px; border-radius: 6px; margin-top: 15px; display: none; }
+        .success { color: #16a34a; background-color: #f0fdf4; padding: 12px; border-radius: 6px; margin-top: 15px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 JSON 合并工具</h1>
+        <p class="description">粘贴多个 JSON 对象，自动合并为数组</p>
+
+        <textarea id="input" placeholder='{"name": "张三"}
+
+{
+  "name": "李四",
+  "age": 30
+}
+
+{"name": "王五"}'></textarea>
+
+        <div class="btn-group">
+            <button id="merge-btn" onclick="mergeJson()">合并 JSON</button>
+            <button id="copy-btn" onclick="copyResult()" disabled>复制结果</button>
+        </div>
+
+        <div class="error" id="error-message"></div>
+        <div class="success" id="success-message"></div>
+
+        <div class="result">
+            <h2>合并结果（JSON 数组）</h2>
+            <pre id="output">合并后结果将显示在这里...</pre>
+        </div>
+    </div>
+
+    <script>
+        // 智能解析多个 JSON 对象（支持跨行）
+        function parseMultipleJson(text) {
+            const results = [];
+            let remaining = text.trim();
+            let index = 1;
+
+            while (remaining) {
+                try {
+                    // 尝试从开头解析一个 JSON 对象/数组
+                    const result = jsonParseFirst(remaining);
+                    results.push(result.value);
+                    // 移除已解析的部分
+                    remaining = remaining.slice(result.end).trim();
+                    index++;
+                } catch (err) {
+                    // 报错时提示位置
+                    throw new Error(`在第 ${index} 个 JSON 对象处解析失败: ${err.message}`);
+                }
+            }
+
+            return results;
+        }
+
+        // 解析字符串开头的第一个 JSON 值，并返回其结束位置
+        function jsonParseFirst(str) {
+            let depth = 0;
+            let inString = false;
+            let escapeNext = false;
+            let i = 0;
+
+            // 跳过开头空白
+            while (i < str.length && /\s/.test(str[i])) i++;
+
+            if (i >= str.length) {
+                throw new Error("Unexpected end of input");
+            }
+
+            const start = i;
+
+            for (; i < str.length; i++) {
+                const char = str[i];
+
+                if (escapeNext) {
+                    escapeNext = false;
+                    continue;
+                }
+
+                if (char === '\\') {
+                    escapeNext = true;
+                    continue;
+                }
+
+                if (inString) {
+                    if (char === '"') {
+                        inString = false;
+                    }
+                    continue;
+                }
+
+                if (char === '"') {
+                    inString = true;
+                    continue;
+                }
+
+                if (!inString) {
+                    if (char === '{' || char === '[') {
+                        depth++;
+                    } else if (char === '}' || char === ']') {
+                        depth--;
+                        if (depth === 0) {
+                            // 找到完整对象
+                            const jsonStr = str.slice(start, i + 1);
+                            const value = JSON.parse(jsonStr);
+                            return { value, end: i + 1 };
+                        }
+                    }
+                }
+            }
+
+            throw new Error("Incomplete JSON object");
+        }
+
+        function mergeJson() {
+            const input = document.getElementById('input').value;
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            const outputDiv = document.getElementById('output');
+            const copyBtn = document.getElementById('copy-btn');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            outputDiv.textContent = '处理中...';
+            copyBtn.disabled = true;
+
+            if (!input.trim()) {
+                showError('请输入 JSON 数据');
+                return;
+            }
+
+            try {
+                const jsonArray = parseMultipleJson(input);
+                if (jsonArray.length === 0) {
+                    throw new Error('未找到有效的 JSON 对象');
+                }
+
+                const result = JSON.stringify(jsonArray, null, 2);
+                outputDiv.textContent = result;
+                copyBtn.disabled = false;
+            } catch (err) {
+                showError(err.message);
+                outputDiv.textContent = '';
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = `❌ ${message}`;
+            errorDiv.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success-message');
+            successDiv.textContent = `✅ ${message}`;
+            successDiv.style.display = 'block';
+            setTimeout(() => { successDiv.style.display = 'none'; }, 2000);
+        }
+
+        async function copyResult() {
+            const text = document.getElementById('output').textContent;
+            if (!text || text === '合并后结果将显示在这里...' || text === '处理中...') return;
+            try {
+                await navigator.clipboard.writeText(text);
+                showSuccess('已复制到剪贴板！');
+            } catch (err) {
+                showError('复制失败，请手动复制');
+            }
+        }
+
+        document.getElementById('input').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') mergeJson();
+        });
+    </script>
+</body>
+</html>
