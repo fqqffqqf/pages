@@ -295,6 +295,15 @@ let	mergedFlatData=loadLinks("dzscqAndZy_cache",CACHE_EXPIRY_MS);
 		if(mergedFlatData){
 			dzscq(mergedFlatData.data);  
 		}		
+
+
+   let	ljdataCache=loadLinks("lj_cache",CACHE_EXPIRY_MS);
+	   
+	   if(ljdataCache){
+			lj(ljdataCache.data);  
+		}
+
+		
 try {
     // 1. 先查主表 dzscq
     const { data: dzscqData, error: err1 } = await ty_supabase
@@ -346,11 +355,7 @@ console.log("newData:", newData);
 }
 
 
-	     let	ljdataCache=loadLinks("lj_cache",CACHE_EXPIRY_MS);
-	   
-	   if(ljdataCache){
-			lj(ljdataCache.data);  
-		}
+	  
 		try{
 			let newData=await ty_get("lj",{ select: '*', order: 'id', ascending: true});     
 			
@@ -1366,6 +1371,7 @@ let aaa="";
 
 </script>
 </html>
+
 
 
 
