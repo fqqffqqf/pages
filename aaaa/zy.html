@@ -225,7 +225,7 @@
 
 <script>
 
-
+ const CACHE_EXPIRY_MS = 5 * 60 * 1000*12*24*365; // 5分钟*12*24*365
     function dianji() {
 
         window.location.href = "ts.html"
@@ -1220,6 +1220,48 @@ let aaa="";
     }
 
 
+
+
+
+
+
+
+
+
+
+	
+	    function loadLinks(key,t) {
+            const now = Date.now();
+            let cachedData = null;
+			const cacheObj=null;
+
+            try {
+                const cachedStr = localStorage.getItem(key);
+                if (cachedStr) {
+                    const cacheObj = JSON.parse(cachedStr);
+                    if (cacheObj.timestamp && (now - cacheObj.timestamp) < t) {
+                        cachedData = cacheObj.data;
+                        
+                        console.log('✅ 使用 localStorage 缓存');
+                    }
+                }
+            } catch (e) {
+                console.warn('缓存解析失败:', e);
+            }finally{
+				return cacheObj
+			
+			}
+	
+	
+	}
+
+
+
+
+
+
+
+	
     window.addEventListener('popstate', function (event) {
        
         // 检查浏览器历史记录是否有可返回的页面
@@ -1321,4 +1363,5 @@ let aaa="";
 
 </script>
 </html>
+
 
