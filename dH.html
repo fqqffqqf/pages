@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的HTML页面导航</title>
+    <title>HTML页面导航</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -48,14 +48,14 @@
             gap: 10px;
             margin-bottom: 20px;
             justify-content: center;
-            padding: 0 5px; /* 为小屏设备添加一点内边距 */
+            padding: 0 5px;
         }
 
         .nav-button {
-            flex: 1 1 calc(50% - 10px); /* 默认每行两个按钮 */
+            flex: 1 1 calc(50% - 10px);
             min-width: 120px;
             max-width: 200px;
-            padding: 15px 10px; /* 增加垂直内边距，更适合触摸 */
+            padding: 15px 10px;
             background-color: #3498db;
             color: white;
             border: none;
@@ -73,7 +73,7 @@
 
         /* 表单区域 - 默认隐藏 */
         #crud-section {
-            display: none; /* 默认隐藏 */
+            display: none;
             background-color: white;
             padding: 20px;
             border-radius: 8px;
@@ -100,8 +100,8 @@
             margin: 8px 0;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* 确保padding不会撑大宽度 */
-            font-size: 16px; /* 移动端友好 */
+            box-sizing: border-box;
+            font-size: 16px;
         }
 
         button {
@@ -137,8 +137,8 @@
 
         .form-row {
             display: flex;
-            flex-direction: column; /* 在小屏上垂直堆叠 */
-            align-items: stretch; /* 让子元素拉伸占满宽度 */
+            flex-direction: column;
+            align-items: stretch;
             margin-bottom: 15px;
             padding: 10px;
             border-bottom: 1px solid #eee;
@@ -172,17 +172,16 @@
         .success { background-color: #d4edda; color: #155724; }
         .error { background-color: #f8d7da; color: #721c24; }
 
-        /* 响应式设计 */
         @media (min-width: 768px) {
             body {
                 padding: 20px;
             }
             .nav-button {
-                flex: 1 1 calc(25% - 15px); /* 大屏上每行四个按钮 */
+                flex: 1 1 calc(25% - 15px);
                 max-width: unset;
             }
             .form-row {
-                flex-direction: row; /* 大屏上水平排列 */
+                flex-direction: row;
                 align-items: center;
             }
             .form-row label {
@@ -202,15 +201,12 @@
 
     <h1>我的HTML页面导航</h1>
     
-    <!-- 切换管理面板的按钮 -->
     <button id="toggle-panel-btn">管理导航</button>
 
-    <!-- 动态生成的导航按钮将放在这里 -->
     <div class="nav-container" id="links-container">
         <!-- Buttons will be rendered here by JavaScript -->
     </div>
 
-    <!-- CRUD管理面板 -->
     <section id="crud-section">
         <h2>管理导航链接 (CRUD)</h2>
         
@@ -250,13 +246,17 @@
                 ty_supabase = supabase.createClient(url, key);
                 console.log("Ty Supabase client initialized.");
             } else {
-                console.error("Supabase CDN library not loaded. Please include it before ty_init.");
+                console.error("Supabase CDN library not loaded.");
             }
         }
 
         const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
         ty_init(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ====== 缓存配置 ======
+        const CACHE_KEY = 'html_links_cache';
+        const CACHE_EXPIRY_MS = 5 * 60 * 1000*12*24*365; // 5分钟*12*24*365
 
         const container = document.getElementById('links-container');
         const listContainer = document.getElementById('links-list');
@@ -268,7 +268,6 @@
         const togglePanelBtn = document.getElementById('toggle-panel-btn');
         const crudSection = document.getElementById('crud-section');
 
-        // --- 管理面板显示/隐藏逻辑 ---
         togglePanelBtn.addEventListener('click', () => {
             const isHidden = crudSection.style.display === 'none';
             crudSection.style.display = isHidden ? 'block' : 'none';
@@ -282,32 +281,72 @@
             setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
         }
 
-        // --- CRUD 操作 ---
+        // ====== 带缓存的 loadLinks ======
+        async function loadLinks() {
+            const now = Date.now();
+            let cachedData = null;
+            let fromCache = false;
+
+            try {
+                const cachedStr = localStorage.getItem(CACHE_KEY);
+                if (cachedStr) {
+                    const cacheObj = JSON.parse(cachedStr);
+                    if (cacheObj.timestamp && (now - cacheObj.timestamp) < CACHE_EXPIRY_MS) {
+                        cachedData = cacheObj.data;
+                        fromCache = true;
+                        console.log('✅ 使用 localStorage 缓存');
+                    }
+                }
+            } catch (e) {
+                console.warn('缓存解析失败:', e);
+            }
+
+            // 先用缓存渲染（提升体验）
+            if (cachedData) {
+                renderLinks(cachedData);
+            }
+
+            // 后台静默拉取最新数据
+            try {
+                const { data, error } = await ty_supabase
+                    .from('html_links')
+                    .select('*')
+                    .order('sort_order', { ascending: true })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // 更新缓存
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: data
+                }));
+
+                // 如果数据有变化，重新渲染
+                if (!fromCache || JSON.stringify(cachedData) !== JSON.stringify(data)) {
+                    renderLinks(data);
+                    console.log('🔄 已从 Supabase 更新数据');
+                }
+            } catch (error) {
+                console.error('❌ Supabase 请求失败:', error);
+                if (!cachedData) {
+                    showMessage(`加载失败: ${error.message}`, false);
+                }
+            }
+        }
+
+        // ====== CRUD 操作（保持不变，但会触发 loadLinks 更新缓存）======
         async function addLink(name, url, sortOrder) {
             const { error } = await ty_supabase
                 .from('html_links')
                 .insert([{ name, url, sort_order: parseInt(sortOrder) }]);
             if (error) {
-                console.error('添加链接失败:', error);
+                console.error('添加失败:', error);
                 showMessage(`添加失败: ${error.message}`, false);
             } else {
                 showMessage(`${name} 已成功添加！`, true);
-                loadLinks();
+                loadLinks(); // 自动更新缓存
             }
-        }
-
-        async function loadLinks() {
-            const { data, error } = await ty_supabase
-                .from('html_links')
-                .select('*')
-                .order('sort_order', { ascending: true }) // 按新字段升序排列
-                .order('created_at', { ascending: false }); // 如果排序相同，则按时间倒序
-            if (error) {
-                console.error('加载链接失败:', error);
-                showMessage(`加载失败: ${error.message}`, false);
-                return;
-            }
-            renderLinks(data);
         }
 
         async function updateLink(id, newName, newUrl, newSortOrder) {
@@ -316,7 +355,7 @@
                 .update({ name: newName, url: newUrl, sort_order: parseInt(newSortOrder) })
                 .eq('id', id);
             if (error) {
-                console.error('更新链接失败:', error);
+                console.error('更新失败:', error);
                 showMessage(`更新失败: ${error.message}`, false);
             } else {
                 showMessage('链接已成功更新！', true);
@@ -330,7 +369,7 @@
                 .delete()
                 .eq('id', id);
             if (error) {
-                console.error('删除链接失败:', error);
+                console.error('删除失败:', error);
                 showMessage(`删除失败: ${error.message}`, false);
             } else {
                 showMessage('链接已成功删除！', true);
@@ -338,21 +377,19 @@
             }
         }
 
-        // --- 渲染函数 ---
+        // ====== 渲染函数 ======
         function renderLinks(links) {
             container.innerHTML = '';
             listContainer.innerHTML = '';
 
             links.forEach(link => {
-                // 渲染导航按钮 (点击直接跳转)
                 const button = document.createElement('button');
                 button.className = 'nav-button';
                 button.textContent = link.name;
                 button.title = link.url;
-                button.onclick = () => window.location.href = link.url; // 修改为直接跳转
+                button.onclick = () => window.location.href = link.url;
                 container.appendChild(button);
 
-                // 渲染CRUD列表项
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'form-row';
                 itemDiv.innerHTML = `
@@ -373,7 +410,7 @@
             });
         }
 
-        // --- 事件处理 ---
+        // ====== 全局事件处理 ======
         window.handleUpdate = function(id) {
             const newName = document.getElementById(`edit-name-${id}`).value.trim();
             const newUrl = document.getElementById(`edit-url-${id}`).value.trim();
@@ -405,6 +442,7 @@
             newSortOrderInput.value = '999';
         });
 
+        // 初始化加载
         document.addEventListener('DOMContentLoaded', loadLinks);
     </script>
 
