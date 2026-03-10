@@ -330,12 +330,13 @@ console.log("newData:", newData);
             timestamp: Date.now(),
             data: newData
         }));
-				
+				if(mergedFlatData){
 				 // 如果数据有变化，重新渲染
         if (JSON.stringify(newData) !== JSON.stringify(mergedFlatData.data)) {
              dzscq(newData);
               console.log('🔄 已从 Supabase 更新数据');
           }
+				}
     console.log("合并后的数据 (不加前缀):", mergedFlatData);
     
 } catch (error) {
@@ -358,12 +359,13 @@ console.log("newData:", newData);
             timestamp: Date.now(),
             data: newData
         }));
-				
+				if(ljdataCache){
 				 // 如果数据有变化，重新渲染
         if (JSON.stringify(newData) !== JSON.stringify(ljdataCache.data)) {
              lj(newData);
               console.log('🔄 已从 Supabase 更新数据');
           }
+				}
         }catch (error) {
                 console.error('❌ Supabase 请求失败:', error);
                 alert("查询失败lj_cache")
@@ -1364,6 +1366,7 @@ let aaa="";
 
 </script>
 </html>
+
 
 
 
