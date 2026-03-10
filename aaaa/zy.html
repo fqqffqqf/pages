@@ -289,7 +289,12 @@
             .then(response => response.json())
             .then(data => lj(data))
             .catch(error => console.error('Error:', error));*/
-let mergedFlatData = [];		
+let	mergedFlatData=loadLinks("dzscqAndZy_cache",CACHE_EXPIRY_MS);
+		
+		// 先用缓存渲染
+		if(mergedFlatData){
+			dzscq(mergedFlatData.data);  
+		}		
 try {
     // 1. 先查主表 dzscq
     const { data: dzscqData, error: err1 } = await ty_supabase
@@ -312,7 +317,7 @@ console.log("zyData:", zyData);
 
 
     // 3. 合并逻辑 (INNER JOIN: 只保留两边都存在的记录)
-    mergedFlatData = dzscqData.flatMap(dzscqItem => {
+   let newData = dzscqData.flatMap(dzscqItem => {
       const relatedZyItems = zyData.filter(zyItem => zyItem.id == dzscqItem.id);
       return relatedZyItems.map(zyItem => ({
         ...dzscqItem,
@@ -320,7 +325,17 @@ console.log("zyData:", zyData);
       }));
     });
 
-
+		    // 更新缓存
+        localStorage.setItem("dzscqAndZy_cache", JSON.stringify({
+            timestamp: Date.now(),
+            data: newData
+        }));
+				
+				 // 如果数据有变化，重新渲染
+        if (JSON.stringify(newData) !== JSON.stringify(data)) {
+             dzscq(newData);
+              console.log('🔄 已从 Supabase 更新数据');
+          }
     console.log("合并后的数据 (不加前缀):", mergedFlatData);
     
 } catch (error) {
@@ -328,9 +343,30 @@ console.log("zyData:", zyData);
     return []; 
 }
 
-dzscq(mergedFlatData);  
-	   let ljdata=await ty_get("lj",{ select: '*', order: 'id', ascending: true});     
-        lj(ljdata);
+
+	     let	ljdataCache=loadLinks("lj_cache",CACHE_EXPIRY_MS);
+	   
+	   if(ljdataCache){
+			lj(ljdataCache.data);  
+		}
+		try{
+			let newData=await ty_get("lj",{ select: '*', order: 'id', ascending: true});     
+			
+		// 更新缓存
+        localStorage.setItem("lj_cache", JSON.stringify({
+            timestamp: Date.now(),
+            data: newData
+        }));
+				
+				 // 如果数据有变化，重新渲染
+        if (JSON.stringify(newData) !== JSON.stringify(data)) {
+             lj(newData);
+              console.log('🔄 已从 Supabase 更新数据');
+          }
+        }catch (error) {
+                console.error('❌ Supabase 请求失败:', error);
+                alert("查询失败lj_cache")
+            }
     }
 
     function dzscq(dzscqdata) {
@@ -1285,3 +1321,4 @@ let aaa="";
 
 </script>
 </html>
+
