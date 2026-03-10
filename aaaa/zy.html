@@ -332,7 +332,7 @@ console.log("zyData:", zyData);
         }));
 				
 				 // 如果数据有变化，重新渲染
-        if (JSON.stringify(newData) !== JSON.stringify(data)) {
+        if (JSON.stringify(newData) !== JSON.stringify(mergedFlatData.data)) {
              dzscq(newData);
               console.log('🔄 已从 Supabase 更新数据');
           }
@@ -359,7 +359,7 @@ console.log("zyData:", zyData);
         }));
 				
 				 // 如果数据有变化，重新渲染
-        if (JSON.stringify(newData) !== JSON.stringify(data)) {
+        if (JSON.stringify(newData) !== JSON.stringify(ljdataCache.data)) {
              lj(newData);
               console.log('🔄 已从 Supabase 更新数据');
           }
@@ -1363,5 +1363,6 @@ let aaa="";
 
 </script>
 </html>
+
 
 
