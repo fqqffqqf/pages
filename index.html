@@ -516,9 +516,6 @@ const excludeIds = LOCAL_FIXED_CONFIGS.map(item => parseInt(item[0], 10));
                 const { data: dat, error } = await ty_supabase
 			  .from('dzscq')
 			  .select('*')
-			  .eq('sx', "1")
-			  .eq('falt', "1")
-			  .eq('yc', "1")
 			  .not('id', 'in', `(${excludeIds.join(',')})`)
 			  .order('id', { ascending: true });
 
@@ -1209,5 +1206,6 @@ let suffix;
 </body>
 
 </html>
+
 
 
