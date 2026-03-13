@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>地址批量生成器</title>
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -328,6 +329,21 @@
     </div>
 
     <script>
+
+
+		let ty_supabase;
+        function ty_init(url, key) {
+            if (typeof supabase !== 'undefined') {
+                ty_supabase = supabase.createClient(url, key);
+                console.log("Ty Supabase client initialized.");
+            } else {
+                console.error("Supabase CDN library not loaded.");
+            }
+        }
+
+        const SUPABASE_URL = 'https://yjbnqdrnoetgmmrtkszo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_5z0BoTQwqPwWGaOetcVf0g_UknvjY9B';
+        ty_init(SUPABASE_URL, SUPABASE_ANON_KEY);
 	
 	    let combinedLocations = [
         "便利店门口",
@@ -493,6 +509,40 @@
             
             // 页面加载时，默认隐藏地址管理区域
             document.getElementById('addressConfigSection').style.display = 'none';
+
+const excludeIds = LOCAL_FIXED_CONFIGS.map(item => parseInt(item[0], 10));
+			
+            try {
+                const { data: dat, error } = await ty_supabase
+			  .from('dzscq')
+			  .select('*')
+			  .eq('sx', "1")
+			  .eq('falt', "1")
+			  .eq('yc', "1")
+			  .not('id', 'in', `(${excludeIds.join(',')})`)
+			  .order('id', { ascending: true });
+
+                if (error) throw error;
+				
+		console.log(dat);		
+              const data =dat.map(item => [Number(item.id) + 1, item.name, item.dz, item.dm]);
+console.log(data);
+              
+
+              
+                if (JSON.stringify(data) !== JSON.stringify(userCustomConfigs)) {
+                    localStorage.setItem('userAddressConfigs', JSON.stringify(data));
+			        loadUserCustomConfigs();
+					mergeAllGenerateConfigs();
+					renderAllGenerateButtons();
+                   
+                    console.log('🔄 已从 Supabase 更新数据');
+                }
+            } catch (error) {
+                console.error('❌ Supabase 请求失败:', error);
+               
+            }
+			
         };
 
         // ====================== 存储相关 ======================
@@ -1159,3 +1209,4 @@ let suffix;
 </body>
 
 </html>
+
