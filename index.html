@@ -486,7 +486,7 @@
         let suffixBindRules = {}; // 多组尾号绑定规则 {标识1: {1:'1234', 2:'3678'}, 标识2: {4:'5678',5:'8901'}}
         let currentEditIndex = -1;
 
-        window.onload = function () {
+        window.onload = async function () {
             // 初始化
             loadUserCustomConfigs();
             loadSuffixBindRules();
@@ -1209,4 +1209,5 @@ let suffix;
 </body>
 
 </html>
+
 
