@@ -336,7 +336,7 @@
         
       // dzscq( getJsonDataSync(`/aaaa/FindDzscqServlet`));
 	  //查询所有地址
-	   let dzscqdata=await ty_get("dzscq",{ select: '*', order: 'id', ascending: true})
+	   let dzscqdata=await ty_get("ddzscq",{ select: '*', order: 'id', ascending: true})
 	   dzscq(dzscqdata);
         /*fetch(`/aaaa/FindDzscqServlet`)
             .then(response => response.json())
