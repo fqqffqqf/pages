@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -514,7 +514,7 @@ const excludeIds = LOCAL_FIXED_CONFIGS.map(item => parseInt(item[0], 10));
 			
             try {
                 const { data: dat, error } = await ty_supabase
-			  .from('dzscq')
+			  .from('ddzscq')
 			  .select('*')
 			  .not('id', 'in', `(${excludeIds.join(',')})`)
 			  .order('id', { ascending: true });
