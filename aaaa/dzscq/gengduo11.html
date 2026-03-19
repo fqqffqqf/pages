@@ -313,12 +313,12 @@ let aa = [];
 dzscqdata.forEach(item => {
     if (item.yc === "1" && item.falt === "1" && item.sx === "1") {
         // 创建一个只包含指定字段的新对象，并将其推入 aa 数组
-        aa.push({
-            id: item.id,
-            name: item.name,
-            dz: item.dz,
-            dm: item.dm
-        });
+        aa.push([
+            String(item.id), // 将 id 转换为字符串
+            item.name,
+            item.dz,
+            item.dm
+        ]);
     }
 });
 
@@ -335,7 +335,7 @@ if (aa.length > 0) {
         // 使用 Clipboard API 复制到剪贴板
         navigator.clipboard.writeText(jsonString).then(function() {
             console.log('数据已成功复制到剪贴板');
-            // 可选：给用户一个提示，例如 alert('已复制！');
+           showMessage(jsonString);
         }).catch(function(err) {
             console.error('复制失败: ', err);
             // Clipboard API 可能在某些旧浏览器或非HTTPS环境下不可用
