@@ -335,7 +335,7 @@ if (aa.length > 0) {
         // 使用 Clipboard API 复制到剪贴板
         navigator.clipboard.writeText(jsonString).then(function() {
             console.log('数据已成功复制到剪贴板');
-           showMessage(jsonString);
+           showMessage("复制成功");
         }).catch(function(err) {
             console.error('复制失败: ', err);
             // Clipboard API 可能在某些旧浏览器或非HTTPS环境下不可用
