@@ -314,7 +314,7 @@ dzscqdata.forEach(item => {
     if (item.yc === "1" && item.falt === "1" && item.sx === "1") {
         // 创建一个只包含指定字段的新对象，并将其推入 aa 数组
         aa.push([
-            String(item.id), // 将 id 转换为字符串
+            String(item.id+1), // 将 id 转换为字符串
             item.name,
             item.dz,
             item.dm
