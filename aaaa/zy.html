@@ -293,6 +293,7 @@ let	mergedFlatData=loadLinks("dzscqAndZy_cache",CACHE_EXPIRY_MS);
 		
 		// 先用缓存渲染
 		if(mergedFlatData){
+            console.log(mergedFlatData.data);
 			dzscq(mergedFlatData.data);  
 		}		
 
@@ -300,6 +301,7 @@ let	mergedFlatData=loadLinks("dzscqAndZy_cache",CACHE_EXPIRY_MS);
    let	ljdataCache=loadLinks("lj_cache",CACHE_EXPIRY_MS);
 	   
 	   if(ljdataCache){
+            console.log(ljdataCache.data);
 			lj(ljdataCache.data);  
 		}
 
