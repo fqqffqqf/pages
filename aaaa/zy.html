@@ -290,7 +290,7 @@
             .then(data => lj(data))
             .catch(error => console.error('Error:', error));*/
 let	mergedFlatData=loadLinks("dzscqAndZy_cache",CACHE_EXPIRY_MS);
-console.log(mergedFlatData);
+
 		
 		// 先用缓存渲染
 		if(mergedFlatData){
@@ -342,7 +342,7 @@ console.log("newData:", newData);
             timestamp: Date.now(),
             data: newData
         }));
-				console.log(localStorage.getItem("dzscqAndZy_cache"));
+				
 				 // 如果数据有变化，重新渲染
         if (mergedFlatData==null||JSON.stringify(newData) !== JSON.stringify(mergedFlatData?.data)) {
              dzscq(newData);
@@ -1241,31 +1241,26 @@ let aaa="";
 
 
 	
-	    function loadLinks(key,t) {
-            const now = Date.now();
-            let cachedData = null;
-			const cacheObj=null;
-
-            try {
-                const cachedStr = localStorage.getItem(key);
-                if (cachedStr) {
-                    const cacheObj = JSON.parse(cachedStr);
-                    if (cacheObj.timestamp && (now - cacheObj.timestamp) < t) {
-                        cachedData = cacheObj.data;
-                        
-                        console.log('✅ 使用 localStorage 缓存');
-                    }
-                }
-            } catch (e) {
-                console.warn('缓存解析失败:', e);
-            }finally{
-                 console.log('✅ 使用 localStorage 缓存',cacheObj);
-				return cacheObj
-			
-			}
-	
-	
-	}
+function loadLinks(key, t) {
+    const now = Date.now();
+    try {
+        const cachedStr = localStorage.getItem(key);
+        if (cachedStr) {      
+            const cacheObj = JSON.parse(cachedStr);          
+            // 检查时间戳是否有效且未过期
+            if (cacheObj.timestamp && (now - cacheObj.timestamp) < t) {        
+                console.log('✅ 使用 localStorage 缓存');
+                // 如果命中缓存，直接返回数据
+                return cacheObj; 
+            }
+        }
+    } catch (e) {
+        console.warn('缓存解析失败:', e);
+    }
+    
+    // 如果没命中缓存或出错，返回 null
+    return null; 
+}
 
 
 
