@@ -290,11 +290,12 @@
             .then(data => lj(data))
             .catch(error => console.error('Error:', error));*/
 let	mergedFlatData=loadLinks("dzscqAndZy_cache",CACHE_EXPIRY_MS);
-		
+console.log(mergedFlatData);
+		console.log(mergedFlatData.data);
 		// 先用缓存渲染
 		if(mergedFlatData){
             console.log(mergedFlatData.data);
-			dzscq(mergedFlatData.data);  
+			dzscq( mergedFlatData.data);  
 		}		
 
 
