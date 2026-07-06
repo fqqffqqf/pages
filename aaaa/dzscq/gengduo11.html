@@ -619,7 +619,7 @@ dm="return C();"
    async function saveEdit() {
 
 
-
+checkAuth();
 
 
 
@@ -679,8 +679,43 @@ dm="return C();"
     }
 
 
+
+
+function getTodayPassword() {
+  const today = new Date();
+  const year = today.getFullYear();
+  
+  const month = String(today.getMonth() + 1).padStart(2, '0'); 
+  
+  const day = String(today.getDate()).padStart(2, '0'); 
+  
+  return `${year}${month}${day}`; 
+}
+
+function checkAuth() {
+  const correctPassword = getTodayPassword();
+  
+  
+  const userInput = prompt("请输入认证密码：");
+  
+  
+  if (userInput === null) {
+    alert("认证已取消。");
+    return;
+  }
+  
+  
+  if (userInput === correctPassword) {
+    
+    return true;
+  } else {
+    alert("密码错误");
+    return ;
+  }
+}
+
+
 </script>
 </body>
 
 </html>
-​
